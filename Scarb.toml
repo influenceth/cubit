@@ -1,8 +1,8 @@
 [package]
-name = "cairo_template"
+name = "cubit"
 version = "0.1.0"
-description = "A minimal template for developing with Cairo 1.0"
-homepage = "https://github.com/auditless/cairo-template"
+description = "Math library in Cairo using a 64.61 fixed point representation"
+homepage = "https://github.com/influenceth/cubit"
 
 # Uncomment if you want to use dependencies
 # Note: currently testing doesn't work with dependencies
