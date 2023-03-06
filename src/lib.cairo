@@ -1,3 +1,3 @@
 mod core;
-mod math;
+mod comp;
 mod test;
