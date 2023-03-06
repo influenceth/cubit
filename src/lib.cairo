@@ -1,4 +1,3 @@
-// All modules must be present here
-
+mod core;
 mod math;
 mod test;
