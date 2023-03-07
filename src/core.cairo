@@ -228,6 +228,13 @@ impl FixedDiv of Div::<FixedType> {
     }
 }
 
+impl FixedDivEq of DivEq::<FixedType> {
+    #[inline(always)]
+    fn div_eq(ref self: FixedType, other: FixedType) {
+        self = Div::div(self, other);
+    }
+}
+
 impl FixedPartialOrd of PartialOrd::<FixedType> {
     #[inline(always)]
     fn le(a: FixedType, b: FixedType) -> bool {
