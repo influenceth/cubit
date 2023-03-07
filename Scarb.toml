@@ -1,10 +1,9 @@
 [package]
 name = "cubit"
 version = "0.1.0"
-description = "Math library in Cairo using a 64.61 fixed point representation"
+description = "Math library in Cairo using a 64.64 fixed point representation"
 homepage = "https://github.com/influenceth/cubit"
 
 # Uncomment if you want to use dependencies
 # Note: currently testing doesn't work with dependencies
-# [dependencies]
-# quaireaux = { git = "https://github.com/keep-starknet-strange/quaireaux.git" }
+[dependencies]

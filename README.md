@@ -1,6 +1,6 @@
 # Cubit  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/auditless/cairo-template/blob/main/LICENSE)
 
-A fixed point math library in 64.61 representation built for Cairo 1.0 & Starknet.
+A fixed point math library in 64.64 representation built for Cairo 1.0 & Starknet.
 Successor to [**`influenceth/cairo-math-64x61`**](https://github.com/influenceth/cairo-math-64x61)
 
 ## Installing dependencies
