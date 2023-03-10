@@ -3,13 +3,12 @@ use traits::Into;
 
 use cubit::core::ONE;
 use cubit::core::HALF;
-use cubit::core::POSITIVE;
-use cubit::core::NEGATIVE;
 use cubit::core::_felt_abs;
 use cubit::core::_felt_sign;
 use cubit::core::Fixed;
 use cubit::core::FixedInto;
 use cubit::core::FixedPartialEq;
+use cubit::core::FixedPartialOrd;
 use cubit::core::FixedAdd;
 use cubit::core::FixedAddEq;
 use cubit::core::FixedSub;
@@ -43,11 +42,11 @@ fn test_overflow_small() {
 fn test_sign() {
     let min = -1809251394333065606848661391547535052811553607665798349986546028067936010240;
     let max = 1809251394333065606848661391547535052811553607665798349986546028067936010240;
-    assert(_felt_sign(min) == NEGATIVE, 'invalid result');
-    assert(_felt_sign(-1) == NEGATIVE, 'invalid result');
-    assert(_felt_sign(0) == POSITIVE, 'invalid result');
-    assert(_felt_sign(1) == POSITIVE, 'invalid result');
-    assert(_felt_sign(max) == POSITIVE, 'invalid result');
+    assert(_felt_sign(min) == true, 'invalid result');
+    assert(_felt_sign(-1) == true, 'invalid result');
+    assert(_felt_sign(0) == false, 'invalid result');
+    assert(_felt_sign(1) == false, 'invalid result');
+    assert(_felt_sign(max) == false, 'invalid result');
 }
 
 #[test]
@@ -302,10 +301,10 @@ fn test_sub() {
     let a = Fixed::from_int(5);
     let b = Fixed::from_int(2);
     let c = a - b;
-    assert(c.into() == 3 * ONE, 'positive result invalid');
+    assert(c.into() == 3 * ONE, 'false result invalid');
 
     let c = b - a;
-    assert(c.into() == -3 * ONE, 'negative result invalid');
+    assert(c.into() == -3 * ONE, 'true result invalid');
 }
 
 #[test]
@@ -349,12 +348,12 @@ fn test_mul_neg() {
     let a = Fixed::from_int(5);
     let b = Fixed::from_int(-2);
     let c = a * b;
-    assert(c.into() == -10 * ONE, 'negative result invalid');
+    assert(c.into() == -10 * ONE, 'true result invalid');
 
     let a = Fixed::from_int(-5);
     let b = Fixed::from_int(-2);
     let c = a * b;
-    assert(c.into() == 10 * ONE, 'positive result invalid');
+    assert(c.into() == 10 * ONE, 'false result invalid');
 }
 
 #[test]
@@ -396,4 +395,80 @@ fn test_div() {
     let b = Fixed::from_int(-10);
     let c = a / b;
     assert(c.into() == -227737579084496056040038029, 'invalid neg decimal'); // -12345678.9
+}
+
+#[test]
+fn test_le() {
+    let a = Fixed::from_int(1);
+    let b = Fixed::from_int(0);
+    let c = Fixed::from_int(-1);
+
+    assert(a <= a, 'a <= a');
+    assert(a <= b == false, 'a <= b');
+    assert(a <= c == false, 'a <= c');
+
+    assert(b <= a, 'b <= a');
+    assert(b <= b, 'b <= b');
+    assert(b <= c == false, 'b <= c');
+
+    assert(c <= a, 'c <= a');
+    assert(c <= b, 'c <= b');
+    assert(c <= c, 'c <= c');
+}
+
+#[test]
+fn test_lt() {
+    let a = Fixed::from_int(1);
+    let b = Fixed::from_int(0);
+    let c = Fixed::from_int(-1);
+
+    assert(a < a == false, 'a < a');
+    assert(a < b == false, 'a < b');
+    assert(a < c == false, 'a < c');
+
+    assert(b < a, 'b < a');
+    assert(b < b == false, 'b < b');
+    assert(b < c == false, 'b < c');
+
+    assert(c < a, 'c < a');
+    assert(c < b, 'c < b');
+    assert(c < c == false, 'c < c');
+}
+
+#[test]
+fn test_ge() {
+    let a = Fixed::from_int(1);
+    let b = Fixed::from_int(0);
+    let c = Fixed::from_int(-1);
+
+    assert(a >= a, 'a >= a');
+    assert(a >= b, 'a >= b');
+    assert(a >= c, 'a >= c');
+
+    assert(b >= a == false, 'b >= a');
+    assert(b >= b, 'b >= b');
+    assert(b >= c, 'b >= c');
+
+    assert(c >= a == false, 'c >= a');
+    assert(c >= b == false, 'c >= b');
+    assert(c >= c, 'c >= c');
+}
+
+#[test]
+fn test_gt() {
+    let a = Fixed::from_int(1);
+    let b = Fixed::from_int(0);
+    let c = Fixed::from_int(-1);
+
+    assert(a > a == false, 'a > a');
+    assert(a > b, 'a > b');
+    assert(a > c, 'a > c');
+
+    assert(b > a == false, 'b > a');
+    assert(b > b == false, 'b > b');
+    assert(b > c, 'b > c');
+
+    assert(c > a == false, 'c > a');
+    assert(c > b == false, 'c > b');
+    assert(c > c == false, 'c > c');
 }

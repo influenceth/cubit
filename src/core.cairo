@@ -15,13 +15,11 @@ const HALF: felt = 9223372036854775808; // 2 ** 63
 const HALF_u128: u128 = 9223372036854775808_u128; // 2 ** 63
 const WIDE_SHIFT_u128: u128 = 18446744073709551616_u128; // 2 ** 64
 const MAX_u128: u128 = 340282366920938463463374607431768211455_u128; // 2 ** 128 - 1
-const NEGATIVE: u128 = 0_u128;
-const POSITIVE: u128 = 1_u128;
 
 // STRUCTS
 
 #[derive(Copy, Drop)]
-struct FixedType { mag: u128, sign: u128 }
+struct FixedType { mag: u128, sign: bool }
 
 // TRAITS
 
@@ -65,7 +63,7 @@ impl FixedImpl of Fixed {
 
         if (rem_u128 == 0_u128) {
             return self;
-        } else if (self.sign == POSITIVE) {
+        } else if (self.sign == false) {
             return Fixed::from_int(div_u128.into() + 1);
         } else {
             return Fixed::from_int(div_u128.into() * -1);
@@ -77,7 +75,7 @@ impl FixedImpl of Fixed {
 
         if (rem_u128 == 0_u128) {
             return self;
-        } else if (self.sign == POSITIVE) {
+        } else if (self.sign == false) {
             return Fixed::from_int(div_u128.into());
         } else {
             return Fixed::from_int(-1 * div_u128.into() - 1);
@@ -140,7 +138,7 @@ impl FixedImpl of Fixed {
     // Calculates the square root of a fixed point value
     // x must be positive
     fn sqrt(self: FixedType) -> FixedType {
-        assert(self.sign == POSITIVE, 'Must be positive');
+        assert(self.sign == false, 'must be positive');
         let root = integer::u128_sqrt(self.mag);
         let scale_root = integer::u128_sqrt(ONE_u128);
         let res_u128 = root * ONE_u128 / scale_root;
@@ -152,7 +150,7 @@ impl FixedInto of Into::<FixedType, felt> {
     fn into(self: FixedType) -> felt {
         let mag_felt = self.mag.into();
 
-        if (self.sign == NEGATIVE) {
+        if (self.sign == true) {
             return mag_felt * -1;
         } else {
             return mag_felt;
@@ -200,12 +198,7 @@ impl FixedSubEq of SubEq::<FixedType> {
 
 impl FixedMul of Mul::<FixedType> {
     fn mul(a: FixedType, b: FixedType) -> FixedType {
-        // Calculate result sign
-        let mut res_sign = POSITIVE;
-
-        if (a.sign != b.sign) {
-            res_sign = NEGATIVE;
-        }
+        let res_sign = a.sign ^ b.sign;
 
         // Use u128 to multiply and shift back down
         // TODO: replace if / when there is a felt div_rem supported
@@ -226,12 +219,7 @@ impl FixedMulEq of MulEq::<FixedType> {
 
 impl FixedDiv of Div::<FixedType> {
     fn div(a: FixedType, b: FixedType) -> FixedType {
-        // Calculate result sign
-        let mut res_sign = POSITIVE;
-
-        if (a.sign != b.sign) {
-            res_sign = NEGATIVE;
-        }
+        let res_sign = a.sign ^ b.sign;
 
         // Invert b to preserve precision as much as possible
         // TODO: replace if / when there is a felt div_rem supported
@@ -254,37 +242,37 @@ impl FixedDivEq of DivEq::<FixedType> {
 impl FixedPartialOrd of PartialOrd::<FixedType> {
     #[inline(always)]
     fn le(a: FixedType, b: FixedType) -> bool {
-        if (a.sign < b.sign) {
-            return true;
+        if (a.sign != b.sign) {
+            return a.sign;
         } else {
-            return a.mag <= b.mag;
+            return (a.mag == b.mag) | ((a.mag < b.mag) ^ a.sign);
         }
     }
 
     #[inline(always)]
     fn ge(a: FixedType, b: FixedType) -> bool {
-        if (a.sign > b.sign) {
-            return true;
+        if (a.sign != b.sign) {
+            return !a.sign;
         } else {
-            return a.mag >= b.mag;
+            return (a.mag == b.mag) | ((a.mag > b.mag) ^ a.sign);
         }
     }
 
     #[inline(always)]
     fn lt(a: FixedType, b: FixedType) -> bool {
-        if (a.sign < b.sign) {
-            return true;
+        if (a.sign != b.sign) {
+            return a.sign;
         } else {
-            return a.mag < b.mag;
+            return (a.mag != b.mag) & ((a.mag < b.mag) ^ a.sign);
         }
     }
 
     #[inline(always)]
     fn gt(a: FixedType, b: FixedType) -> bool {
-        if (a.sign > b.sign) {
-            return true;
+        if (a.sign != b.sign) {
+            return !a.sign;
         } else {
-            return a.mag > b.mag;
+            return (a.mag != b.mag) & ((a.mag > b.mag) ^ a.sign);
         }
     }
 }
@@ -292,10 +280,10 @@ impl FixedPartialOrd of PartialOrd::<FixedType> {
 impl FixedNeg of Neg::<FixedType> {
     #[inline(always)]
     fn neg(a: FixedType) -> FixedType {
-        if (a.sign == POSITIVE) {
-            return FixedType { mag: a.mag, sign: NEGATIVE };
+        if (a.sign == false) {
+            return FixedType { mag: a.mag, sign: true };
         } else {
-            return FixedType { mag: a.mag, sign: POSITIVE };
+            return FixedType { mag: a.mag, sign: false };
         }
     }
 }
@@ -308,7 +296,7 @@ fn _exp2(self: FixedType) -> FixedType {
     }
 
     let (int_part, frac_part) = _split_unsigned(self);
-    let int_res = _pow_int(Fixed::from_int(2), int_part, POSITIVE);
+    let int_res = _pow_int(Fixed::from_int(2), int_part, false);
 
     // 1.069e-7 maximum error
     let a1 = Fixed::from_felt(18446742102121545016);
@@ -327,29 +315,25 @@ fn _exp2(self: FixedType) -> FixedType {
     let frac_res = r2 + a1;
     let res_u = int_res * frac_res;
 
-    if (self.sign == NEGATIVE) {
+    if (self.sign == true) {
         return Fixed::from_int(1) / res_u;
     } else {
         return res_u;
     }
 }
 
-// Returns the sign of a signed `felt`
-// 1 = positive (including zero)
-// 0 = negative
-fn _felt_sign(a: felt) -> u128 {
-    if (integer::u256_from_felt(a) <= integer::u256_from_felt(HALF_PRIME)) {
-        return POSITIVE;
-    } else {
-        return NEGATIVE;
-    }
+// Returns the sign of a signed `felt` as with signed magnitude representation
+// true = negative
+// false = positive
+fn _felt_sign(a: felt) -> bool {
+    return integer::u256_from_felt(a) > integer::u256_from_felt(HALF_PRIME);
 }
 
 // Returns the absolute value of a signed `felt`
 fn _felt_abs(a: felt) -> felt {
     let a_sign = _felt_sign(a);
 
-    if (a_sign == NEGATIVE) {
+    if (a_sign == true) {
         return a * -1;
     } else {
         return a;
@@ -366,18 +350,18 @@ fn _log2(a: FixedType) -> FixedType {
         },
     }
 
-    assert(a.sign == POSITIVE, 'must be positive');
+    assert(a.sign == false, 'must be positive');
 
     if (a.mag == ONE_u128) {
         return Fixed::from_int(0);
     } else if (a.mag < ONE_u128) {
-        // Compute negative inverse binary log if 0 < x < 1
+        // Compute true inverse binary log if 0 < x < 1
         let div = Fixed::from_int(1) / a;
         return -_log2(div);
     }
 
     let msb_u128 = _msb(a.mag / 2_u128);
-    let divisor = _pow_int(Fixed::from_int(2), msb_u128, POSITIVE);
+    let divisor = _pow_int(Fixed::from_int(2), msb_u128, false);
     let norm = a / divisor;
 
     // 4.233e-8 maximum error
@@ -422,7 +406,7 @@ fn _msb(a: u128) -> u128 {
 
 // Calclates the value of x^y and checks for overflow before returning
 // TODO: swap to signed int when available
-fn _pow_int(a: FixedType, b: u128, sign: u128) -> FixedType {
+fn _pow_int(a: FixedType, b: u128, sign: bool) -> FixedType {
     match try_fetch_gas() {
         Option::Some(_) => {},
         Option::None(_) => {
@@ -432,8 +416,8 @@ fn _pow_int(a: FixedType, b: u128, sign: u128) -> FixedType {
         },
     }
 
-    if (sign == NEGATIVE) {
-        return Fixed::from_int(1) / _pow_int(a, b, POSITIVE);
+    if (sign == true) {
+        return Fixed::from_int(1) / _pow_int(a, b, false);
     }
 
     let (div, rem) = integer::u128_safe_divmod(b, integer::u128_as_non_zero(2_u128));
@@ -441,13 +425,13 @@ fn _pow_int(a: FixedType, b: u128, sign: u128) -> FixedType {
     if (b == 0_u128) {
         return Fixed::from_int(1);
     } else if (rem == 0_u128) {
-        return _pow_int(a * a, div, POSITIVE);
+        return _pow_int(a * a, div, false);
     } else {
-        return a * _pow_int(a * a, div, POSITIVE);
+        return a * _pow_int(a * a, div, false);
     }
 }
 
-// Ignores sign and always returns positive
+// Ignores sign and always returns false
 fn _split_unsigned(a: FixedType) -> (u128, u128) {
     return integer::u128_safe_divmod(a.mag, integer::u128_as_non_zero(ONE_u128));
 }
