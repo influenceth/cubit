@@ -3,6 +3,8 @@ use traits::Into;
 
 use cubit::core::ONE;
 use cubit::core::HALF;
+use cubit::core::POSITIVE;
+use cubit::core::NEGATIVE;
 use cubit::core::_felt_abs;
 use cubit::core::_felt_sign;
 use cubit::core::Fixed;
@@ -41,11 +43,11 @@ fn test_overflow_small() {
 fn test_sign() {
     let min = -1809251394333065606848661391547535052811553607665798349986546028067936010240;
     let max = 1809251394333065606848661391547535052811553607665798349986546028067936010240;
-    assert(_felt_sign(min) == -1, 'invalid result');
-    assert(_felt_sign(-1) == -1, 'invalid result');
-    assert(_felt_sign(0) == 0, 'invalid result');
-    assert(_felt_sign(1) == 1, 'invalid result');
-    assert(_felt_sign(max) == 1, 'invalid result');
+    assert(_felt_sign(min) == NEGATIVE, 'invalid result');
+    assert(_felt_sign(-1) == NEGATIVE, 'invalid result');
+    assert(_felt_sign(0) == POSITIVE, 'invalid result');
+    assert(_felt_sign(1) == POSITIVE, 'invalid result');
+    assert(_felt_sign(max) == POSITIVE, 'invalid result');
 }
 
 #[test]
