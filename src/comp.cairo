@@ -8,7 +8,7 @@ use cubit::core::FixedPartialOrd;
 
 
 fn max (a: FixedType, b: FixedType) -> FixedType {
-    if (a > b) {
+    if (a >= b) {
         return a;
     } else {
         return b;
@@ -16,7 +16,7 @@ fn max (a: FixedType, b: FixedType) -> FixedType {
 }
 
 fn min (a: FixedType, b: FixedType) -> FixedType {
-    if (a < b) {
+    if (a <= b) {
         return a;
     } else {
         return b;
