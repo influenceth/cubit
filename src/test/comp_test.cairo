@@ -10,9 +10,9 @@ use cubit::comp::min;
 
 #[test]
 fn test_max() {
-    let a = Fixed::from_int(1);
-    let b = Fixed::from_int(0);
-    let c = Fixed::from_int(-1);
+    let a = Fixed::from_unscaled_felt(1);
+    let b = Fixed::from_unscaled_felt(0);
+    let c = Fixed::from_unscaled_felt(-1);
 
     assert(max(a, a) == a, 'max(a, a)');
     assert(max(a, b) == a, 'max(a, b)');
@@ -29,9 +29,9 @@ fn test_max() {
 
 #[test]
 fn test_min() {
-    let a = Fixed::from_int(1);
-    let b = Fixed::from_int(0);
-    let c = Fixed::from_int(-1);
+    let a = Fixed::from_unscaled_felt(1);
+    let b = Fixed::from_unscaled_felt(0);
+    let c = Fixed::from_unscaled_felt(-1);
 
     assert(min(a, a) == a, 'min(a, a)');
     assert(min(a, b) == b, 'min(a, b)');

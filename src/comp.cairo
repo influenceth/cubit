@@ -7,6 +7,8 @@ use cubit::core::FixedImpl;
 use cubit::core::FixedPartialOrd;
 
 
+// PUBLIC
+
 fn max (a: FixedType, b: FixedType) -> FixedType {
     if (a >= b) {
         return a;
