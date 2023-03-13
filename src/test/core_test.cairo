@@ -2,6 +2,7 @@ use option::OptionTrait;
 use traits::Into;
 
 use cubit::core::ONE;
+use cubit::core::ONE_u128;
 use cubit::core::HALF;
 use cubit::core::_felt_abs;
 use cubit::core::_felt_sign;
@@ -57,6 +58,27 @@ fn test_abs() {
     assert(_felt_abs(5) == 5, 'abs of pos should be pos');
     assert(_felt_abs(-5) == 5, 'abs of neg should be pos');
     assert(_felt_abs(0) == 0, 'abs of 0 should be 0');
+}
+
+#[test]
+#[available_gas(10000000)]
+fn test_acos() {
+    let a = Fixed::new(ONE_u128, false);
+    assert(a.acos().into() == 0, 'invalid one');
+}
+
+#[test]
+#[available_gas(10000000)]
+fn test_asin() {
+    let a = Fixed::new(ONE_u128, false);
+    assert(a.asin().into() == 28976077832308491370, 'invalid one'); // PI / 2
+}
+
+#[test]
+#[available_gas(10000000)]
+fn test_atan() {
+    let a = Fixed::new(2_u128 * ONE_u128, false);
+    assert(a.atan().into() == 20423289054736244917, 'invalid two');
 }
 
 #[test]

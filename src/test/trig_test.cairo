@@ -2,6 +2,7 @@ use option::OptionTrait;
 use traits::Into;
 
 use cubit::core::ONE;
+use cubit::core::ONE_u128;
 use cubit::core::Fixed;
 use cubit::core::FixedInto;
 use cubit::core::FixedPartialEq;
@@ -10,6 +11,84 @@ use cubit::trig::HALF_PI_u128;
 use cubit::trig::PI_u128;
 use cubit::trig;
 
+#[test]
+#[available_gas(10000000)]
+fn test_acos() {
+    let a = Fixed::new(ONE_u128, false);
+    assert(trig::acos(a).into() == 0, 'invalid one');
+
+    let a = Fixed::new(ONE_u128 / 2_u128, false);
+    assert(trig::acos(a).into() == 19317385211018935530, 'invalid half'); // 1.0471975506263043
+
+    let a = Fixed::new(0_u128, false);
+    assert(trig::acos(a).into() == 28976077832308491370, 'invalid zero'); // PI / 2
+
+    let a = Fixed::new(ONE_u128 / 2_u128, true);
+    assert(trig::acos(a).into() == 38634770453598047209, 'invalid neg half'); // 2.094395102963489
+
+    let a = Fixed::new(ONE_u128, true);
+    assert(trig::acos(a).into() == 57952155664616982739, 'invalid neg one'); // PI
+}
+
+#[test]
+#[should_panic]
+#[available_gas(10000000)]
+fn test_acos_fail() {
+    let a = Fixed::new(2_u128 * ONE_u128, true);
+    trig::acos(a).into();
+}
+
+#[test]
+#[available_gas(10000000)]
+fn test_atan() {
+    let a = Fixed::new(2_u128 * ONE_u128, false);
+    assert(trig::atan(a).into() == 20423289054736244917, 'invalid two');
+
+    let a = Fixed::new(ONE_u128, false);
+    assert(trig::atan(a).into() == 14488038909386489874, 'invalid one');
+
+    let a = Fixed::new(ONE_u128 / 2_u128, false);
+    assert(trig::atan(a).into() == 8552788777572246454, 'invalid half');
+
+    let a = Fixed::new(0_u128, false);
+    assert(trig::atan(a).into() == 0, 'invalid zero');
+
+    let a = Fixed::new(ONE_u128 / 2_u128, true);
+    assert(trig::atan(a).into() == -8552788777572246454, 'invalid neg half');
+
+    let a = Fixed::new(ONE_u128, true);
+    assert(trig::atan(a).into() == -14488038909386489874, 'invalid neg one');
+
+    let a = Fixed::new(2_u128 * ONE_u128, true);
+    assert(trig::atan(a).into() == -20423289054736244917, 'invalid neg two');
+}
+
+#[test]
+#[available_gas(10000000)]
+fn test_asin() {
+    let a = Fixed::new(ONE_u128, false);
+    assert(trig::asin(a).into() == 28976077832308491370, 'invalid one'); // PI / 2
+
+    let a = Fixed::new(ONE_u128 / 2_u128, false);
+    assert(trig::asin(a).into() == 9658692617570005102, 'invalid half');
+
+    let a = Fixed::new(0_u128, false);
+    assert(trig::asin(a).into() == 0, 'invalid zero');
+
+    let a = Fixed::new(ONE_u128 / 2_u128, true);
+    assert(trig::asin(a).into() == -9658692617570005102, 'invalid neg half');
+
+    let a = Fixed::new(ONE_u128, true);
+    assert(trig::asin(a).into() == -28976077832308491370, 'invalid neg one'); // -PI / 2
+}
+
+#[test]
+#[should_panic]
+#[available_gas(10000000)]
+fn test_asin_fail() {
+    let a = Fixed::new(2_u128 * ONE_u128, false);
+    trig::asin(a).into();
+}
 
 #[test]
 #[available_gas(10000000)]

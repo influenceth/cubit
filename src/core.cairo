@@ -46,6 +46,9 @@ trait Fixed {
     fn sqrt(self: FixedType) -> FixedType;
 
     // Trigonometry
+    fn acos(self: FixedType) -> FixedType;
+    fn asin(self: FixedType) -> FixedType;
+    fn atan(self: FixedType) -> FixedType;
     fn cos(self: FixedType) -> FixedType;
     fn sin(self: FixedType) -> FixedType;
     fn tan(self: FixedType) -> FixedType;
@@ -73,6 +76,18 @@ impl FixedImpl of Fixed {
 
     fn abs(self: FixedType) -> FixedType {
         return math::abs(self);
+    }
+
+    fn acos(self: FixedType) -> FixedType {
+        return trig::acos(self);
+    }
+
+    fn asin(self: FixedType) -> FixedType {
+        return trig::asin(self);
+    }
+
+    fn atan(self: FixedType) -> FixedType {
+        return trig::atan(self);
     }
 
     fn ceil(self: FixedType) -> FixedType {
