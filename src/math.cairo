@@ -1,4 +1,6 @@
-use gas::try_fetch_gas;
+use array::array_append;
+use array::array_new;
+use gas::withdraw_gas;
 use option::OptionTrait;
 use result::ResultTrait;
 use result::ResultTraitImpl;
@@ -70,21 +72,25 @@ fn exp2(a: FixedType) -> FixedType {
     let (int_part, frac_part) = _split_unsigned(a);
     let int_res = _pow_int(Fixed::new_unscaled(2_u128, false), int_part, false);
 
-    // 1.069e-7 maximum error
-    let a1 = Fixed::new(18446742102121545016_u128, false);
-    let a2 = Fixed::new(12786448315833223256_u128, false);
-    let a3 = Fixed::new(4429795821981912136_u128, false);
-    let a4 = Fixed::new(1030550312125424568_u128, false);
-    let a5 = Fixed::new(164966079091297224_u128, false);
-    let a6 = Fixed::new(34983544691898416_u128, false);
+    let t8 = Fixed::new(41691949755436_u128, false);
+    let t7 = Fixed::new(231817862090993_u128, false);
+    let t6 = Fixed::new(2911875592466782_u128, false);
+    let t5 = Fixed::new(24539637786416367_u128, false);
+    let t4 = Fixed::new(177449490038807528_u128, false);
+    let t3 = Fixed::new(1023863119786103800_u128, false);
+    let t2 = Fixed::new(4431397849999009866_u128, false);
+    let t1 = Fixed::new(12786308590235521577_u128, false);
 
     let frac_fixed = Fixed::new(frac_part, false);
-    let r6 = a6 * frac_fixed;
-    let r5 = (r6 + a5) * frac_fixed;
-    let r4 = (r5 + a4) * frac_fixed;
-    let r3 = (r4 + a3) * frac_fixed;
-    let r2 = (r3 + a2) * frac_fixed;
-    let frac_res = r2 + a1;
+    let r8 = t8 * frac_fixed;
+    let r7 = (r8 + t7) * frac_fixed;
+    let r6 = (r7 + t6) * frac_fixed;
+    let r5 = (r6 + t5) * frac_fixed;
+    let r4 = (r5 + t4) * frac_fixed;
+    let r3 = (r4 + t3) * frac_fixed;
+    let r2 = (r3 + t2) * frac_fixed;
+    let r1 = (r2 + t1) * frac_fixed;
+    let frac_res = r1 + Fixed::new(ONE_u128, false);
     let res_u = int_res * frac_res;
 
     if (a.sign == true) {
@@ -139,11 +145,11 @@ fn ln(a: FixedType) -> FixedType {
 // Calculates the binary logarithm of x: log2(x)
 // self must be greather than zero
 fn log2(a: FixedType) -> FixedType {
-    match try_fetch_gas() {
+    match withdraw_gas() {
         Option::Some(_) => {},
         Option::None(_) => {
-            let mut data = array_new::<felt>();
-            array_append::<felt>(ref data, 'OOG');
+            let mut data = array_new::<felt252>();
+            array_append::<felt252>(ref data, 'OOG');
             panic(data);
         },
     }
@@ -162,26 +168,25 @@ fn log2(a: FixedType) -> FixedType {
     let divisor = _pow_int(Fixed::new_unscaled(2_u128, false), msb_u128, false);
     let norm = a / divisor;
 
-    // 4.233e-8 maximum error
-    let a1 = Fixed::new(63187350828072553424_u128, true);
-    let a2 = Fixed::new(150429590981271126408_u128, false);
-    let a3 = Fixed::new(184599081115266689944_u128, true);
-    let a4 = Fixed::new(171296190111888966192_u128, false);
-    let a5 = Fixed::new(110928274989790216568_u128, true);
-    let a6 = Fixed::new(48676798788932142400_u128, false);
-    let a7 = Fixed::new(13804762162529339368_u128, true);
-    let a8 = Fixed::new(2284550827067371376_u128, false);
-    let a9 = Fixed::new(167660832607149504_u128, true);
+    let t8 = Fixed::new(167660832607149504_u128, true);
+    let t7 = Fixed::new(2284550827067371376_u128, false);
+    let t6 = Fixed::new(13804762162529339368_u128, true);
+    let t5 = Fixed::new(48676798788932142400_u128, false);
+    let t4 = Fixed::new(110928274989790216568_u128, true);
+    let t3 = Fixed::new(171296190111888966192_u128, false);
+    let t2 = Fixed::new(184599081115266689944_u128, true);
+    let t1 = Fixed::new(150429590981271126408_u128, false);
+    let t0 = Fixed::new(63187350828072553424_u128, true);
 
-    let r9 = a9 * norm;
-    let r8 = (r9 + a8) * norm;
-    let r7 = (r8 + a7) * norm;
-    let r6 = (r7 + a6) * norm;
-    let r5 = (r6 + a5) * norm;
-    let r4 = (r5 + a4) * norm;
-    let r3 = (r4 + a3) * norm;
-    let r2 = (r3 + a2) * norm;
-    return r2 + a1 + Fixed::new_unscaled(msb_u128, false);
+    let r8 = t8 * norm;
+    let r7 = (r8 + t7) * norm;
+    let r6 = (r7 + t6) * norm;
+    let r5 = (r6 + t5) * norm;
+    let r4 = (r5 + t4) * norm;
+    let r3 = (r4 + t3) * norm;
+    let r2 = (r3 + t2) * norm;
+    let r1 = (r2 + t1) * norm;
+    return r1 + t0 + Fixed::new_unscaled(msb_u128, false);
 }
 
 // Calculates the base 10 log of x: log10(x)
@@ -265,11 +270,11 @@ fn sub(a: FixedType, b: FixedType) -> FixedType {
 
 // Calculates the most significant bit
 fn _msb(a: u128) -> u128 {
-    match try_fetch_gas() {
+    match withdraw_gas() {
         Option::Some(_) => {},
         Option::None(_) => {
-            let mut data = array_new::<felt>();
-            array_append::<felt>(ref data, 'OOG');
+            let mut data = array_new::<felt252>();
+            array_append::<felt252>(ref data, 'OOG');
             panic(data);
         },
     }
@@ -284,11 +289,11 @@ fn _msb(a: u128) -> u128 {
 // Calclates the value of x^y and checks for overflow before returning
 // TODO: swap to signed int when available
 fn _pow_int(a: FixedType, b: u128, sign: bool) -> FixedType {
-    match try_fetch_gas() {
+    match withdraw_gas() {
         Option::Some(_) => {},
         Option::None(_) => {
-            let mut data = array_new::<felt>();
-            array_append::<felt>(ref data, 'OOG');
+            let mut data = array_new::<felt252>();
+            array_append::<felt252>(ref data, 'OOG');
             panic(data);
         },
     }

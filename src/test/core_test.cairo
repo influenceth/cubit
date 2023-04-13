@@ -123,15 +123,15 @@ fn test_pow() {
 #[test]
 #[available_gas(10000000)]
 fn test_exp() {
-    let a = Fixed::from_unscaled_felt(2);
-    assert(a.exp().into() == 136304030830375888892, 'invalid exp of 2'); // 7.389056317241236
+    let a = Fixed::new_unscaled(2_u128, false);
+    assert(a.exp().into() == 136304026800730572984, 'invalid exp of 2'); // 7.389056098793725
 }
 
 #[test]
 #[available_gas(10000000)]
 fn test_exp2() {
-    let a = Fixed::from_unscaled_felt(2);
-    assert(a.exp2().into() == 73786968408486180064, 'invalid exp2 of 2'); // 3.99999957248 = 4
+    let a = Fixed::new_unscaled(2_u128, false);
+    assert(a.exp2().into() == 73786976294838206464, 'invalid exp2 of 2'); // 4
 }
 
 #[test]
@@ -331,3 +331,23 @@ fn test_tan() {
     assert(a.tan().into() == ONE, 'invalid quarter pi');
 }
 
+#[test]
+#[available_gas(10000000)]
+fn test_cosh() {
+    let a = Fixed::new_unscaled(2_u128, false);
+    assert(a.cosh().into() == 69400261067392811864, 'invalid two'); // 3.762195691016423
+}
+
+#[test]
+#[available_gas(10000000)]
+fn test_sinh() {
+    let a = Fixed::new_unscaled(2_u128, false);
+    assert(a.sinh().into() == 66903765733337761105, 'invalid two'); // 3.6268604077773023
+}
+
+#[test]
+#[available_gas(10000000)]
+fn test_tanh() {
+    let a = Fixed::new_unscaled(2_u128, false);
+    assert(a.tanh().into() == 17783170049631984588, 'invalid two'); // 0.9640275800745076
+}

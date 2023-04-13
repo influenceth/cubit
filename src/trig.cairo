@@ -1,4 +1,6 @@
-use gas::try_fetch_gas;
+use array::array_append;
+use array::array_new;
+use gas::withdraw_gas;
 use option::OptionTrait;
 use traits::Into;
 
@@ -47,7 +49,7 @@ fn asin(a: FixedType) -> FixedType {
     return atan(a / div);
 }
 
-// Calculates arctan(x) (fixed point)
+// Calculates arctan(a) (fixed point)
 // See https://stackoverflow.com/a/50894477 for range adjustments
 fn atan(a: FixedType) -> FixedType {
     let mut at = a.abs();
@@ -60,7 +62,7 @@ fn atan(a: FixedType) -> FixedType {
         invert = true;
     }
 
-    // Account for lack of precision in polynomaial when x > 0.7
+    // Account for lack of precision in polynomaial when a > 0.7
     if (at.mag > 12912720851596686131_u128) {
         let sqrt3_3 = Fixed::new(10650232656328343401_u128, false); // sqrt(3) / 3
         at = (at - sqrt3_3) / (Fixed::new(ONE_u128, false) + at * sqrt3_3);
@@ -101,7 +103,7 @@ fn atan(a: FixedType) -> FixedType {
     return Fixed::new(res.mag, a.sign);
 }
 
-// Calculates cos(x) with x in radians (fixed point)
+// Calculates cos(a) with a in radians (fixed point)
 fn cos(a: FixedType) -> FixedType {
     return sin(Fixed::new(HALF_PI_u128, false) - a);
 }
@@ -122,7 +124,7 @@ fn sin(a: FixedType) -> FixedType {
     return FixedType { mag: loop_res.mag, sign: res_sign };
 }
 
-// Calculates tan(x) with x in radians (fixed point)
+// Calculates tan(a) with a in radians (fixed point)
 fn tan(a: FixedType) -> FixedType {
     let sinx = sin(a);
     let cosx = cos(a);
@@ -132,11 +134,11 @@ fn tan(a: FixedType) -> FixedType {
 
 // Helper function to calculate Taylor series for sin
 fn _sin_loop(a: FixedType, i: u128, acc: FixedType) -> FixedType   {
-    match try_fetch_gas() {
+    match withdraw_gas() {
         Option::Some(_) => {},
         Option::None(_) => {
-            let mut data = array_new::<felt>();
-            array_append::<felt>(ref data, 'OOG');
+            let mut data = array_new::<felt252>();
+            array_append::<felt252>(ref data, 'OOG');
             panic(data);
         },
     }
