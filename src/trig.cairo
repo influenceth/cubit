@@ -1,7 +1,8 @@
-use gas::try_fetch_gas;
+use gas::withdraw_gas;
 use option::OptionTrait;
 use traits::Into;
-
+use array::array_new;
+use array::array_append;
 use cubit::core::ONE_u128;
 use cubit::core::Fixed;
 use cubit::core::FixedType;
@@ -132,11 +133,11 @@ fn tan(a: FixedType) -> FixedType {
 
 // Helper function to calculate Taylor series for sin
 fn _sin_loop(a: FixedType, i: u128, acc: FixedType) -> FixedType   {
-    match try_fetch_gas() {
+    match withdraw_gas() {
         Option::Some(_) => {},
         Option::None(_) => {
-            let mut data = array_new::<felt>();
-            array_append::<felt>(ref data, 'OOG');
+            let mut data = array_new::<felt252>();
+            array_append::<felt252>(ref data, 'OOG');
             panic(data);
         },
     }
