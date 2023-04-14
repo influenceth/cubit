@@ -302,14 +302,14 @@ impl FixedNeg of Neg::<FixedType> {
 
 // INTERNAL
 
-// Returns the sign of a signed `felt` as with signed magnitude representation
+// Returns the sign of a signed `felt252` as with signed magnitude representation
 // true = negative
 // false = positive
 fn _felt_sign(a: felt252) -> bool {
     return integer::u256_from_felt252(a) > integer::u256_from_felt252(HALF_PRIME);
 }
 
-// Returns the absolute value of a signed `felt`
+// Returns the absolute value of a signed `felt252`
 fn _felt_abs(a: felt252) -> felt252 {
     let a_sign = _felt_sign(a);
 
