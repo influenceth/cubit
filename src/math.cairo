@@ -1,15 +1,17 @@
 use array::array_append;
 use array::array_new;
-use gas::withdraw_gas;
+use gas::withdraw_gas_all;
 use option::OptionTrait;
 use result::ResultTrait;
 use result::ResultTraitImpl;
 use traits::Into;
+use integer::u256_safe_divmod;
+use integer::u256_as_non_zero;
+use integer::u256_from_felt252;
 
 use cubit::core::HALF_u128;
 use cubit::core::MAX_u128;
 use cubit::core::ONE_u128;
-use cubit::core::WIDE_SHIFT_u128;
 use cubit::core::Fixed;
 use cubit::core::FixedInto;
 use cubit::core::FixedType;
@@ -43,15 +45,15 @@ fn ceil(a: FixedType) -> FixedType {
 
 fn div(a: FixedType, b: FixedType) -> FixedType {
     let res_sign = a.sign ^ b.sign;
-
-    // Invert b to preserve precision as much as possible
-    // TODO: replace if / when there is a felt div_rem supported
     let (a_high, a_low) = integer::u128_wide_mul(a.mag, ONE_u128);
-    let b_inv = MAX_u128 / b.mag;
-    let res_u128 = a_low / b.mag + a_high * b_inv;
+    let a_u256 = u256 { low: a_low, high: a_high };
+    let b_u256 = u256 { low: b.mag, high: 0_u128 };
+    let res_u256 = a_u256 / b_u256;
+
+    assert(res_u256.high == 0_u128, 'result overflow');
 
     // Re-apply sign
-    return Fixed::new(res_u128, res_sign);
+    return Fixed::new(res_u256.low, res_sign);
 }
 
 fn eq(a: FixedType, b: FixedType) -> bool {
@@ -145,7 +147,7 @@ fn ln(a: FixedType) -> FixedType {
 // Calculates the binary logarithm of x: log2(x)
 // self must be greather than zero
 fn log2(a: FixedType) -> FixedType {
-    match withdraw_gas() {
+    match withdraw_gas_all(get_builtin_costs()) {
         Option::Some(_) => {},
         Option::None(_) => {
             let mut data = array_new::<felt252>();
@@ -205,14 +207,15 @@ fn lt(a: FixedType, b: FixedType) -> bool {
 
 fn mul(a: FixedType, b: FixedType) -> FixedType {
     let res_sign = a.sign ^ b.sign;
-
-    // Use u128 to multiply and shift back down
-    // TODO: replace if / when there is a felt div_rem supported
     let (high, low) = integer::u128_wide_mul(a.mag, b.mag);
-    let res_u128 = high * WIDE_SHIFT_u128 + (low / ONE_u128);
+    let res_u256 = u256 { low: low, high: high };
+    let ONE_u256 = u256 { low: ONE_u128, high: 0_u128 };
+    let (scaled_u256, _) = u256_safe_divmod(res_u256, u256_as_non_zero(ONE_u256));
+
+    assert(scaled_u256.high == 0_u128, 'result overflow');
 
     // Re-apply sign
-    return Fixed::new(res_u128, res_sign);
+    return Fixed::new(scaled_u256.low, res_sign);
 }
 
 fn ne(a: FixedType, b: FixedType) -> bool {
@@ -270,7 +273,7 @@ fn sub(a: FixedType, b: FixedType) -> FixedType {
 
 // Calculates the most significant bit
 fn _msb(a: u128) -> u128 {
-    match withdraw_gas() {
+    match withdraw_gas_all(get_builtin_costs()) {
         Option::Some(_) => {},
         Option::None(_) => {
             let mut data = array_new::<felt252>();
@@ -289,7 +292,7 @@ fn _msb(a: u128) -> u128 {
 // Calclates the value of x^y and checks for overflow before returning
 // TODO: swap to signed int when available
 fn _pow_int(a: FixedType, b: u128, sign: bool) -> FixedType {
-    match withdraw_gas() {
+    match withdraw_gas_all(get_builtin_costs()) {
         Option::Some(_) => {},
         Option::None(_) => {
             let mut data = array_new::<felt252>();

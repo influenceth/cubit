@@ -1,3 +1,4 @@
+use debug::PrintTrait;
 use option::OptionTrait;
 use result::ResultTrait;
 use result::ResultTraitImpl;
@@ -15,7 +16,6 @@ const ONE: felt252 = 18446744073709551616; // 2 ** 64
 const ONE_u128: u128 = 18446744073709551616_u128; // 2 ** 64
 const HALF: felt252 = 9223372036854775808; // 2 ** 63
 const HALF_u128: u128 = 9223372036854775808_u128; // 2 ** 63
-const WIDE_SHIFT_u128: u128 = 18446744073709551616_u128; // 2 ** 64
 const MAX_u128: u128 = 340282366920938463463374607431768211455_u128; // 2 ** 128 - 1
 
 // STRUCTS
@@ -54,6 +54,9 @@ trait Fixed {
     fn tan(self: FixedType) -> FixedType;
 
     // Hyperbolic
+    fn acosh(self: FixedType) -> FixedType;
+    fn asinh(self: FixedType) -> FixedType;
+    fn atanh(self: FixedType) -> FixedType;
     fn cosh(self: FixedType) -> FixedType;
     fn sinh(self: FixedType) -> FixedType;
     fn tanh(self: FixedType) -> FixedType;
@@ -87,12 +90,24 @@ impl FixedImpl of Fixed {
         return trig::acos(self);
     }
 
+    fn acosh(self: FixedType) -> FixedType {
+        return hyp::acosh(self);
+    }
+
     fn asin(self: FixedType) -> FixedType {
         return trig::asin(self);
     }
 
+    fn asinh(self: FixedType) -> FixedType {
+        return hyp::asinh(self);
+    }
+
     fn atan(self: FixedType) -> FixedType {
         return trig::atan(self);
+    }
+
+    fn atanh(self: FixedType) -> FixedType {
+        return hyp::atanh(self);
     }
 
     fn ceil(self: FixedType) -> FixedType {
@@ -170,6 +185,13 @@ impl FixedImpl of Fixed {
 
     fn tanh(self: FixedType) -> FixedType {
         return hyp::tanh(self);
+    }
+}
+
+impl FixedPrint of PrintTrait<FixedType> {
+    fn print(self: FixedType) {
+        self.sign.print();
+        self.mag.into().print();
     }
 }
 

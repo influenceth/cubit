@@ -1,6 +1,8 @@
 use option::OptionTrait;
 use traits::Into;
 
+use cubit::test::helpers::assert_precise;
+
 use cubit::core::ONE;
 use cubit::core::ONE_u128;
 use cubit::core::HALF;
@@ -78,7 +80,7 @@ fn test_asin() {
 #[available_gas(10000000)]
 fn test_atan() {
     let a = Fixed::new(2_u128 * ONE_u128, false);
-    assert(a.atan().into() == 20423289054736244917, 'invalid two');
+    assert_precise(a.atan(), 20423289048683266000, 'invalid two');
 }
 
 #[test]
@@ -145,14 +147,14 @@ fn test_ln() {
 #[available_gas(10000000)]
 fn test_log2() {
     let a = Fixed::from_unscaled_felt(32);
-    assert(a.log2().into() == 92233719587853510925, 'invalid log2'); // 4.99999995767848
+    assert_precise(a.log2(), 5 * ONE, 'invalid log2 32');
 }
 
 #[test]
 #[available_gas(10000000)]
 fn test_log10() {
     let a = Fixed::from_unscaled_felt(100);
-    assert(a.log10().into() == 36893487914963460128, 'invalid log10'); // 1.9999999873985543
+    assert_precise(a.log10(), 2 * ONE, 'invalid log10');
 }
 
 #[test]
@@ -321,7 +323,7 @@ fn test_cos() {
 #[available_gas(10000000)]
 fn test_sin() {
     let a = Fixed::new(HALF_PI_u128, false);
-    assert(a.sin().into() == 18446744073598439112, 'invalid half pi'); // 0.9999999999939766
+    assert_precise(a.sin(), ONE, 'invalid half pi');
 }
 
 #[test]
@@ -335,19 +337,40 @@ fn test_tan() {
 #[available_gas(10000000)]
 fn test_cosh() {
     let a = Fixed::new_unscaled(2_u128, false);
-    assert(a.cosh().into() == 69400261067392811864, 'invalid two'); // 3.762195691016423
+    assert_precise(a.cosh(), 69400261068632590000, 'invalid two'); // 3.762195691016423
 }
 
 #[test]
 #[available_gas(10000000)]
 fn test_sinh() {
     let a = Fixed::new_unscaled(2_u128, false);
-    assert(a.sinh().into() == 66903765733337761105, 'invalid two'); // 3.6268604077773023
+    assert_precise(a.sinh(), 66903765734623805000, 'invalid two'); // 3.6268604077773023
 }
 
 #[test]
 #[available_gas(10000000)]
 fn test_tanh() {
     let a = Fixed::new_unscaled(2_u128, false);
-    assert(a.tanh().into() == 17783170049631984588, 'invalid two'); // 0.9640275800745076
+    assert_precise(a.tanh(), 17783170049656136000, 'invalid two'); // 0.9640275800745076
+}
+
+#[test]
+#[available_gas(10000000)]
+fn test_acosh() {
+    let a = Fixed::new(69400261067392811864_u128, false); // 3.762195691016423
+    assert_precise(a.acosh(), 2 * ONE, 'invalid two');
+}
+
+#[test]
+#[available_gas(10000000)]
+fn test_asinh() {
+    let a = Fixed::new(66903765733337761105_u128, false); // 3.6268604077773023
+    assert_precise(a.asinh(), 2 * ONE, 'invalid two');
+}
+
+#[test]
+#[available_gas(10000000)]
+fn test_atanh() {
+    let a = Fixed::new(16602069666338597000, false); // 0.9
+    assert_precise(a.atanh(), 27157656144668970000, 'invalid 0.9'); // 1.4722194895832204
 }

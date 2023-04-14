@@ -119,7 +119,7 @@ fn sin(a: FixedType) -> FixedType {
     }
 
     let acc = FixedType { mag: ONE_u128, sign: false };
-    let loop_res = a2 * _sin_loop(a2, 6_u128, acc);
+    let loop_res = a2 * _sin_loop(a2, 7_u128, acc);
     let res_sign = a.sign ^ partial_sign;
     return FixedType { mag: loop_res.mag, sign: res_sign };
 }

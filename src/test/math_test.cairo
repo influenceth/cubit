@@ -187,7 +187,7 @@ fn test_exp2() {
     assert_precise(math::exp2(a), 4611686018427387904, 'invalid exp2 of -2'); // 0.25
 
     let a = Fixed::new(27670116110564327424_u128, true); // -1.5
-    assert(math::exp2(a).into() == 6521908912666391000, 'invalid exp2 of 1.5'); // 0.35355339059327373
+    assert_precise(math::exp2(a), 6521908912666391000, 'invalid exp2 of -1.5'); // 0.35355339059327373
 }
 
 #[test]
@@ -220,7 +220,7 @@ fn test_log2() {
 #[available_gas(10000000)]
 fn test_log10() {
     let a = Fixed::from_unscaled_felt(100);
-    assert_precise(math::log10(a), 2 * ONE, 'invalid log10'); // 1.9999999873985543
+    assert_precise(math::log10(a), 2 * ONE, 'invalid log10');
 
     let a = Fixed::from_unscaled_felt(1);
     assert(math::log10(a).into() == 0, 'invalid log10');
@@ -321,7 +321,7 @@ fn test_div() {
     let a = Fixed::from_unscaled_felt(10);
     let b = Fixed::from_unscaled_felt(5);
     let c = math::div(a, b);
-    assert(c.into() == 36893488147419103230, 'invalid pos integer'); // 2
+    assert(c.into() == 2 * ONE, 'invalid pos integer'); // 2
 
     let a = Fixed::from_unscaled_felt(-2);
     let b = Fixed::from_unscaled_felt(5);
@@ -331,7 +331,7 @@ fn test_div() {
     let a = Fixed::from_unscaled_felt(-1000);
     let b = Fixed::from_unscaled_felt(12500);
     let c = math::div(a, b);
-    assert(c.into() == -1475739525896764000, 'invalid neg decimal'); // 0.08
+    assert(c.into() == -1475739525896764129, 'invalid neg decimal'); // 0.08
 
     let a = Fixed::from_unscaled_felt(-10);
     let b = Fixed::from_unscaled_felt(123456789);
