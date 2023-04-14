@@ -8,6 +8,6 @@ fmt: FORCE
 	scarb fmt
 
 test: FORCE
-	cairo-test -p .
+	cairo-test .
 
 FORCE:
