@@ -4,16 +4,16 @@ use traits::Into;
 
 use cubit::test::helpers::assert_precise;
 
-use cubit::core::ONE;
-use cubit::core::ONE_u128;
-use cubit::core::Fixed;
-use cubit::core::FixedInto;
-use cubit::core::FixedPartialEq;
-use cubit::core::FixedPrint;
+use cubit::types::fixed::ONE;
+use cubit::types::fixed::ONE_u128;
+use cubit::types::fixed::Fixed;
+use cubit::types::fixed::FixedInto;
+use cubit::types::fixed::FixedPartialEq;
+use cubit::types::fixed::FixedPrint;
 
-use cubit::trig::HALF_PI_u128;
-use cubit::trig::PI_u128;
-use cubit::trig;
+use cubit::math::trig::HALF_PI_u128;
+use cubit::math::trig::PI_u128;
+use cubit::math::trig;
 
 
 #[test]

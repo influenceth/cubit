@@ -4,3 +4,4 @@ mod core_test;
 mod hyp_test;
 mod math_test;
 mod trig_test;
+mod vec_test;

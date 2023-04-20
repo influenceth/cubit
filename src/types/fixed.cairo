@@ -4,9 +4,10 @@ use result::ResultTrait;
 use result::ResultTraitImpl;
 use traits::Into;
 
-use cubit::hyp;
-use cubit::math;
-use cubit::trig;
+use cubit::math::hyp;
+use cubit::math::core;
+use cubit::math::trig;
+
 
 // CONSTANTS
 
@@ -83,7 +84,7 @@ impl FixedImpl of Fixed {
     }
 
     fn abs(self: FixedType) -> FixedType {
-        return math::abs(self);
+        return core::abs(self);
     }
 
     fn acos(self: FixedType) -> FixedType {
@@ -111,7 +112,7 @@ impl FixedImpl of Fixed {
     }
 
     fn ceil(self: FixedType) -> FixedType {
-        return math::ceil(self);
+        return core::ceil(self);
     }
 
     fn cos(self: FixedType) -> FixedType {
@@ -123,46 +124,46 @@ impl FixedImpl of Fixed {
     }
 
     fn floor(self: FixedType) -> FixedType {
-        return math::floor(self);
+        return core::floor(self);
     }
 
     // Calculates the natural exponent of x: e^x
     fn exp(self: FixedType) -> FixedType {
-        return math::exp(self);
+        return core::exp(self);
     }
 
     // Calculates the binary exponent of x: 2^x
     fn exp2(self: FixedType) -> FixedType {
-        return math::exp2(self);
+        return core::exp2(self);
     }
 
     // Calculates the natural logarithm of x: ln(x)
     // self must be greater than zero
     fn ln(self: FixedType) -> FixedType {
-        return math::ln(self);
+        return core::ln(self);
     }
 
     // Calculates the binary logarithm of x: log2(x)
     // self must be greather than zero
     fn log2(self: FixedType) -> FixedType {
-        return math::log2(self);
+        return core::log2(self);
     }
 
     // Calculates the base 10 log of x: log10(x)
     // self must be greater than zero
     fn log10(self: FixedType) -> FixedType {
-        return math::log10(self);
+        return core::log10(self);
     }
 
     // Calclates the value of x^y and checks for overflow before returning
     // self is a fixed point value
     // b is a fixed point value
     fn pow(self: FixedType, b: FixedType) -> FixedType {
-        return math::pow(self, b);
+        return core::pow(self, b);
     }
 
     fn round(self: FixedType) -> FixedType {
-        return math::round(self);
+        return core::round(self);
     }
 
     fn sin(self: FixedType) -> FixedType {
@@ -176,7 +177,7 @@ impl FixedImpl of Fixed {
     // Calculates the square root of a fixed point value
     // x must be positive
     fn sqrt(self: FixedType) -> FixedType {
-        return math::sqrt(self);
+        return core::sqrt(self);
     }
 
     fn tan(self: FixedType) -> FixedType {
@@ -210,18 +211,18 @@ impl FixedInto of Into::<FixedType, felt252> {
 impl FixedPartialEq of PartialEq::<FixedType> {
     #[inline(always)]
     fn eq(a: FixedType, b: FixedType) -> bool {
-        return math::eq(a, b);
+        return core::eq(a, b);
     }
 
     #[inline(always)]
     fn ne(a: FixedType, b: FixedType) -> bool {
-        return math::ne(a, b);
+        return core::ne(a, b);
     }
 }
 
 impl FixedAdd of Add::<FixedType> {
     fn add(a: FixedType, b: FixedType) -> FixedType {
-        return math::add(a, b);
+        return core::add(a, b);
     }
 }
 
@@ -234,7 +235,7 @@ impl FixedAddEq of AddEq::<FixedType> {
 
 impl FixedSub of Sub::<FixedType> {
     fn sub(a: FixedType, b: FixedType) -> FixedType {
-        return math::sub(a, b);
+        return core::sub(a, b);
     }
 }
 
@@ -247,7 +248,7 @@ impl FixedSubEq of SubEq::<FixedType> {
 
 impl FixedMul of Mul::<FixedType> {
     fn mul(a: FixedType, b: FixedType) -> FixedType {
-        return math::mul(a, b);
+        return core::mul(a, b);
     }
 }
 
@@ -260,7 +261,7 @@ impl FixedMulEq of MulEq::<FixedType> {
 
 impl FixedDiv of Div::<FixedType> {
     fn div(a: FixedType, b: FixedType) -> FixedType {
-        return math::div(a, b);
+        return core::div(a, b);
     }
 }
 
@@ -274,29 +275,29 @@ impl FixedDivEq of DivEq::<FixedType> {
 impl FixedPartialOrd of PartialOrd::<FixedType> {
     #[inline(always)]
     fn ge(a: FixedType, b: FixedType) -> bool {
-        return math::ge(a, b);
+        return core::ge(a, b);
     }
 
     #[inline(always)]
     fn gt(a: FixedType, b: FixedType) -> bool {
-        return math::gt(a, b);
+        return core::gt(a, b);
     }
 
     #[inline(always)]
     fn le(a: FixedType, b: FixedType) -> bool {
-        return math::le(a, b);
+        return core::le(a, b);
     }
 
     #[inline(always)]
     fn lt(a: FixedType, b: FixedType) -> bool {
-        return math::lt(a, b);
+        return core::lt(a, b);
     }
 }
 
 impl FixedNeg of Neg::<FixedType> {
     #[inline(always)]
     fn neg(a: FixedType) -> FixedType {
-        return math::neg(a);
+        return core::neg(a);
     }
 }
 

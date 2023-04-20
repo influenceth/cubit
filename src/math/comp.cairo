@@ -1,10 +1,10 @@
 use option::OptionTrait;
 use traits::Into;
 
-use cubit::core::Fixed;
-use cubit::core::FixedType;
-use cubit::core::FixedImpl;
-use cubit::core::FixedPartialOrd;
+use cubit::types::fixed::Fixed;
+use cubit::types::fixed::FixedType;
+use cubit::types::fixed::FixedImpl;
+use cubit::types::fixed::FixedPartialOrd;
 
 
 // PUBLIC

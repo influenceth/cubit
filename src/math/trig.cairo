@@ -4,15 +4,15 @@ use gas::withdraw_gas;
 use option::OptionTrait;
 use traits::Into;
 
-use cubit::core::ONE_u128;
-use cubit::core::Fixed;
-use cubit::core::FixedType;
-use cubit::core::FixedImpl;
-use cubit::core::FixedInto;
-use cubit::core::FixedAdd;
-use cubit::core::FixedSub;
-use cubit::core::FixedMul;
-use cubit::core::FixedDiv;
+use cubit::types::fixed::ONE_u128;
+use cubit::types::fixed::Fixed;
+use cubit::types::fixed::FixedType;
+use cubit::types::fixed::FixedImpl;
+use cubit::types::fixed::FixedInto;
+use cubit::types::fixed::FixedAdd;
+use cubit::types::fixed::FixedSub;
+use cubit::types::fixed::FixedMul;
+use cubit::types::fixed::FixedDiv;
 
 
 // CONSTANTS

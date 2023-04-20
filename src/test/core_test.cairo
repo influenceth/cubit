@@ -3,25 +3,25 @@ use traits::Into;
 
 use cubit::test::helpers::assert_precise;
 
-use cubit::core::ONE;
-use cubit::core::ONE_u128;
-use cubit::core::HALF;
-use cubit::core::_felt_abs;
-use cubit::core::_felt_sign;
-use cubit::core::Fixed;
-use cubit::core::FixedInto;
-use cubit::core::FixedPartialEq;
-use cubit::core::FixedPartialOrd;
-use cubit::core::FixedAdd;
-use cubit::core::FixedAddEq;
-use cubit::core::FixedSub;
-use cubit::core::FixedSubEq;
-use cubit::core::FixedMul;
-use cubit::core::FixedMulEq;
-use cubit::core::FixedDiv;
+use cubit::types::fixed::ONE;
+use cubit::types::fixed::ONE_u128;
+use cubit::types::fixed::HALF;
+use cubit::types::fixed::_felt_abs;
+use cubit::types::fixed::_felt_sign;
+use cubit::types::fixed::Fixed;
+use cubit::types::fixed::FixedInto;
+use cubit::types::fixed::FixedPartialEq;
+use cubit::types::fixed::FixedPartialOrd;
+use cubit::types::fixed::FixedAdd;
+use cubit::types::fixed::FixedAddEq;
+use cubit::types::fixed::FixedSub;
+use cubit::types::fixed::FixedSubEq;
+use cubit::types::fixed::FixedMul;
+use cubit::types::fixed::FixedMulEq;
+use cubit::types::fixed::FixedDiv;
 
-use cubit::trig::HALF_PI_u128;
-use cubit::trig::PI_u128;
+use cubit::math::trig::HALF_PI_u128;
+use cubit::math::trig::PI_u128;
 
 
 #[test]
