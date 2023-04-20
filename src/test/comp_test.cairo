@@ -1,11 +1,11 @@
 use option::OptionTrait;
 use traits::Into;
 
-use cubit::core::Fixed;
-use cubit::core::FixedInto;
-use cubit::core::FixedPartialEq;
-use cubit::comp::max;
-use cubit::comp::min;
+use cubit::types::fixed::Fixed;
+use cubit::types::fixed::FixedInto;
+use cubit::types::fixed::FixedPartialEq;
+use cubit::math::comp::max;
+use cubit::math::comp::min;
 
 
 #[test]

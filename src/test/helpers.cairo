@@ -4,12 +4,12 @@ use debug::PrintTrait;
 use gas::withdraw_gas;
 use traits::Into;
 
-use cubit::core::Fixed;
-use cubit::core::FixedInto;
-use cubit::core::FixedType;
-use cubit::core::FixedSub;
-use cubit::core::FixedPartialEq;
-use cubit::core::FixedPrint;
+use cubit::types::fixed::Fixed;
+use cubit::types::fixed::FixedInto;
+use cubit::types::fixed::FixedType;
+use cubit::types::fixed::FixedSub;
+use cubit::types::fixed::FixedPartialEq;
+use cubit::types::fixed::FixedPrint;
 
 const PRECISION: u128 = 1844674407370_u128; // 1e-7
 
