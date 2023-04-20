@@ -1,8 +1,7 @@
-use debug::PrintTrait;
+use cubit::test::helpers::assert_precise;
 
 use cubit::types::fixed::Fixed;
 use cubit::types::vec3::Vec3;
-use cubit::types::vec3::Vec3Print;
 
 
 #[test]
@@ -55,10 +54,40 @@ fn test_sub() {
 
 #[test]
 fn test_cross() {
-    let a = Vec3::new(Fixed::new(1_u128, false), Fixed::new(1_u128, false), Fixed::new(1_u128, false));
-    let b = Vec3::new(Fixed::new(4_u128, false), Fixed::new(4_u128, false), Fixed::new(4_u128, false));
+    let a = Vec3::new(Fixed::new_unscaled(1_u128, false), Fixed::new_unscaled(2_u128, false), Fixed::new_unscaled(3_u128, false));
+    let b = Vec3::new(Fixed::new_unscaled(4_u128, false), Fixed::new_unscaled(5_u128, false), Fixed::new_unscaled(6_u128, false));
     let c = a.cross(b);
-    assert(c.x == Fixed::new(0_u128, false), 'invalid cross');
-    assert(c.y == Fixed::new(0_u128, false), 'invalid cross');
-    assert(c.z == Fixed::new(0_u128, false), 'invalid cross');
+    assert(c.x == Fixed::new_unscaled(3_u128, true), 'invalid cross1');
+    assert(c.y == Fixed::new_unscaled(6_u128, false), 'invalid cross2');
+    assert(c.z == Fixed::new_unscaled(3_u128, true), 'invalid cross3');
+}
+
+#[test]
+fn test_norm() {
+    let a = Vec3::new(Fixed::new_unscaled(1_u128, false), Fixed::new_unscaled(2_u128, false), Fixed::new_unscaled(3_u128, false));
+    let b = a.norm();
+    assert_precise(b, 69021396225323770000, 'invalid norm'); // sqrt(14)
+}
+
+#[test]
+fn test_abs() {
+    let a = Vec3::new(Fixed::new_unscaled(1_u128, false), Fixed::new_unscaled(2_u128, true), Fixed::new_unscaled(3_u128, true));
+    let b = a.abs();
+    assert(b.x == Fixed::new_unscaled(1_u128, false), 'invalid abs');
+    assert(b.y == Fixed::new_unscaled(2_u128, false), 'invalid abs');
+    assert(b.z == Fixed::new_unscaled(3_u128, false), 'invalid abs');
+}
+
+#[test]
+fn test_floor() {
+    let a = Vec3::new(
+        Fixed::new(27670116110564327000_u128, false), // 1.5
+        Fixed::new(59029581035870570000_u128, true), // -3.2
+        Fixed::new(0_u128, false)
+    );
+
+    let b = a.floor();
+    assert(b.x == Fixed::new_unscaled(1_u128, false), 'invalid floor');
+    assert(b.y == Fixed::new_unscaled(4_u128, true), 'invalid floor');
+    assert(b.z == Fixed::new(0_u128, false), 'invalid floor');
 }
