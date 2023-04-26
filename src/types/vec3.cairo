@@ -89,6 +89,12 @@ impl Vec3Mul of Mul::<Vec3Type> {
     }
 }
 
+impl Vec3Rem of Rem::<Vec3Type> {
+    fn rem(a: Vec3Type, b: Vec3Type) -> Vec3Type {
+        return rem(a, b);
+    }
+}
+
 impl Vec3Sub of Sub::<Vec3Type> {
     fn sub(lhs: Vec3Type, rhs: Vec3Type) -> Vec3Type {
         return sub(lhs, rhs);
@@ -151,6 +157,14 @@ fn mul(a: Vec3Type, b: Vec3Type) -> Vec3Type {
 
 fn norm(a: Vec3Type) -> FixedType {
     return dot(a, a).sqrt();
+}
+
+fn rem(a: Vec3Type, b: Vec3Type) -> Vec3Type {
+    return Vec3Type {
+        x: a.x % b.x,
+        y: a.y % b.y,
+        z: a.z % b.z
+    };
 }
 
 fn sub(a: Vec3Type, b: Vec3Type) -> Vec3Type {
