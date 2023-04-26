@@ -10,6 +10,7 @@ use result::ResultTrait;
 use result::ResultTraitImpl;
 use traits::Into;
 
+use cubit::math::core;
 use cubit::math::hyp;
 use cubit::math::trig;
 
@@ -308,8 +309,8 @@ impl FixedNeg of Neg::<FixedType> {
 
 impl FixedRem of Rem::<FixedType> {
     #[inline(always)]
-    fn rem(a: FixedType, b: FixedType) -> FixedType {
-        return rem(a, b);
+    fn rem(lhs: FixedType, rhs: FixedType) -> FixedType {
+        return rem(lhs, rhs);
     }
 }
 

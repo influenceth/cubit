@@ -90,8 +90,8 @@ impl Vec3Mul of Mul::<Vec3Type> {
 }
 
 impl Vec3Rem of Rem::<Vec3Type> {
-    fn rem(a: Vec3Type, b: Vec3Type) -> Vec3Type {
-        return rem(a, b);
+    fn rem(lhs: Vec3Type, rhs: Vec3Type) -> Vec3Type {
+        return rem(lhs, rhs);
     }
 }
 
