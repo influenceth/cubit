@@ -210,19 +210,19 @@ impl FixedInto of Into::<FixedType, felt252> {
 
 impl FixedPartialEq of PartialEq::<FixedType> {
     #[inline(always)]
-    fn eq(a: FixedType, b: FixedType) -> bool {
-        return core::eq(a, b);
+    fn eq(lhs: FixedType, rhs: FixedType) -> bool {
+        return core::eq(lhs, rhs);
     }
 
     #[inline(always)]
-    fn ne(a: FixedType, b: FixedType) -> bool {
-        return core::ne(a, b);
+    fn ne(lhs: FixedType, rhs: FixedType) -> bool {
+        return core::ne(lhs, rhs);
     }
 }
 
 impl FixedAdd of Add::<FixedType> {
-    fn add(a: FixedType, b: FixedType) -> FixedType {
-        return core::add(a, b);
+    fn add(lhs: FixedType, rhs: FixedType) -> FixedType {
+        return core::add(lhs, rhs);
     }
 }
 
@@ -234,8 +234,8 @@ impl FixedAddEq of AddEq::<FixedType> {
 }
 
 impl FixedSub of Sub::<FixedType> {
-    fn sub(a: FixedType, b: FixedType) -> FixedType {
-        return core::sub(a, b);
+    fn sub(lhs: FixedType, rhs: FixedType) -> FixedType {
+        return core::sub(lhs, rhs);
     }
 }
 
@@ -247,8 +247,8 @@ impl FixedSubEq of SubEq::<FixedType> {
 }
 
 impl FixedMul of Mul::<FixedType> {
-    fn mul(a: FixedType, b: FixedType) -> FixedType {
-        return core::mul(a, b);
+    fn mul(lhs: FixedType, rhs: FixedType) -> FixedType {
+        return core::mul(lhs, rhs);
     }
 }
 
@@ -260,8 +260,8 @@ impl FixedMulEq of MulEq::<FixedType> {
 }
 
 impl FixedDiv of Div::<FixedType> {
-    fn div(a: FixedType, b: FixedType) -> FixedType {
-        return core::div(a, b);
+    fn div(lhs: FixedType, rhs: FixedType) -> FixedType {
+        return core::div(lhs, rhs);
     }
 }
 
@@ -274,23 +274,23 @@ impl FixedDivEq of DivEq::<FixedType> {
 
 impl FixedPartialOrd of PartialOrd::<FixedType> {
     #[inline(always)]
-    fn ge(a: FixedType, b: FixedType) -> bool {
-        return core::ge(a, b);
+    fn ge(lhs: FixedType, rhs: FixedType) -> bool {
+        return core::ge(lhs, rhs);
     }
 
     #[inline(always)]
-    fn gt(a: FixedType, b: FixedType) -> bool {
-        return core::gt(a, b);
+    fn gt(lhs: FixedType, rhs: FixedType) -> bool {
+        return core::gt(lhs, rhs);
     }
 
     #[inline(always)]
-    fn le(a: FixedType, b: FixedType) -> bool {
-        return core::le(a, b);
+    fn le(lhs: FixedType, rhs: FixedType) -> bool {
+        return core::le(lhs, rhs);
     }
 
     #[inline(always)]
-    fn lt(a: FixedType, b: FixedType) -> bool {
-        return core::lt(a, b);
+    fn lt(lhs: FixedType, rhs: FixedType) -> bool {
+        return core::lt(lhs, rhs);
     }
 }
 

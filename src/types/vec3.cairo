@@ -15,7 +15,7 @@ struct Vec3Type {
 trait Vec3 {
     // Constructors
     fn new(x: FixedType, y: FixedType, z: FixedType) -> Vec3Type;
-    fn splat(self: FixedType) -> Vec3Type;
+    fn splat(v: FixedType) -> Vec3Type;
 
     // Math
     fn abs(self: Vec3Type) -> Vec3Type;
@@ -72,26 +72,26 @@ impl Vec3Print of PrintTrait<Vec3Type> {
 }
 
 impl Vec3Add of Add::<Vec3Type> {
-    fn add(a: Vec3Type, b: Vec3Type) -> Vec3Type {
-        return add(a, b);
+    fn add(lhs: Vec3Type, rhs: Vec3Type) -> Vec3Type {
+        return add(lhs, rhs);
     }
 }
 
 impl Vec3Div of Div::<Vec3Type> {
-    fn div(a: Vec3Type, b: Vec3Type) -> Vec3Type {
-        return div(a, b);
+    fn div(lhs: Vec3Type, rhs: Vec3Type) -> Vec3Type {
+        return div(lhs, rhs);
     }
 }
 
 impl Vec3Mul of Mul::<Vec3Type> {
-    fn mul(a: Vec3Type, b: Vec3Type) -> Vec3Type {
-        return mul(a, b);
+    fn mul(lhs: Vec3Type, rhs: Vec3Type) -> Vec3Type {
+        return mul(lhs, rhs);
     }
 }
 
 impl Vec3Sub of Sub::<Vec3Type> {
-    fn sub(a: Vec3Type, b: Vec3Type) -> Vec3Type {
-        return sub(a, b);
+    fn sub(lhs: Vec3Type, rhs: Vec3Type) -> Vec3Type {
+        return sub(lhs, rhs);
     }
 }
 
@@ -113,11 +113,11 @@ fn add(a: Vec3Type, b: Vec3Type) -> Vec3Type {
     };
 }
 
-fn cross(self: Vec3Type, rhs: Vec3Type) -> Vec3Type {
+fn cross(a: Vec3Type, b: Vec3Type) -> Vec3Type {
     return Vec3Type {
-        x: (self.y * rhs.z) - (self.z * rhs.y),
-        y: (self.z * rhs.x) - (self.x * rhs.z),
-        z: (self.x * rhs.y) - (self.y * rhs.x)
+        x: (a.y * b.z) - (a.z * b.y),
+        y: (a.z * b.x) - (a.x * b.z),
+        z: (a.x * b.y) - (a.y * b.x)
     };
 }
 

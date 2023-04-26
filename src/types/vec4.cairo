@@ -16,7 +16,7 @@ struct Vec4Type {
 trait Vec4 {
     // Constructors
     fn new(x: FixedType, y: FixedType, z: FixedType, w: FixedType) -> Vec4Type;
-    fn splat(self: FixedType) -> Vec4Type;
+    fn splat(v: FixedType) -> Vec4Type;
 
     // Math
     fn abs(self: Vec4Type) -> Vec4Type;
@@ -68,26 +68,26 @@ impl Vec4Print of PrintTrait<Vec4Type> {
 }
 
 impl Vec4Add of Add::<Vec4Type> {
-    fn add(a: Vec4Type, b: Vec4Type) -> Vec4Type {
-        return add(a, b);
+    fn add(lhs: Vec4Type, rhs: Vec4Type) -> Vec4Type {
+        return add(lhs, rhs);
     }
 }
 
 impl Vec4Div of Div::<Vec4Type> {
-    fn div(a: Vec4Type, b: Vec4Type) -> Vec4Type {
-        return div(a, b);
+    fn div(lhs: Vec4Type, rhs: Vec4Type) -> Vec4Type {
+        return div(lhs, rhs);
     }
 }
 
 impl Vec4Mul of Mul::<Vec4Type> {
-    fn mul(a: Vec4Type, b: Vec4Type) -> Vec4Type {
-        return mul(a, b);
+    fn mul(lhs: Vec4Type, rhs: Vec4Type) -> Vec4Type {
+        return mul(lhs, rhs);
     }
 }
 
 impl Vec4Sub of Sub::<Vec4Type> {
-    fn sub(a: Vec4Type, b: Vec4Type) -> Vec4Type {
-        return sub(a, b);
+    fn sub(lhs: Vec4Type, rhs: Vec4Type) -> Vec4Type {
+        return sub(lhs, rhs);
     }
 }
 
