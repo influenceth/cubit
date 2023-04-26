@@ -246,7 +246,7 @@ fn pow(a: FixedType, b: FixedType) -> FixedType {
 }
 
 fn rem(a: FixedType, b: FixedType) -> FixedType {
-    return b - (a * floor(a / b));
+    return a - floor(a / b) * b;
 }
 
 fn round(a: FixedType) -> FixedType {

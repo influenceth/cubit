@@ -17,6 +17,7 @@ use cubit::types::fixed::FixedSubEq;
 use cubit::types::fixed::FixedMul;
 use cubit::types::fixed::FixedMulEq;
 use cubit::types::fixed::FixedDiv;
+use cubit::types::fixed::FixedRem;
 
 use cubit::math::core;
 
@@ -451,4 +452,15 @@ fn test_gt() {
     assert(core::gt(c, a) == false, 'c > a');
     assert(core::gt(c, b) == false, 'c > b');
     assert(core::gt(c, c) == false, 'c > c');
+}
+
+#[test]
+fn test_rem() {
+    let a = Fixed::new_unscaled(10_u128, false);
+    let b = Fixed::new_unscaled(3_u128, false);
+    assert(core::rem(a, b).into() == 1 * ONE, 'invalid remainder');
+
+    let a = Fixed::new_unscaled(10_u128, false);
+    let b = Fixed::new_unscaled(3_u128, true);
+    assert(core::rem(a, b) == Fixed::new(2_u128 * ONE_u128, true), 'invalid remainder');
 }

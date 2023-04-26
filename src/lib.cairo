@@ -1,4 +1,4 @@
 mod math;
-mod noise;
+mod procgen;
 mod test;
 mod types;
