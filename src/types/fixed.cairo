@@ -1,11 +1,17 @@
+use array::array_append;
+use array::array_new;
 use debug::PrintTrait;
+use gas::withdraw_gas;
+use integer::u256_safe_divmod;
+use integer::u256_as_non_zero;
+use integer::u256_from_felt252;
 use option::OptionTrait;
 use result::ResultTrait;
 use result::ResultTraitImpl;
 use traits::Into;
 
-use cubit::math::hyp;
 use cubit::math::core;
+use cubit::math::hyp;
 use cubit::math::trig;
 
 
@@ -203,7 +209,7 @@ impl FixedInto of Into::<FixedType, felt252> {
         if (self.sign == true) {
             return mag_felt * -1;
         } else {
-            return mag_felt;
+            return mag_felt * 1;
         }
     }
 }
@@ -301,6 +307,14 @@ impl FixedNeg of Neg::<FixedType> {
     }
 }
 
+impl FixedRem of Rem::<FixedType> {
+    #[inline(always)]
+    fn rem(lhs: FixedType, rhs: FixedType) -> FixedType {
+        return core::rem(lhs, rhs);
+    }
+}
+
+
 // INTERNAL
 
 // Returns the sign of a signed `felt252` as with signed magnitude representation
@@ -317,11 +331,6 @@ fn _felt_abs(a: felt252) -> felt252 {
     if (a_sign == true) {
         return a * -1;
     } else {
-        return a;
+        return a * 1;
     }
-}
-
-// Ignores sign and always returns false
-fn _split_unsigned(a: FixedType) -> (u128, u128) {
-    return integer::u128_safe_divmod(a.mag, integer::u128_as_non_zero(ONE_u128));
 }

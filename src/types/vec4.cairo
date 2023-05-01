@@ -85,6 +85,12 @@ impl Vec4Mul of Mul::<Vec4Type> {
     }
 }
 
+impl Vec4Rem of Rem::<Vec4Type> {
+    fn rem(lhs: Vec4Type, rhs: Vec4Type) -> Vec4Type {
+        return rem(lhs, rhs);
+    }
+}
+
 impl Vec4Sub of Sub::<Vec4Type> {
     fn sub(lhs: Vec4Type, rhs: Vec4Type) -> Vec4Type {
         return sub(lhs, rhs);
@@ -144,6 +150,15 @@ fn mul(a: Vec4Type, b: Vec4Type) -> Vec4Type {
 
 fn norm(a: Vec4Type) -> FixedType {
     return a.dot(a).sqrt();
+}
+
+fn rem(a: Vec4Type, b: Vec4Type) -> Vec4Type {
+    return Vec4Type {
+        x: a.x % b.x,
+        y: a.y % b.y,
+        z: a.z % b.z,
+        w: a.w % b.w
+    };
 }
 
 fn sub(a: Vec4Type, b: Vec4Type) -> Vec4Type {

@@ -29,13 +29,11 @@ trait Vec3 {
 
 impl Vec3Impl of Vec3 {
     // Creates a new vector.
-    #[inline(always)]
     fn new(x: FixedType, y: FixedType, z: FixedType) -> Vec3Type {
         return Vec3Type { x: x, y: y, z: z };
     }
 
     // Creates a vector with all elements set to `v`.
-    #[inline(always)]
     fn splat(v: FixedType) -> Vec3Type {
         return Vec3Type { x: v, y: v, z: v };
     }
@@ -86,6 +84,12 @@ impl Vec3Div of Div::<Vec3Type> {
 impl Vec3Mul of Mul::<Vec3Type> {
     fn mul(lhs: Vec3Type, rhs: Vec3Type) -> Vec3Type {
         return mul(lhs, rhs);
+    }
+}
+
+impl Vec3Rem of Rem::<Vec3Type> {
+    fn rem(lhs: Vec3Type, rhs: Vec3Type) -> Vec3Type {
+        return rem(lhs, rhs);
     }
 }
 
@@ -151,6 +155,14 @@ fn mul(a: Vec3Type, b: Vec3Type) -> Vec3Type {
 
 fn norm(a: Vec3Type) -> FixedType {
     return dot(a, a).sqrt();
+}
+
+fn rem(a: Vec3Type, b: Vec3Type) -> Vec3Type {
+    return Vec3Type {
+        x: a.x % b.x,
+        y: a.y % b.y,
+        z: a.z % b.z
+    };
 }
 
 fn sub(a: Vec3Type, b: Vec3Type) -> Vec3Type {

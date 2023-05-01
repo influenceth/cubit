@@ -1,6 +1,6 @@
 use array::array_append;
 use array::array_new;
-use gas::withdraw_gas;
+use gas::withdraw_gas_all;
 use option::OptionTrait;
 use traits::Into;
 
@@ -134,7 +134,7 @@ fn tan(a: FixedType) -> FixedType {
 
 // Helper function to calculate Taylor series for sin
 fn _sin_loop(a: FixedType, i: u128, acc: FixedType) -> FixedType   {
-    match withdraw_gas() {
+    match withdraw_gas_all(get_builtin_costs()) {
         Option::Some(_) => {},
         Option::None(_) => {
             let mut data = array_new::<felt252>();

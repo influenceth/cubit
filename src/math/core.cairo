@@ -245,6 +245,10 @@ fn pow(a: FixedType, b: FixedType) -> FixedType {
     return exp(b * ln(a));
 }
 
+fn rem(a: FixedType, b: FixedType) -> FixedType {
+    return a - floor(a / b) * b;
+}
+
 fn round(a: FixedType) -> FixedType {
     let (div_u128, rem_u128) = _split_unsigned(a);
 
