@@ -1,6 +1,6 @@
 use array::array_append;
 use array::array_new;
-use gas::withdraw_gas;
+use gas::withdraw_gas_all;
 use option::OptionTrait;
 use result::ResultTrait;
 use result::ResultTraitImpl;
@@ -147,7 +147,7 @@ fn ln(a: FixedType) -> FixedType {
 // Calculates the binary logarithm of x: log2(x)
 // self must be greather than zero
 fn log2(a: FixedType) -> FixedType {
-    match withdraw_gas() {
+    match withdraw_gas_all(get_builtin_costs()) {
         Option::Some(_) => {},
         Option::None(_) => {
             let mut data = array_new::<felt252>();
@@ -277,7 +277,7 @@ fn sub(a: FixedType, b: FixedType) -> FixedType {
 
 // Calculates the most significant bit
 fn _msb(a: u128) -> u128 {
-    match withdraw_gas() {
+    match withdraw_gas_all(get_builtin_costs()) {
         Option::Some(_) => {},
         Option::None(_) => {
             let mut data = array_new::<felt252>();
@@ -296,7 +296,7 @@ fn _msb(a: u128) -> u128 {
 // Calclates the value of x^y and checks for overflow before returning
 // TODO: swap to signed int when available
 fn _pow_int(a: FixedType, b: u128, sign: bool) -> FixedType {
-    match withdraw_gas() {
+    match withdraw_gas_all(get_builtin_costs()) {
         Option::Some(_) => {},
         Option::None(_) => {
             let mut data = array_new::<felt252>();

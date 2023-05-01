@@ -22,6 +22,7 @@ use cubit::types::fixed::FixedRem;
 use cubit::math::core;
 
 #[test]
+#[available_gas(10000000)]
 fn test_ceil() {
     let a = Fixed::from_felt(53495557813757699680); // 2.9
     assert(core::ceil(a).into() == 3 * ONE, 'invalid pos decimal');
@@ -46,6 +47,7 @@ fn test_ceil() {
 }
 
 #[test]
+#[available_gas(10000000)]
 fn test_floor() {
     let a = Fixed::from_felt(53495557813757699680); // 2.9
     assert(core::floor(a).into() == 2 * ONE, 'invalid pos decimal');
@@ -70,6 +72,7 @@ fn test_floor() {
 }
 
 #[test]
+#[available_gas(10000000)]
 fn test_round() {
     let a = Fixed::from_felt(53495557813757699680); // 2.9
     assert(core::round(a).into() == 3 * ONE, 'invalid pos decimal');
@@ -101,6 +104,7 @@ fn test_sqrt_fail() {
 }
 
 #[test]
+#[available_gas(10000000)]
 fn test_sqrt() {
     let a = Fixed::from_unscaled_felt(0);
     assert(core::sqrt(a).into() == 0, 'invalid zero root');
@@ -255,6 +259,7 @@ fn test_log10() {
 }
 
 #[test]
+#[available_gas(10000000)]
 fn test_eq() {
     let a = Fixed::from_unscaled_felt(42);
     let b = Fixed::from_unscaled_felt(42);
@@ -268,6 +273,7 @@ fn test_eq() {
 }
 
 #[test]
+#[available_gas(10000000)]
 fn test_ne() {
     let a = Fixed::from_unscaled_felt(42);
     let b = Fixed::from_unscaled_felt(42);
@@ -281,6 +287,7 @@ fn test_ne() {
 }
 
 #[test]
+#[available_gas(10000000)]
 fn test_add() {
     let a = Fixed::from_unscaled_felt(1);
     let b = Fixed::from_unscaled_felt(2);
@@ -288,6 +295,7 @@ fn test_add() {
 }
 
 #[test]
+#[available_gas(10000000)]
 fn test_sub() {
     let a = Fixed::from_unscaled_felt(5);
     let b = Fixed::from_unscaled_felt(2);
@@ -299,6 +307,7 @@ fn test_sub() {
 }
 
 #[test]
+#[available_gas(10000000)]
 fn test_mul_pos() {
     let a = Fixed::from_unscaled_felt(5);
     let b = Fixed::from_unscaled_felt(2);
@@ -327,6 +336,7 @@ fn test_mul_pos() {
 }
 
 #[test]
+#[available_gas(10000000)]
 fn test_mul_neg() {
     let a = Fixed::from_unscaled_felt(5);
     let b = Fixed::from_unscaled_felt(-2);
@@ -340,6 +350,7 @@ fn test_mul_neg() {
 }
 
 #[test]
+#[available_gas(10000000)]
 fn test_div() {
     let a = Fixed::from_unscaled_felt(10);
     let b = Fixed::from_felt(53495557813757699680); // 2.9
@@ -379,6 +390,7 @@ fn test_div() {
 }
 
 #[test]
+#[available_gas(10000000)]
 fn test_le() {
     let a = Fixed::from_unscaled_felt(1);
     let b = Fixed::from_unscaled_felt(0);
@@ -398,6 +410,7 @@ fn test_le() {
 }
 
 #[test]
+#[available_gas(10000000)]
 fn test_lt() {
     let a = Fixed::from_unscaled_felt(1);
     let b = Fixed::from_unscaled_felt(0);
@@ -417,6 +430,7 @@ fn test_lt() {
 }
 
 #[test]
+#[available_gas(10000000)]
 fn test_ge() {
     let a = Fixed::from_unscaled_felt(1);
     let b = Fixed::from_unscaled_felt(0);
@@ -436,6 +450,7 @@ fn test_ge() {
 }
 
 #[test]
+#[available_gas(10000000)]
 fn test_gt() {
     let a = Fixed::from_unscaled_felt(1);
     let b = Fixed::from_unscaled_felt(0);
@@ -455,6 +470,7 @@ fn test_gt() {
 }
 
 #[test]
+#[available_gas(10000000)]
 fn test_rem() {
     let a = Fixed::new_unscaled(10_u128, false);
     let b = Fixed::new_unscaled(3_u128, false);

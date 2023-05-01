@@ -1,6 +1,6 @@
 use array::array_append;
 use array::array_new;
-use gas::withdraw_gas;
+use gas::withdraw_gas_all;
 
 use cubit::math::comp::max;
 use cubit::math::comp::min;
@@ -14,7 +14,7 @@ use cubit::types::vec4::Vec4Type;
 
 
 fn permute(x: Vec4Type) -> Vec4Type {
-    match withdraw_gas() {
+    match withdraw_gas_all(get_builtin_costs()) {
         Option::Some(_) => {},
         Option::None(_) => {
             let mut data = array_new::<felt252>();
@@ -141,12 +141,14 @@ fn noise_octaves(v: Vec3Type, octaves: u128, persistence: FixedType) -> FixedTyp
     );
 }
 
+// TODO: get noise at percentile
+
 fn _noise3_octaves_loop(v: Vec3Type, p: FixedType, o: u128, s: FixedType, t: FixedType, n: FixedType) -> FixedType {
     if o == 0_u128 {
       return n / t;
     }
 
-    match withdraw_gas() {
+    match withdraw_gas_all(get_builtin_costs()) {
         Option::Some(_) => {},
         Option::None(_) => {
             let mut data = array_new::<felt252>();

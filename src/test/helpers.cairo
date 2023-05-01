@@ -1,7 +1,6 @@
 use array::array_append;
 use array::array_new;
 use debug::PrintTrait;
-use gas::withdraw_gas;
 use traits::Into;
 
 use cubit::types::fixed::Fixed;
@@ -26,15 +25,6 @@ fn assert_precise(
     let diff = (result - Fixed::from_felt(expected)).mag;
 
     if (diff > precision) {
-        match withdraw_gas() {
-            Option::Some(_) => {},
-            Option::None(_) => {
-                let mut data = array_new::<felt252>();
-                array_append::<felt252>(ref data, 'OOG');
-                panic(data);
-            },
-        }
-
         result.print();
         assert(diff <= precision, msg);
     }
