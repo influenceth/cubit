@@ -20,7 +20,6 @@ use cubit::types::fixed::FixedDiv;
 
 use cubit::math::core;
 
-
 #[test]
 fn test_ceil() {
     let a = Fixed::from_felt(53495557813757699680); // 2.9
@@ -109,13 +108,15 @@ fn test_sqrt() {
     assert(core::sqrt(a).into() == ONE, 'invalid one root');
 
     let a = Fixed::from_unscaled_felt(25);
-    assert_precise(core::sqrt(a), 5 * ONE, 'invalid 25 root'); // 5
+    assert_precise(core::sqrt(a), 5 * ONE, 'invalid 25 root', Option::None(())); // 5
 
     let a = Fixed::from_unscaled_felt(81);
-    assert_precise(core::sqrt(a), 9 * ONE, 'invalid 81 root'); // 5
+    assert_precise(core::sqrt(a), 9 * ONE, 'invalid 81 root', Option::None(())); // 9
 
     let a = Fixed::from_felt(1152921504606846976); // 0.0625
-    assert_precise(core::sqrt(a), 4611686018427387904, 'invalid decimal root'); // 0.25
+    assert_precise(
+        core::sqrt(a), 4611686018427387904, 'invalid decimal root', Option::None(())
+    ); // 0.25
 }
 
 #[test]
@@ -135,15 +136,21 @@ fn test_pow_int() {
 
     let a = Fixed::from_unscaled_felt(3);
     let b = Fixed::from_unscaled_felt(-2);
-    assert_precise(core::pow(a, b), 2049638230412172401, 'invalid neg power'); // 0.1111111111111111
+    assert_precise(
+        core::pow(a, b), 2049638230412172401, 'invalid neg power', Option::None(())
+    ); // 0.1111111111111111
 
     let a = Fixed::from_unscaled_felt(-3);
     let b = Fixed::from_unscaled_felt(-2);
-    assert_precise(core::pow(a, b), 2049638230412172401, 'invalid neg base power');
+    assert_precise(
+        core::pow(a, b), 2049638230412172401, 'invalid neg base power', Option::None(())
+    );
 
     let a = Fixed::from_felt(9223372036854775808);
     let b = Fixed::from_unscaled_felt(2);
-    assert_precise(core::pow(a, b), 4611686018427387904, 'invalid frac base power');
+    assert_precise(
+        core::pow(a, b), 4611686018427387904, 'invalid frac base power', Option::None(())
+    );
 }
 
 #[test]
@@ -151,31 +158,41 @@ fn test_pow_int() {
 fn test_pow_frac() {
     let a = Fixed::from_unscaled_felt(3);
     let b = Fixed::from_felt(9223372036854775808); // 0.5
-    assert_precise(core::pow(a, b), 31950697969885030000, 'invalid pos base power'); // 1.7320508075688772
+    assert_precise(
+        core::pow(a, b), 31950697969885030000, 'invalid pos base power', Option::None(())
+    ); // 1.7320508075688772
 
     let a = Fixed::from_felt(2277250555899444146995); // 123.45
     let b = Fixed::from_felt(-27670116110564327424); // -1.5
-    assert_precise(core::pow(a, b), 13448785939318150, 'invalid pos base power'); // 0.0007290601466350622
+    assert_precise(
+        core::pow(a, b), 13448785939318150, 'invalid pos base power', Option::None(())
+    ); // 0.0007290601466350622
 }
 
 #[test]
 #[available_gas(10000000)]
 fn test_exp() {
     let a = Fixed::new_unscaled(2_u128, false);
-    assert_precise(core::exp(a), 136304026803256380000, 'invalid exp of 2'); // 7.3890560989306495
+    assert_precise(
+        core::exp(a), 136304026803256380000, 'invalid exp of 2', Option::None(())
+    ); // 7.3890560989306495
 
     let a = Fixed::new_unscaled(0_u128, false);
     assert(core::exp(a).into() == ONE, 'invalid exp of 0');
 
     let a = Fixed::new_unscaled(2_u128, true);
-    assert_precise(core::exp(a), 2496495334008789000, 'invalid exp of -2'); // 0.1353352832366127
+    assert_precise(
+        core::exp(a), 2496495334008789000, 'invalid exp of -2', Option::None(())
+    ); // 0.1353352832366127
 }
 
 #[test]
 #[available_gas(10000000)]
 fn test_exp2() {
     let a = Fixed::new(27670116110564327424_u128, false); // 1.5
-    assert_precise(core::exp2(a), 52175271301331124000, 'invalid exp2 of 1.5'); // 2.82842712474619
+    assert_precise(
+        core::exp2(a), 52175271301331124000, 'invalid exp2 of 1.5', Option::None(())
+    ); // 2.82842712474619
 
     let a = Fixed::new_unscaled(2_u128, false);
     assert(core::exp2(a).into() == 4 * ONE, 'invalid exp2 of 2'); // 4
@@ -184,10 +201,14 @@ fn test_exp2() {
     assert(core::exp2(a).into() == ONE, 'invalid exp2 of 0');
 
     let a = Fixed::new_unscaled(2_u128, true);
-    assert_precise(core::exp2(a), 4611686018427387904, 'invalid exp2 of -2'); // 0.25
+    assert_precise(
+        core::exp2(a), 4611686018427387904, 'invalid exp2 of -2', Option::None(())
+    ); // 0.25
 
     let a = Fixed::new(27670116110564327424_u128, true); // -1.5
-    assert_precise(core::exp2(a), 6521908912666391000, 'invalid exp2 of -1.5'); // 0.35355339059327373
+    assert_precise(
+        core::exp2(a), 6521908912666391000, 'invalid exp2 of -1.5', Option::None(())
+    ); // 0.35355339059327373
 }
 
 #[test]
@@ -197,30 +218,36 @@ fn test_ln() {
     assert(core::ln(a).into() == 0, 'invalid ln of 1');
 
     let a = Fixed::from_felt(50143449209799256683); // e
-    assert_precise(core::ln(a), ONE, 'invalid ln of e');
+    assert_precise(core::ln(a), ONE, 'invalid ln of e', Option::None(()));
 
     let a = Fixed::from_felt(9223372036854775808); // 0.5
-    assert_precise(core::ln(a), -12786308645202655000, 'invalid ln of 0.5'); // -0.6931471805599453
+    assert_precise(
+        core::ln(a), -12786308645202655000, 'invalid ln of 0.5', Option::None(())
+    ); // -0.6931471805599453
 }
 
 #[test]
 #[available_gas(10000000)]
 fn test_log2() {
     let a = Fixed::from_unscaled_felt(32);
-    assert_precise(core::log2(a), 5 * ONE, 'invalid log2 32');
+    assert_precise(core::log2(a), 5 * ONE, 'invalid log2 32', Option::None(()));
 
     let a = Fixed::from_unscaled_felt(1234);
-    assert_precise(core::log2(a), 189431951710772170000, 'invalid log2 1234'); // 10.269126679149418
+    assert_precise(
+        core::log2(a), 189431951710772170000, 'invalid log2 1234', Option::None(())
+    ); // 10.269126679149418
 
     let a = Fixed::from_felt(1035286617648801165344); // 56.123
-    assert_precise(core::log2(a), 107185179502756360000, 'invalid log2 56.123'); // 5.8105202237568605
+    assert_precise(
+        core::log2(a), 107185179502756360000, 'invalid log2 56.123', Option::None(())
+    ); // 5.8105202237568605
 }
 
 #[test]
 #[available_gas(10000000)]
 fn test_log10() {
     let a = Fixed::from_unscaled_felt(100);
-    assert_precise(core::log10(a), 2 * ONE, 'invalid log10');
+    assert_precise(core::log10(a), 2 * ONE, 'invalid log10', Option::None(()));
 
     let a = Fixed::from_unscaled_felt(1);
     assert(core::log10(a).into() == 0, 'invalid log10');
@@ -316,7 +343,9 @@ fn test_div() {
     let a = Fixed::from_unscaled_felt(10);
     let b = Fixed::from_felt(53495557813757699680); // 2.9
     let c = core::div(a, b);
-    assert_precise(c, 63609462323136390000, 'invalid pos decimal'); // 3.4482758620689657
+    assert_precise(
+        c, 63609462323136390000, 'invalid pos decimal', Option::None(())
+    ); // 3.4482758620689657
 
     let a = Fixed::from_unscaled_felt(10);
     let b = Fixed::from_unscaled_felt(5);
@@ -336,12 +365,16 @@ fn test_div() {
     let a = Fixed::from_unscaled_felt(-10);
     let b = Fixed::from_unscaled_felt(123456789);
     let c = core::div(a, b);
-    assert_precise(c, -1494186283568, 'invalid neg decimal'); // 8.100000073706917e-8
+    assert_precise(
+        c, -1494186283568, 'invalid neg decimal', Option::None(())
+    ); // 8.100000073706917e-8
 
     let a = Fixed::from_unscaled_felt(123456789);
     let b = Fixed::from_unscaled_felt(-10);
     let c = core::div(a, b);
-    assert_precise(c, -227737579084496056114112102, 'invalid neg decimal'); // -12345678.9
+    assert_precise(
+        c, -227737579084496056114112102, 'invalid neg decimal', Option::None(())
+    ); // -12345678.9
 }
 
 #[test]

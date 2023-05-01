@@ -23,7 +23,6 @@ use cubit::types::fixed::FixedDiv;
 use cubit::math::trig::HALF_PI_u128;
 use cubit::math::trig::PI_u128;
 
-
 #[test]
 fn test_into() {
     let a = Fixed::from_unscaled_felt(5);
@@ -80,7 +79,14 @@ fn test_asin() {
 #[available_gas(10000000)]
 fn test_atan() {
     let a = Fixed::new(2_u128 * ONE_u128, false);
-    assert_precise(a.atan(), 20423289048683266000, 'invalid two');
+
+    // use `DEFAULT_PRECISION`
+    assert_precise(a.atan(), 20423289048683266000, 'invalid two', Option::None(()));
+
+    // use `custom_precision` 
+    assert_precise(
+        a.atan(), 20423289048683266000, 'invalid two', Option::Some(184467440737_u128)
+    ); // 1e-8
 }
 
 #[test]
@@ -147,14 +153,14 @@ fn test_ln() {
 #[available_gas(10000000)]
 fn test_log2() {
     let a = Fixed::from_unscaled_felt(32);
-    assert_precise(a.log2(), 5 * ONE, 'invalid log2 32');
+    assert_precise(a.log2(), 5 * ONE, 'invalid log2 32', Option::None(()));
 }
 
 #[test]
 #[available_gas(10000000)]
 fn test_log10() {
     let a = Fixed::from_unscaled_felt(100);
-    assert_precise(a.log10(), 2 * ONE, 'invalid log10');
+    assert_precise(a.log10(), 2 * ONE, 'invalid log10', Option::None(()));
 }
 
 #[test]
@@ -323,7 +329,7 @@ fn test_cos() {
 #[available_gas(10000000)]
 fn test_sin() {
     let a = Fixed::new(HALF_PI_u128, false);
-    assert_precise(a.sin(), ONE, 'invalid half pi');
+    assert_precise(a.sin(), ONE, 'invalid half pi', Option::None(()));
 }
 
 #[test]
@@ -337,40 +343,49 @@ fn test_tan() {
 #[available_gas(10000000)]
 fn test_cosh() {
     let a = Fixed::new_unscaled(2_u128, false);
-    assert_precise(a.cosh(), 69400261068632590000, 'invalid two'); // 3.762195691016423
+    assert_precise(
+        a.cosh(), 69400261068632590000, 'invalid two', Option::None(())
+    ); // 3.762195691016423
 }
 
 #[test]
 #[available_gas(10000000)]
 fn test_sinh() {
     let a = Fixed::new_unscaled(2_u128, false);
-    assert_precise(a.sinh(), 66903765734623805000, 'invalid two'); // 3.6268604077773023
+    assert_precise(
+        a.sinh(), 66903765734623805000, 'invalid two', Option::None(())
+    ); // 3.6268604077773023
 }
 
 #[test]
 #[available_gas(10000000)]
 fn test_tanh() {
     let a = Fixed::new_unscaled(2_u128, false);
-    assert_precise(a.tanh(), 17783170049656136000, 'invalid two'); // 0.9640275800745076
+    assert_precise(
+        a.tanh(), 17783170049656136000, 'invalid two', Option::None(())
+    ); // 0.9640275800745076
 }
 
 #[test]
 #[available_gas(10000000)]
 fn test_acosh() {
     let a = Fixed::new(69400261067392811864_u128, false); // 3.762195691016423
-    assert_precise(a.acosh(), 2 * ONE, 'invalid two');
+    assert_precise(a.acosh(), 2 * ONE, 'invalid two', Option::None(()));
 }
 
 #[test]
 #[available_gas(10000000)]
 fn test_asinh() {
     let a = Fixed::new(66903765733337761105_u128, false); // 3.6268604077773023
-    assert_precise(a.asinh(), 2 * ONE, 'invalid two');
+    assert_precise(a.asinh(), 2 * ONE, 'invalid two', Option::None(()));
 }
 
 #[test]
 #[available_gas(10000000)]
 fn test_atanh() {
     let a = Fixed::new(16602069666338597000, false); // 0.9
-    assert_precise(a.atanh(), 27157656144668970000, 'invalid 0.9'); // 1.4722194895832204
+    assert_precise(
+        a.atanh(), 27157656144668970000, 'invalid 0.9', Option::None(())
+    ); // 1.4722194895832204
 }
+

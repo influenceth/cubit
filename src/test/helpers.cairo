@@ -11,12 +11,21 @@ use cubit::types::fixed::FixedSub;
 use cubit::types::fixed::FixedPartialEq;
 use cubit::types::fixed::FixedPrint;
 
-const PRECISION: u128 = 1844674407370_u128; // 1e-7
+const DEFAULT_PRECISION: u128 = 1844674407370_u128; // 1e-7
 
-fn assert_precise(result: FixedType, expected: felt252, msg: felt252) {
+// To use `DEFAULT_PRECISION`, final arg is: `Option::None(())`.
+// To use `custom_precision` of 184467440737_u128: `Option::Some(184467440737_u128)`.
+fn assert_precise(
+    result: FixedType, expected: felt252, msg: felt252, custom_precision: Option<u128>
+) {
+    let precision = match custom_precision {
+        Option::Some(val) => val,
+        Option::None(_) => DEFAULT_PRECISION,
+    };
+
     let diff = (result - Fixed::from_felt(expected)).mag;
 
-    if (diff > PRECISION) {
+    if (diff > precision) {
         match withdraw_gas() {
             Option::Some(_) => {},
             Option::None(_) => {
@@ -27,6 +36,6 @@ fn assert_precise(result: FixedType, expected: felt252, msg: felt252) {
         }
 
         result.print();
-        assert(diff <= PRECISION, msg);
+        assert(diff <= precision, msg);
     }
 }
