@@ -12,7 +12,7 @@ use cubit::types::vec3::Vec3;
 #[available_gas(10000000)]
 fn test_simplex3_1() {
     let r = simplex3::noise(Vec3::splat(Fixed::new(0_u128, false))); // [ 0, 0, 0 ]
-    assert_precise(r, -8040438090352662000, '0,0,0 out of bounds'); // -0.43587
+    assert_precise(r, -8040438090352662000, '0,0,0 out of bounds', Option::None(())); // -0.43587
 }
 
 #[test]
@@ -24,7 +24,7 @@ fn test_simplex3_2() {
         Fixed::from_felt(-22689495210662750000),
         Fixed::from_felt(30068192840146567000)
     ));
-    assert_precise(r, 13375152626318328000, '0.5... out of bounds'); // 0.72507
+    assert_precise(r, 13375152626318328000, '0.5... out of bounds', Option::None(())); // 0.72507
 }
 
 #[test]
@@ -36,7 +36,7 @@ fn test_simplex3_3() {
         Fixed::from_felt(-23058430092136940000),
         Fixed::from_felt(-30068192840146567000)
     ));
-    assert_precise(r, 2842256034349449700, '-1.94... out of bounds'); // 0.15408
+    assert_precise(r, 2842256034349449700, '-1.94... out of bounds', Option::None(())); // 0.15408
 }
 
 #[test]
@@ -48,7 +48,7 @@ fn test_simplex3_4() {
         Fixed::from_felt(152185638608103800000),
         Fixed::from_felt(128758273634492680000)
     ));
-    assert_precise(r, -14610501553210167000, '-9.99... out of bounds'); // -0.79204
+    assert_precise(r, -14610501553210167000, '-9.99... out of bounds', Option::None(())); // -0.79204
 }
 
 #[test]
@@ -60,7 +60,7 @@ fn test_simplex3_5() {
         Fixed::from_felt(232023146959118730000),
         Fixed::from_felt(-52942155491546415000)
     ));
-    assert_precise(r, -7380847965597703000, '-0.005... out of bounds'); // -0.40012
+    assert_precise(r, -7380847965597703000, '-0.005... out of bounds', Option::None(())); // -0.40012
 }
 
 #[test]
@@ -72,7 +72,7 @@ fn test_simplex3_octaves_1() {
         2_u128,
         Fixed::new(9223372036854775808_u128, false)
     );
-    assert_precise(r, -8040438090352662000, '... out of bounds'); // -0.4359
+    assert_precise(r, -8040438090352662000, '... out of bounds', Option::None(())); // -0.4359
 }
 
 #[test]
@@ -84,7 +84,7 @@ fn test_simplex3_octaves_2() {
         Fixed::from_felt(-22689495210662750000),
         Fixed::from_felt(30068192840146567000),
     ), 3_u128, Fixed::new(9223372036854775808_u128, false));
-    assert_precise(r, 6054457010196317000, '... out of bounds'); // 0.3282
+    assert_precise(r, 6054457010196317000, '... out of bounds', Option::None(())); // 0.3282
 }
 
 #[test]
@@ -96,7 +96,7 @@ fn test_simplex3_octaves_3() {
         Fixed::from_felt(-23058430092136940000),
         Fixed::from_felt(-30068192840146567000)
     ), 4_u128, Fixed::new(9223372036854775808_u128, false));
-    assert_precise(r, 2498284309949725700, '... out of bounds'); // 0.1354
+    assert_precise(r, 2498284309949725700, '... out of bounds', Option::None(())); // 0.1354
 }
 
 #[test]
@@ -108,7 +108,7 @@ fn test_simplex3_octaves_4() {
         Fixed::from_felt(152185638608103800000),
         Fixed::from_felt(128758273634492680000)
     ), 5_u128, Fixed::new(9223372036854775808_u128, false));
-    assert_precise(r, -6784442150430373000, '... out of bounds'); // -0.3678
+    assert_precise(r, -6784442150430373000, '... out of bounds', Option::None(())); // -0.3678
 }
 
 #[test]
@@ -120,5 +120,5 @@ fn test_simplex3_octaves_5() {
         Fixed::from_felt(232023146959118730000),
         Fixed::from_felt(-52942155491546415000)
     ), 6_u128, Fixed::new(9223372036854775808_u128, false));
-    assert_precise(r, -3360150313341259000, '... out of bounds'); // -0.1822
+    assert_precise(r, -3360150313341259000, '... out of bounds', Option::None(())); // -0.1822
 }
