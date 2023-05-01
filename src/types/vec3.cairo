@@ -29,13 +29,11 @@ trait Vec3 {
 
 impl Vec3Impl of Vec3 {
     // Creates a new vector.
-    #[inline(always)]
     fn new(x: FixedType, y: FixedType, z: FixedType) -> Vec3Type {
         return Vec3Type { x: x, y: y, z: z };
     }
 
     // Creates a vector with all elements set to `v`.
-    #[inline(always)]
     fn splat(v: FixedType) -> Vec3Type {
         return Vec3Type { x: v, y: v, z: v };
     }

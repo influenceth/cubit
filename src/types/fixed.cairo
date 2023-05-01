@@ -209,7 +209,7 @@ impl FixedInto of Into::<FixedType, felt252> {
         if (self.sign == true) {
             return mag_felt * -1;
         } else {
-            return mag_felt;
+            return mag_felt * 1;
         }
     }
 }
@@ -331,6 +331,6 @@ fn _felt_abs(a: felt252) -> felt252 {
     if (a_sign == true) {
         return a * -1;
     } else {
-        return a;
+        return a * 1;
     }
 }
