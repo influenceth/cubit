@@ -263,8 +263,8 @@ fn round(a: FixedType) -> FixedType {
 // x must be positive
 fn sqrt(a: FixedType) -> FixedType {
     assert(a.sign == false, 'must be positive');
-    let root = integer::u128_sqrt(a.mag);
-    let scale_root = integer::u128_sqrt(ONE_u128);
+    let root: u128 = integer::u128_sqrt(a.mag).into();
+    let scale_root: u128 = integer::u128_sqrt(ONE_u128).into();
     let res_u128 = root * ONE_u128 / scale_root;
     return Fixed::new(res_u128, false);
 }
