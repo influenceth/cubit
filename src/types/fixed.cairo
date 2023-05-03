@@ -1,7 +1,4 @@
-use array::array_append;
-use array::array_new;
 use debug::PrintTrait;
-use gas::withdraw_gas;
 use integer::u256_safe_divmod;
 use integer::u256_as_non_zero;
 use integer::u256_from_felt252;
