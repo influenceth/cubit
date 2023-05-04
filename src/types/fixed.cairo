@@ -18,7 +18,8 @@ use cubit::math::trig;
 // CONSTANTS
 
 const PRIME: felt252 = 3618502788666131213697322783095070105623107215331596699973092056135872020480;
-const HALF_PRIME: felt252 = 1809251394333065606848661391547535052811553607665798349986546028067936010240;
+const HALF_PRIME: felt252 =
+    1809251394333065606848661391547535052811553607665798349986546028067936010240;
 const ONE: felt252 = 18446744073709551616; // 2 ** 64
 const ONE_u128: u128 = 18446744073709551616_u128; // 2 ** 64
 const HALF: felt252 = 9223372036854775808; // 2 ** 63
@@ -27,8 +28,11 @@ const MAX_u128: u128 = 340282366920938463463374607431768211455_u128; // 2 ** 128
 
 // STRUCTS
 
-#[derive(Copy, Drop)]
-struct FixedType { mag: u128, sign: bool }
+#[derive(Copy, Drop, Serde)]
+struct FixedType {
+    mag: u128,
+    sign: bool
+}
 
 // TRAITS
 
@@ -38,7 +42,6 @@ trait Fixed {
     fn new_unscaled(mag: u128, sign: bool) -> FixedType;
     fn from_felt(val: felt252) -> FixedType;
     fn from_unscaled_felt(val: felt252) -> FixedType;
-
     // Math
     fn abs(self: FixedType) -> FixedType;
     fn ceil(self: FixedType) -> FixedType;
@@ -51,7 +54,6 @@ trait Fixed {
     fn pow(self: FixedType, b: FixedType) -> FixedType;
     fn round(self: FixedType) -> FixedType;
     fn sqrt(self: FixedType) -> FixedType;
-
     // Trigonometry
     fn acos(self: FixedType) -> FixedType;
     fn asin(self: FixedType) -> FixedType;
@@ -59,7 +61,6 @@ trait Fixed {
     fn cos(self: FixedType) -> FixedType;
     fn sin(self: FixedType) -> FixedType;
     fn tan(self: FixedType) -> FixedType;
-
     // Hyperbolic
     fn acosh(self: FixedType) -> FixedType;
     fn asinh(self: FixedType) -> FixedType;
@@ -202,7 +203,7 @@ impl FixedPrint of PrintTrait<FixedType> {
     }
 }
 
-impl FixedInto of Into::<FixedType, felt252> {
+impl FixedInto of Into<FixedType, felt252> {
     fn into(self: FixedType) -> felt252 {
         let mag_felt = self.mag.into();
 
@@ -214,7 +215,7 @@ impl FixedInto of Into::<FixedType, felt252> {
     }
 }
 
-impl FixedPartialEq of PartialEq::<FixedType> {
+impl FixedPartialEq of PartialEq<FixedType> {
     #[inline(always)]
     fn eq(lhs: FixedType, rhs: FixedType) -> bool {
         return core::eq(lhs, rhs);
@@ -226,59 +227,59 @@ impl FixedPartialEq of PartialEq::<FixedType> {
     }
 }
 
-impl FixedAdd of Add::<FixedType> {
+impl FixedAdd of Add<FixedType> {
     fn add(lhs: FixedType, rhs: FixedType) -> FixedType {
         return core::add(lhs, rhs);
     }
 }
 
-impl FixedAddEq of AddEq::<FixedType> {
+impl FixedAddEq of AddEq<FixedType> {
     #[inline(always)]
     fn add_eq(ref self: FixedType, other: FixedType) {
         self = Add::add(self, other);
     }
 }
 
-impl FixedSub of Sub::<FixedType> {
+impl FixedSub of Sub<FixedType> {
     fn sub(lhs: FixedType, rhs: FixedType) -> FixedType {
         return core::sub(lhs, rhs);
     }
 }
 
-impl FixedSubEq of SubEq::<FixedType> {
+impl FixedSubEq of SubEq<FixedType> {
     #[inline(always)]
     fn sub_eq(ref self: FixedType, other: FixedType) {
         self = Sub::sub(self, other);
     }
 }
 
-impl FixedMul of Mul::<FixedType> {
+impl FixedMul of Mul<FixedType> {
     fn mul(lhs: FixedType, rhs: FixedType) -> FixedType {
         return core::mul(lhs, rhs);
     }
 }
 
-impl FixedMulEq of MulEq::<FixedType> {
+impl FixedMulEq of MulEq<FixedType> {
     #[inline(always)]
     fn mul_eq(ref self: FixedType, other: FixedType) {
         self = Mul::mul(self, other);
     }
 }
 
-impl FixedDiv of Div::<FixedType> {
+impl FixedDiv of Div<FixedType> {
     fn div(lhs: FixedType, rhs: FixedType) -> FixedType {
         return core::div(lhs, rhs);
     }
 }
 
-impl FixedDivEq of DivEq::<FixedType> {
+impl FixedDivEq of DivEq<FixedType> {
     #[inline(always)]
     fn div_eq(ref self: FixedType, other: FixedType) {
         self = Div::div(self, other);
     }
 }
 
-impl FixedPartialOrd of PartialOrd::<FixedType> {
+impl FixedPartialOrd of PartialOrd<FixedType> {
     #[inline(always)]
     fn ge(lhs: FixedType, rhs: FixedType) -> bool {
         return core::ge(lhs, rhs);
@@ -300,14 +301,14 @@ impl FixedPartialOrd of PartialOrd::<FixedType> {
     }
 }
 
-impl FixedNeg of Neg::<FixedType> {
+impl FixedNeg of Neg<FixedType> {
     #[inline(always)]
     fn neg(a: FixedType) -> FixedType {
         return core::neg(a);
     }
 }
 
-impl FixedRem of Rem::<FixedType> {
+impl FixedRem of Rem<FixedType> {
     #[inline(always)]
     fn rem(lhs: FixedType, rhs: FixedType) -> FixedType {
         return core::rem(lhs, rhs);

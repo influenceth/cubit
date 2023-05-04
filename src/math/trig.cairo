@@ -133,7 +133,7 @@ fn tan(a: FixedType) -> FixedType {
 }
 
 // Helper function to calculate Taylor series for sin
-fn _sin_loop(a: FixedType, i: u128, acc: FixedType) -> FixedType   {
+fn _sin_loop(a: FixedType, i: u128, acc: FixedType) -> FixedType {
     match withdraw_gas_all(get_builtin_costs()) {
         Option::Some(_) => {},
         Option::None(_) => {

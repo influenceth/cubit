@@ -17,7 +17,6 @@ trait Vec4 {
     // Constructors
     fn new(x: FixedType, y: FixedType, z: FixedType, w: FixedType) -> Vec4Type;
     fn splat(v: FixedType) -> Vec4Type;
-
     // Math
     fn abs(self: Vec4Type) -> Vec4Type;
     fn dot(self: Vec4Type, rhs: Vec4Type) -> FixedType;
@@ -67,31 +66,31 @@ impl Vec4Print of PrintTrait<Vec4Type> {
     }
 }
 
-impl Vec4Add of Add::<Vec4Type> {
+impl Vec4Add of Add<Vec4Type> {
     fn add(lhs: Vec4Type, rhs: Vec4Type) -> Vec4Type {
         return add(lhs, rhs);
     }
 }
 
-impl Vec4Div of Div::<Vec4Type> {
+impl Vec4Div of Div<Vec4Type> {
     fn div(lhs: Vec4Type, rhs: Vec4Type) -> Vec4Type {
         return div(lhs, rhs);
     }
 }
 
-impl Vec4Mul of Mul::<Vec4Type> {
+impl Vec4Mul of Mul<Vec4Type> {
     fn mul(lhs: Vec4Type, rhs: Vec4Type) -> Vec4Type {
         return mul(lhs, rhs);
     }
 }
 
-impl Vec4Rem of Rem::<Vec4Type> {
+impl Vec4Rem of Rem<Vec4Type> {
     fn rem(lhs: Vec4Type, rhs: Vec4Type) -> Vec4Type {
         return rem(lhs, rhs);
     }
 }
 
-impl Vec4Sub of Sub::<Vec4Type> {
+impl Vec4Sub of Sub<Vec4Type> {
     fn sub(lhs: Vec4Type, rhs: Vec4Type) -> Vec4Type {
         return sub(lhs, rhs);
     }
@@ -100,30 +99,15 @@ impl Vec4Sub of Sub::<Vec4Type> {
 // Functions
 
 fn abs(a: Vec4Type) -> Vec4Type {
-    return Vec4Type {
-        x: a.x.abs(),
-        y: a.y.abs(),
-        z: a.z.abs(),
-        w: a.w.abs()
-    };
+    return Vec4Type { x: a.x.abs(), y: a.y.abs(), z: a.z.abs(), w: a.w.abs() };
 }
 
 fn add(a: Vec4Type, b: Vec4Type) -> Vec4Type {
-    return Vec4Type {
-        x: a.x + b.x,
-        y: a.y + b.y,
-        z: a.z + b.z,
-        w: a.w + b.w
-    };
+    return Vec4Type { x: a.x + b.x, y: a.y + b.y, z: a.z + b.z, w: a.w + b.w };
 }
 
 fn div(a: Vec4Type, b: Vec4Type) -> Vec4Type {
-    return Vec4Type {
-        x: a.x / b.x,
-        y: a.y / b.y,
-        z: a.z / b.z,
-        w: a.w / b.w
-    };
+    return Vec4Type { x: a.x / b.x, y: a.y / b.y, z: a.z / b.z, w: a.w / b.w };
 }
 
 fn dot(a: Vec4Type, b: Vec4Type) -> FixedType {
@@ -131,21 +115,11 @@ fn dot(a: Vec4Type, b: Vec4Type) -> FixedType {
 }
 
 fn floor(a: Vec4Type) -> Vec4Type {
-    return Vec4Type {
-        x: a.x.floor(),
-        y: a.y.floor(),
-        z: a.z.floor(),
-        w: a.w.floor()
-    };
+    return Vec4Type { x: a.x.floor(), y: a.y.floor(), z: a.z.floor(), w: a.w.floor() };
 }
 
 fn mul(a: Vec4Type, b: Vec4Type) -> Vec4Type {
-    return Vec4Type {
-        x: a.x * b.x,
-        y: a.y * b.y,
-        z: a.z * b.z,
-        w: a.w * b.w
-    };
+    return Vec4Type { x: a.x * b.x, y: a.y * b.y, z: a.z * b.z, w: a.w * b.w };
 }
 
 fn norm(a: Vec4Type) -> FixedType {
@@ -153,19 +127,9 @@ fn norm(a: Vec4Type) -> FixedType {
 }
 
 fn rem(a: Vec4Type, b: Vec4Type) -> Vec4Type {
-    return Vec4Type {
-        x: a.x % b.x,
-        y: a.y % b.y,
-        z: a.z % b.z,
-        w: a.w % b.w
-    };
+    return Vec4Type { x: a.x % b.x, y: a.y % b.y, z: a.z % b.z, w: a.w % b.w };
 }
 
 fn sub(a: Vec4Type, b: Vec4Type) -> Vec4Type {
-    return Vec4Type {
-        x: a.x - b.x,
-        y: a.y - b.y,
-        z: a.z - b.z,
-        w: a.w - b.w
-    };
+    return Vec4Type { x: a.x - b.x, y: a.y - b.y, z: a.z - b.z, w: a.w - b.w };
 }
