@@ -1,5 +1,5 @@
 use option::OptionTrait;
-use traits::Into;
+use traits::{Into, TryInto};
 
 use cubit::test::helpers::assert_precise;
 
@@ -27,6 +27,28 @@ use cubit::math::trig::PI_u128;
 fn test_into() {
     let a = Fixed::from_unscaled_felt(5);
     assert(a.into() == 5 * ONE, 'invalid result');
+}
+
+#[test]
+fn test_try_into_u128() {
+    // Positive unscaled
+    let a = Fixed::new_unscaled(5_u128, false);
+    assert(a.try_into().unwrap() == 5, 'invalid result');
+
+    // Positive scaled
+    let b = Fixed::new(5_u128 * ONE_u128, false);
+    assert(b.try_into().unwrap() == 5, 'invalid result');
+
+    // Zero
+    let c = Fixed::new_unscaled(0_u128, false);
+    assert(c.try_into().unwrap() == 0_u128, 'invalid result');
+}
+
+#[test]
+#[should_panic]
+fn test_negative_try_into_u128() {
+    let a = Fixed::new_unscaled(1_u128, true);
+    let a: u128 = a.try_into().unwrap();
 }
 
 #[test]
@@ -388,4 +410,3 @@ fn test_atanh() {
         a.atanh(), 27157656144668970000, 'invalid 0.9', Option::None(())
     ); // 1.4722194895832204
 }
-

@@ -8,7 +8,7 @@ use integer::u256_from_felt252;
 use option::OptionTrait;
 use result::ResultTrait;
 use result::ResultTraitImpl;
-use traits::Into;
+use traits::{TryInto, Into};
 
 use cubit::math::core;
 use cubit::math::hyp;
@@ -207,10 +207,20 @@ impl FixedInto of Into<FixedType, felt252> {
     fn into(self: FixedType) -> felt252 {
         let mag_felt = self.mag.into();
 
-        if (self.sign == true) {
+        if self.sign {
             return mag_felt * -1;
         } else {
             return mag_felt * 1;
+        }
+    }
+}
+
+impl FixedTryIntoU128 of TryInto<FixedType, u128> {
+    fn try_into(self: FixedType) -> Option<u128> {
+        if self.sign {
+            Option::None(())
+        } else {
+            Option::Some(self.mag / ONE_u128)
         }
     }
 }
