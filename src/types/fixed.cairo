@@ -220,6 +220,7 @@ impl FixedTryIntoU128 of TryInto<FixedType, u128> {
         if self.sign {
             Option::None(())
         } else {
+            // Unscale the magnitude and round down
             Option::Some(self.mag / ONE_u128)
         }
     }

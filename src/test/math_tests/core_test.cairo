@@ -39,9 +39,12 @@ fn test_try_into_u128() {
     let b = Fixed::new(5_u128 * ONE_u128, false);
     assert(b.try_into().unwrap() == 5, 'invalid result');
 
+    let c = Fixed::new(PI_u128, false);
+    assert(c.try_into().unwrap() == 3, 'invalid result');
+
     // Zero
-    let c = Fixed::new_unscaled(0_u128, false);
-    assert(c.try_into().unwrap() == 0_u128, 'invalid result');
+    let d = Fixed::new_unscaled(0_u128, false);
+    assert(d.try_into().unwrap() == 0_u128, 'invalid result');
 }
 
 #[test]
