@@ -27,3 +27,20 @@ fn assert_precise(
         assert(diff <= precision, msg);
     }
 }
+
+fn assert_relative(
+    result: FixedType, expected: felt252, msg: felt252, custom_precision: Option<u128>
+) {
+    let precision = match custom_precision {
+        Option::Some(val) => val,
+        Option::None(_) => DEFAULT_PRECISION,
+    };
+
+    let diff = result - Fixed::from_felt(expected);
+    let rel_diff = (diff / result).mag;
+
+    if (rel_diff > precision) {
+        result.print();
+        assert(rel_diff <= precision, msg);
+    }
+}
