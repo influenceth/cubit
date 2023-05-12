@@ -30,8 +30,9 @@ fn nu_to_E(nu: FixedType, ecc: FixedType) -> FixedType {
 // @param nu True anomaly (rad)
 // @param ecc Eccentricity
 fn nu_to_F(nu: FixedType, ecc: FixedType) -> FixedType {
-    let cos_nu = nu.cos();
-    return ((ecc + cos_nu) / (Fixed::new(ONE_u128, false) + ecc * cos_nu)).acosh();
+    let one = Fixed::new(ONE_u128, false);
+    let two = Fixed::new(36893488147419103232, false); // 2
+    return two * (((ecc - one) / (ecc + one)).sqrt() * (nu / two).tan()).atanh();
 }
 
 // Converts from parabolic eccentric anomaly to true anomaly
