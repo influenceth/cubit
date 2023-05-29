@@ -195,7 +195,7 @@ impl FixedImpl of Fixed {
 impl FixedPrint of PrintTrait<FixedType> {
     fn print(self: FixedType) {
         self.sign.print();
-        self.mag.into().print();
+        self.mag.print();
     }
 }
 

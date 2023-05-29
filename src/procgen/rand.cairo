@@ -13,7 +13,7 @@ use debug::PrintTrait;
 
 
 fn derive(seed: felt252, entropy: felt252) -> felt252 {
-    let mut input = ArrayTrait::new();
+    let mut input = Default::default();
     input.append(seed);
     input.append(entropy);
     return poseidon::poseidon_hash_span(input.span());

@@ -91,7 +91,7 @@ fn test_asin() {
 #[available_gas(100000000)]
 fn test_asin_fail() {
     let a = Fixed::new(2_u128 * ONE_u128, false);
-    trig::asin(a).into();
+    trig::asin(a);
 }
 
 #[test]

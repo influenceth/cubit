@@ -1,9 +1,15 @@
 [package]
 name = "cubit"
 version = "0.1.0"
+cairo-version = "1.1.0"
 description = "Math library in Cairo using a 64.64 fixed point representation"
 homepage = "https://github.com/influenceth/cubit"
 
-# Uncomment if you want to use dependencies
-# Note: currently testing doesn't work with dependencies
+[scripts]
+test = "cairo-test ."
+
+[lib]
+sierra = false  # Enable Sierra codegen.
+casm = false   # Enable CASM codegen.
+
 [dependencies]
