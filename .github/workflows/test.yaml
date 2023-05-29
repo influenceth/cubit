@@ -25,4 +25,4 @@ jobs:
         run: echo "$(pwd)/cairo/target/release" >> $GITHUB_PATH
 
       - name: Test the code
-        run: scarb run test
+        run: cairo-test .
