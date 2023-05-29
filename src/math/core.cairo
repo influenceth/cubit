@@ -5,9 +5,11 @@ use option::OptionTrait;
 use result::ResultTrait;
 use result::ResultTraitImpl;
 use traits::Into;
+use traits::TryInto;
 use integer::u256_safe_divmod;
 use integer::u256_as_non_zero;
 use integer::u256_from_felt252;
+use integer::upcast;
 
 use cubit::types::fixed::HALF_u128;
 use cubit::types::fixed::MAX_u128;
@@ -263,9 +265,9 @@ fn round(a: FixedType) -> FixedType {
 // x must be positive
 fn sqrt(a: FixedType) -> FixedType {
     assert(a.sign == false, 'must be positive');
-    let root: u128 = integer::u128_sqrt(a.mag).into();
-    let scale_root: u128 = integer::u128_sqrt(ONE_u128).into();
-    let res_u128 = root * ONE_u128 / scale_root;
+    let root = integer::u128_sqrt(a.mag);
+    let scale_root = integer::u128_sqrt(ONE_u128);
+    let res_u128 = upcast(root) * ONE_u128 / upcast(scale_root);
     return Fixed::new(res_u128, false);
 }
 

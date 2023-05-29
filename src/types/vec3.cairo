@@ -16,7 +16,6 @@ trait Vec3 {
     // Constructors
     fn new(x: FixedType, y: FixedType, z: FixedType) -> Vec3Type;
     fn splat(v: FixedType) -> Vec3Type;
-
     // Math
     fn abs(self: Vec3Type) -> Vec3Type;
     fn cross(self: Vec3Type, rhs: Vec3Type) -> Vec3Type;
@@ -69,31 +68,31 @@ impl Vec3Print of PrintTrait<Vec3Type> {
     }
 }
 
-impl Vec3Add of Add::<Vec3Type> {
+impl Vec3Add of Add<Vec3Type> {
     fn add(lhs: Vec3Type, rhs: Vec3Type) -> Vec3Type {
         return add(lhs, rhs);
     }
 }
 
-impl Vec3Div of Div::<Vec3Type> {
+impl Vec3Div of Div<Vec3Type> {
     fn div(lhs: Vec3Type, rhs: Vec3Type) -> Vec3Type {
         return div(lhs, rhs);
     }
 }
 
-impl Vec3Mul of Mul::<Vec3Type> {
+impl Vec3Mul of Mul<Vec3Type> {
     fn mul(lhs: Vec3Type, rhs: Vec3Type) -> Vec3Type {
         return mul(lhs, rhs);
     }
 }
 
-impl Vec3Rem of Rem::<Vec3Type> {
+impl Vec3Rem of Rem<Vec3Type> {
     fn rem(lhs: Vec3Type, rhs: Vec3Type) -> Vec3Type {
         return rem(lhs, rhs);
     }
 }
 
-impl Vec3Sub of Sub::<Vec3Type> {
+impl Vec3Sub of Sub<Vec3Type> {
     fn sub(lhs: Vec3Type, rhs: Vec3Type) -> Vec3Type {
         return sub(lhs, rhs);
     }
@@ -102,35 +101,21 @@ impl Vec3Sub of Sub::<Vec3Type> {
 // Functions
 
 fn abs(a: Vec3Type) -> Vec3Type {
-    return Vec3Type {
-        x: a.x.abs(),
-        y: a.y.abs(),
-        z: a.z.abs()
-    };
+    return Vec3Type { x: a.x.abs(), y: a.y.abs(), z: a.z.abs() };
 }
 
 fn add(a: Vec3Type, b: Vec3Type) -> Vec3Type {
-    return Vec3Type {
-        x: a.x + b.x,
-        y: a.y + b.y,
-        z: a.z + b.z
-    };
+    return Vec3Type { x: a.x + b.x, y: a.y + b.y, z: a.z + b.z };
 }
 
 fn cross(a: Vec3Type, b: Vec3Type) -> Vec3Type {
     return Vec3Type {
-        x: (a.y * b.z) - (a.z * b.y),
-        y: (a.z * b.x) - (a.x * b.z),
-        z: (a.x * b.y) - (a.y * b.x)
+        x: (a.y * b.z) - (a.z * b.y), y: (a.z * b.x) - (a.x * b.z), z: (a.x * b.y) - (a.y * b.x)
     };
 }
 
 fn div(a: Vec3Type, b: Vec3Type) -> Vec3Type {
-    return Vec3Type {
-        x: a.x / b.x,
-        y: a.y / b.y,
-        z: a.z / b.z
-    };
+    return Vec3Type { x: a.x / b.x, y: a.y / b.y, z: a.z / b.z };
 }
 
 fn dot(a: Vec3Type, b: Vec3Type) -> FixedType {
@@ -138,19 +123,11 @@ fn dot(a: Vec3Type, b: Vec3Type) -> FixedType {
 }
 
 fn floor(a: Vec3Type) -> Vec3Type {
-    return Vec3Type {
-        x: a.x.floor(),
-        y: a.y.floor(),
-        z: a.z.floor()
-    };
+    return Vec3Type { x: a.x.floor(), y: a.y.floor(), z: a.z.floor() };
 }
 
 fn mul(a: Vec3Type, b: Vec3Type) -> Vec3Type {
-    return Vec3Type {
-        x: a.x * b.x,
-        y: a.y * b.y,
-        z: a.z * b.z
-    };
+    return Vec3Type { x: a.x * b.x, y: a.y * b.y, z: a.z * b.z };
 }
 
 fn norm(a: Vec3Type) -> FixedType {
@@ -158,17 +135,9 @@ fn norm(a: Vec3Type) -> FixedType {
 }
 
 fn rem(a: Vec3Type, b: Vec3Type) -> Vec3Type {
-    return Vec3Type {
-        x: a.x % b.x,
-        y: a.y % b.y,
-        z: a.z % b.z
-    };
+    return Vec3Type { x: a.x % b.x, y: a.y % b.y, z: a.z % b.z };
 }
 
 fn sub(a: Vec3Type, b: Vec3Type) -> Vec3Type {
-    return Vec3Type {
-        x: a.x - b.x,
-        y: a.y - b.y,
-        z: a.z - b.z
-    };
+    return Vec3Type { x: a.x - b.x, y: a.y - b.y, z: a.z - b.z };
 }

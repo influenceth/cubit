@@ -73,8 +73,12 @@ fn noise(v: Vec3Type) -> FixedType {
     // Permutations
     i = i % Vec3::splat(Fixed::new(5331109037302060417024_u128, false)); // 289
     let _p1 = permute(Vec4::new(i.z + zero, i.z + i1.z, i.z + i2.z, i.z + one));
-    let _p2 = permute(Vec4::new(_p1.x + i.y + zero, _p1.y + i.y + i1.y, _p1.z + i.y + i2.y, _p1.w + i.y + one));
-    let p = permute(Vec4::new(_p2.x + i.x + zero, _p2.y + i.x + i1.x, _p2.z + i.x + i2.x, _p2.w + i.x + one));
+    let _p2 = permute(
+        Vec4::new(_p1.x + i.y + zero, _p1.y + i.y + i1.y, _p1.z + i.y + i2.y, _p1.w + i.y + one)
+    );
+    let p = permute(
+        Vec4::new(_p2.x + i.x + zero, _p2.y + i.x + i1.x, _p2.z + i.x + i2.x, _p2.w + i.x + one)
+    );
 
     // Gradients: 7x7 points over a square, mapped onto an octahedron.
     // The ring size 17*17 = 289 is close to a multiple of 49 (49*6 = 294)
@@ -102,8 +106,12 @@ fn noise(v: Vec3Type) -> FixedType {
     let s1 = b1.floor() * Vec4::splat(Fixed::new_unscaled(2_u128, false)) + Vec4::splat(one);
     let sh = Vec4::new(-step(h.x, zero), -step(h.y, zero), -step(h.z, zero), -step(h.w, zero));
 
-    let a0 = Vec4::new(b0.x + s0.x * sh.x, b0.z + s0.z * sh.x, b0.y + s0.y * sh.y, b0.w + s0.w * sh.y);
-    let a1 = Vec4::new(b1.x + s1.x * sh.z, b1.z + s1.z * sh.z, b1.y + s1.y * sh.w, b1.w + s1.w * sh.w);
+    let a0 = Vec4::new(
+        b0.x + s0.x * sh.x, b0.z + s0.z * sh.x, b0.y + s0.y * sh.y, b0.w + s0.w * sh.y
+    );
+    let a1 = Vec4::new(
+        b1.x + s1.x * sh.z, b1.z + s1.z * sh.z, b1.y + s1.y * sh.w, b1.w + s1.w * sh.w
+    );
 
     let mut p0 = Vec3::new(a0.x, a0.y, h.x);
     let mut p1 = Vec3::new(a0.z, a0.w, h.y);
@@ -127,7 +135,8 @@ fn noise(v: Vec3Type) -> FixedType {
 
     m = (m * m) * (m * m);
 
-    return Fixed::new_unscaled(105_u128, false) * m.dot(Vec4::new(p0.dot(x0), p1.dot(x1), p2.dot(x2), p3.dot(x3)));
+    return Fixed::new_unscaled(105_u128, false)
+        * m.dot(Vec4::new(p0.dot(x0), p1.dot(x1), p2.dot(x2), p3.dot(x3)));
 }
 
 fn noise_octaves(v: Vec3Type, octaves: u128, persistence: FixedType) -> FixedType {
@@ -143,9 +152,11 @@ fn noise_octaves(v: Vec3Type, octaves: u128, persistence: FixedType) -> FixedTyp
 
 // TODO: get noise at percentile
 
-fn _noise3_octaves_loop(v: Vec3Type, p: FixedType, o: u128, s: FixedType, t: FixedType, n: FixedType) -> FixedType {
+fn _noise3_octaves_loop(
+    v: Vec3Type, p: FixedType, o: u128, s: FixedType, t: FixedType, n: FixedType
+) -> FixedType {
     if o == 0_u128 {
-      return n / t;
+        return n / t;
     }
 
     match withdraw_gas_all(get_builtin_costs()) {
@@ -163,11 +174,6 @@ fn _noise3_octaves_loop(v: Vec3Type, p: FixedType, o: u128, s: FixedType, t: Fix
     let new_scale = s * p;
 
     return _noise3_octaves_loop(
-        v: v,
-        p: p,
-        o: o - 1_u128,
-        s: new_scale,
-        t: t + s,
-        n: n + scaled_noise
+        v: v, p: p, o: o - 1_u128, s: new_scale, t: t + s, n: n + scaled_noise
     );
 }
