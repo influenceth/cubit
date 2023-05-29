@@ -16,8 +16,8 @@ Can represent values in the range of -2^64 to 2^64 with precision to 1e-20.
 
 ## Core Library ##
 `cubit::core` includes the following implementations for the `Fixed` type:
-- `Fixed::from_felt` - creates a `Fixed` type from a pre-scaled `felt`
-- `Fixed::from_int` - creates and scales a `felt` into a `Fixed` type
+- `FixedTrait::from_felt` - creates a `Fixed` type from a pre-scaled `felt`
+- `FixedTrait::from_int` - creates and scales a `felt` into a `Fixed` type
 - `Into` (`fixed.into()`) - converts the `Fixed` value into a `felt`
 - `Add` (`+`)
 - `AddEq` (`+=`)

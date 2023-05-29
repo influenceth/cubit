@@ -1,143 +1,276 @@
 use debug::PrintTrait;
 
-use cubit::types::fixed::Fixed;
-use cubit::types::fixed::FixedType;
-use cubit::types::fixed::FixedPrint;
-
+use cubit::types::fixed::{Fixed, FixedTrait, FixedPrint};
 
 #[derive(Copy, Drop)]
-struct Vec3Type {
-    x: FixedType,
-    y: FixedType,
-    z: FixedType
+struct Vec3 {
+    x: Fixed,
+    y: Fixed,
+    z: Fixed
 }
 
-trait Vec3 {
+trait Vec3Trait {
     // Constructors
-    fn new(x: FixedType, y: FixedType, z: FixedType) -> Vec3Type;
-    fn splat(v: FixedType) -> Vec3Type;
+    fn new(x: Fixed, y: Fixed, z: Fixed) -> Vec3;
+    fn splat(v: Fixed) -> Vec3;
     // Math
-    fn abs(self: Vec3Type) -> Vec3Type;
-    fn cross(self: Vec3Type, rhs: Vec3Type) -> Vec3Type;
-    fn dot(self: Vec3Type, rhs: Vec3Type) -> FixedType;
-    fn floor(self: Vec3Type) -> Vec3Type;
-    fn norm(self: Vec3Type) -> FixedType;
+    fn abs(self: Vec3) -> Vec3;
+    fn cross(self: Vec3, rhs: Vec3) -> Vec3;
+    fn dot(self: Vec3, rhs: Vec3) -> Fixed;
+    fn floor(self: Vec3) -> Vec3;
+    fn norm(self: Vec3) -> Fixed;
 }
 
 // Implementations
 
-impl Vec3Impl of Vec3 {
+impl Vec3Impl of Vec3Trait {
     // Creates a new vector.
-    fn new(x: FixedType, y: FixedType, z: FixedType) -> Vec3Type {
-        return Vec3Type { x: x, y: y, z: z };
+    fn new(x: Fixed, y: Fixed, z: Fixed) -> Vec3 {
+        return Vec3 { x: x, y: y, z: z };
     }
 
     // Creates a vector with all elements set to `v`.
-    fn splat(v: FixedType) -> Vec3Type {
-        return Vec3Type { x: v, y: v, z: v };
+    fn splat(v: Fixed) -> Vec3 {
+        return Vec3 { x: v, y: v, z: v };
     }
 
-    fn abs(self: Vec3Type) -> Vec3Type {
+    fn abs(self: Vec3) -> Vec3 {
         return abs(self);
     }
 
-    fn cross(self: Vec3Type, rhs: Vec3Type) -> Vec3Type {
+    fn cross(self: Vec3, rhs: Vec3) -> Vec3 {
         return cross(self, rhs);
     }
 
     // Computes the dot product of `self` and `rhs` .
     // #[inline(always)] is not allowed for functions with impl generic parameters.
-    fn dot(self: Vec3Type, rhs: Vec3Type) -> FixedType {
+    fn dot(self: Vec3, rhs: Vec3) -> Fixed {
         return dot(self, rhs);
     }
 
-    fn floor(self: Vec3Type) -> Vec3Type {
+    fn floor(self: Vec3) -> Vec3 {
         return floor(self);
     }
 
-    fn norm(self: Vec3Type) -> FixedType {
+    fn norm(self: Vec3) -> Fixed {
         return norm(self);
     }
 }
 
-impl Vec3Print of PrintTrait<Vec3Type> {
-    fn print(self: Vec3Type) {
+impl Vec3Print of PrintTrait<Vec3> {
+    fn print(self: Vec3) {
         self.x.print();
         self.y.print();
         self.z.print();
     }
 }
 
-impl Vec3Add of Add<Vec3Type> {
-    fn add(lhs: Vec3Type, rhs: Vec3Type) -> Vec3Type {
+impl Vec3Add of Add<Vec3> {
+    fn add(lhs: Vec3, rhs: Vec3) -> Vec3 {
         return add(lhs, rhs);
     }
 }
 
-impl Vec3Div of Div<Vec3Type> {
-    fn div(lhs: Vec3Type, rhs: Vec3Type) -> Vec3Type {
+impl Vec3Div of Div<Vec3> {
+    fn div(lhs: Vec3, rhs: Vec3) -> Vec3 {
         return div(lhs, rhs);
     }
 }
 
-impl Vec3Mul of Mul<Vec3Type> {
-    fn mul(lhs: Vec3Type, rhs: Vec3Type) -> Vec3Type {
+impl Vec3Mul of Mul<Vec3> {
+    fn mul(lhs: Vec3, rhs: Vec3) -> Vec3 {
         return mul(lhs, rhs);
     }
 }
 
-impl Vec3Rem of Rem<Vec3Type> {
-    fn rem(lhs: Vec3Type, rhs: Vec3Type) -> Vec3Type {
+impl Vec3Rem of Rem<Vec3> {
+    fn rem(lhs: Vec3, rhs: Vec3) -> Vec3 {
         return rem(lhs, rhs);
     }
 }
 
-impl Vec3Sub of Sub<Vec3Type> {
-    fn sub(lhs: Vec3Type, rhs: Vec3Type) -> Vec3Type {
+impl Vec3Sub of Sub<Vec3> {
+    fn sub(lhs: Vec3, rhs: Vec3) -> Vec3 {
         return sub(lhs, rhs);
     }
 }
 
 // Functions
 
-fn abs(a: Vec3Type) -> Vec3Type {
-    return Vec3Type { x: a.x.abs(), y: a.y.abs(), z: a.z.abs() };
+fn abs(a: Vec3) -> Vec3 {
+    return Vec3 { x: a.x.abs(), y: a.y.abs(), z: a.z.abs() };
 }
 
-fn add(a: Vec3Type, b: Vec3Type) -> Vec3Type {
-    return Vec3Type { x: a.x + b.x, y: a.y + b.y, z: a.z + b.z };
+fn add(a: Vec3, b: Vec3) -> Vec3 {
+    return Vec3 { x: a.x + b.x, y: a.y + b.y, z: a.z + b.z };
 }
 
-fn cross(a: Vec3Type, b: Vec3Type) -> Vec3Type {
-    return Vec3Type {
+fn cross(a: Vec3, b: Vec3) -> Vec3 {
+    return Vec3 {
         x: (a.y * b.z) - (a.z * b.y), y: (a.z * b.x) - (a.x * b.z), z: (a.x * b.y) - (a.y * b.x)
     };
 }
 
-fn div(a: Vec3Type, b: Vec3Type) -> Vec3Type {
-    return Vec3Type { x: a.x / b.x, y: a.y / b.y, z: a.z / b.z };
+fn div(a: Vec3, b: Vec3) -> Vec3 {
+    return Vec3 { x: a.x / b.x, y: a.y / b.y, z: a.z / b.z };
 }
 
-fn dot(a: Vec3Type, b: Vec3Type) -> FixedType {
+fn dot(a: Vec3, b: Vec3) -> Fixed {
     return (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
 }
 
-fn floor(a: Vec3Type) -> Vec3Type {
-    return Vec3Type { x: a.x.floor(), y: a.y.floor(), z: a.z.floor() };
+fn floor(a: Vec3) -> Vec3 {
+    return Vec3 { x: a.x.floor(), y: a.y.floor(), z: a.z.floor() };
 }
 
-fn mul(a: Vec3Type, b: Vec3Type) -> Vec3Type {
-    return Vec3Type { x: a.x * b.x, y: a.y * b.y, z: a.z * b.z };
+fn mul(a: Vec3, b: Vec3) -> Vec3 {
+    return Vec3 { x: a.x * b.x, y: a.y * b.y, z: a.z * b.z };
 }
 
-fn norm(a: Vec3Type) -> FixedType {
+fn norm(a: Vec3) -> Fixed {
     return dot(a, a).sqrt();
 }
 
-fn rem(a: Vec3Type, b: Vec3Type) -> Vec3Type {
-    return Vec3Type { x: a.x % b.x, y: a.y % b.y, z: a.z % b.z };
+fn rem(a: Vec3, b: Vec3) -> Vec3 {
+    return Vec3 { x: a.x % b.x, y: a.y % b.y, z: a.z % b.z };
 }
 
-fn sub(a: Vec3Type, b: Vec3Type) -> Vec3Type {
-    return Vec3Type { x: a.x - b.x, y: a.y - b.y, z: a.z - b.z };
+fn sub(a: Vec3, b: Vec3) -> Vec3 {
+    return Vec3 { x: a.x - b.x, y: a.y - b.y, z: a.z - b.z };
+}
+
+// Tests --------------------------------------------------------------------------------------------------------------
+
+use cubit::test::helpers::assert_precise;
+
+#[test]
+fn test_add() {
+    let a = Vec3Trait::new(
+        FixedTrait::new(1_u128, false), FixedTrait::new(2_u128, false), FixedTrait::new(3_u128, false)
+    );
+    let b = Vec3Trait::new(
+        FixedTrait::new(4_u128, false), FixedTrait::new(5_u128, false), FixedTrait::new(6_u128, false)
+    );
+    let c = a + b;
+    assert(c.x == FixedTrait::new(5_u128, false), 'invalid add');
+    assert(c.y == FixedTrait::new(7_u128, false), 'invalid add');
+    assert(c.z == FixedTrait::new(9_u128, false), 'invalid add');
+}
+
+#[test]
+fn test_mul() {
+    let a = Vec3Trait::new(
+        FixedTrait::new_unscaled(1_u128, false),
+        FixedTrait::new_unscaled(2_u128, false),
+        FixedTrait::new_unscaled(3_u128, false)
+    );
+    let b = Vec3Trait::new(
+        FixedTrait::new_unscaled(4_u128, false),
+        FixedTrait::new_unscaled(5_u128, false),
+        FixedTrait::new_unscaled(6_u128, false)
+    );
+    let c = a * b;
+    assert(c.x == FixedTrait::new_unscaled(4_u128, false), 'invalid mul');
+    assert(c.y == FixedTrait::new_unscaled(10_u128, false), 'invalid mul');
+    assert(c.z == FixedTrait::new_unscaled(18_u128, false), 'invalid mul');
+}
+
+#[test]
+fn test_div() {
+    let a = Vec3Trait::new(
+        FixedTrait::new(4_u128, false), FixedTrait::new(10_u128, false), FixedTrait::new(6_u128, false)
+    );
+    let b = Vec3Trait::new(
+        FixedTrait::new(1_u128, false), FixedTrait::new(5_u128, false), FixedTrait::new(3_u128, false)
+    );
+    let c = a / b;
+    assert(c.x == FixedTrait::new_unscaled(4_u128, false), 'invalid div');
+    assert(c.y == FixedTrait::new_unscaled(2_u128, false), 'invalid div');
+    assert(c.z == FixedTrait::new_unscaled(2_u128, false), 'invalid div');
+}
+
+#[test]
+fn test_dot() {
+    let a = Vec3Trait::new(
+        FixedTrait::new_unscaled(4_u128, false),
+        FixedTrait::new_unscaled(10_u128, false),
+        FixedTrait::new_unscaled(6_u128, false)
+    );
+    let b = Vec3Trait::new(
+        FixedTrait::new_unscaled(1_u128, false),
+        FixedTrait::new_unscaled(5_u128, false),
+        FixedTrait::new_unscaled(3_u128, false)
+    );
+    let c = a.dot(b);
+    assert(c == FixedTrait::new_unscaled(72_u128, false), 'invalid dot');
+}
+
+#[test]
+fn test_sub() {
+    let a = Vec3Trait::new(
+        FixedTrait::new(4_u128, false), FixedTrait::new(10_u128, false), FixedTrait::new(6_u128, false)
+    );
+    let b = Vec3Trait::new(
+        FixedTrait::new(1_u128, false), FixedTrait::new(5_u128, false), FixedTrait::new(3_u128, false)
+    );
+    let c = a - b;
+    assert(c.x == FixedTrait::new(3_u128, false), 'invalid sub');
+    assert(c.y == FixedTrait::new(5_u128, false), 'invalid sub');
+    assert(c.z == FixedTrait::new(3_u128, false), 'invalid sub');
+}
+
+#[test]
+fn test_cross() {
+    let a = Vec3Trait::new(
+        FixedTrait::new_unscaled(1_u128, false),
+        FixedTrait::new_unscaled(2_u128, false),
+        FixedTrait::new_unscaled(3_u128, false)
+    );
+    let b = Vec3Trait::new(
+        FixedTrait::new_unscaled(4_u128, false),
+        FixedTrait::new_unscaled(5_u128, false),
+        FixedTrait::new_unscaled(6_u128, false)
+    );
+    let c = a.cross(b);
+    assert(c.x == FixedTrait::new_unscaled(3_u128, true), 'invalid cross1');
+    assert(c.y == FixedTrait::new_unscaled(6_u128, false), 'invalid cross2');
+    assert(c.z == FixedTrait::new_unscaled(3_u128, true), 'invalid cross3');
+}
+
+#[test]
+fn test_norm() {
+    let a = Vec3Trait::new(
+        FixedTrait::new_unscaled(1_u128, false),
+        FixedTrait::new_unscaled(2_u128, false),
+        FixedTrait::new_unscaled(3_u128, false)
+    );
+    let b = a.norm();
+    assert_precise(b, 69021396225323770000, 'invalid norm', Option::None(())); // sqrt(14)
+}
+
+#[test]
+fn test_abs() {
+    let a = Vec3Trait::new(
+        FixedTrait::new_unscaled(1_u128, false),
+        FixedTrait::new_unscaled(2_u128, true),
+        FixedTrait::new_unscaled(3_u128, true)
+    );
+    let b = a.abs();
+    assert(b.x == FixedTrait::new_unscaled(1_u128, false), 'invalid abs');
+    assert(b.y == FixedTrait::new_unscaled(2_u128, false), 'invalid abs');
+    assert(b.z == FixedTrait::new_unscaled(3_u128, false), 'invalid abs');
+}
+
+#[test]
+fn test_floor() {
+    let a = Vec3Trait::new(
+        FixedTrait::new(27670116110564327000_u128, false), // 1.5
+        FixedTrait::new(59029581035870570000_u128, true), // -3.2
+        FixedTrait::new(0_u128, false)
+    );
+
+    let b = a.floor();
+    assert(b.x == FixedTrait::new_unscaled(1_u128, false), 'invalid floor');
+    assert(b.y == FixedTrait::new_unscaled(4_u128, true), 'invalid floor');
+    assert(b.z == FixedTrait::new(0_u128, false), 'invalid floor');
 }
