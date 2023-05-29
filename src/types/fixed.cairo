@@ -1,7 +1,4 @@
-use array::array_append;
-use array::array_new;
 use debug::PrintTrait;
-use gas::withdraw_gas;
 use integer::u256_safe_divmod;
 use integer::u256_as_non_zero;
 use integer::u256_from_felt252;
@@ -199,7 +196,7 @@ impl FixedImpl of Fixed {
 impl FixedPrint of PrintTrait<FixedType> {
     fn print(self: FixedType) {
         self.sign.print();
-        self.mag.into().print();
+        self.mag.print();
     }
 }
 
