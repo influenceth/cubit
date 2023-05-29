@@ -4,27 +4,25 @@ on:
   push:
     branches:
       - "**"
-
-env:
-  ARTIFACT_RELEASE_ARCHIVE_LINK: https://api.github.com/repos/starkware-libs/cairo/actions/artifacts/639996353/zip
-  ARTIFACT_RELEASE_ARCHIVE_NAME: cairo.zip
-  RELEASE_ARCHIVE_NAME: x86_64-unknown-linux-musl.tar.gz
-
+      
 jobs:
   main:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
+    
       - name: Install cairo compiler
         run: |
-          curl -H "Accept: application/vnd.github+json" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -L -o $ARTIFACT_RELEASE_ARCHIVE_NAME $ARTIFACT_RELEASE_ARCHIVE_LINK
-          unzip $ARTIFACT_RELEASE_ARCHIVE_NAME
-          tar -xvf $RELEASE_ARCHIVE_NAME
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+          rustup override set stable && rustup update
+          git clone https://github.com/starkware-libs/cairo
+          cd cairo
+          cargo build --all --release
+          cd ../
 
       - name: Add Cairo compiler to path
-        run: echo "$(pwd)/cairo/bin" >> $GITHUB_PATH
+        run: echo "$(pwd)/cairo/target/release" >> $GITHUB_PATH
 
       - name: Test the code
-        run: make test
+        run: scarb run test
