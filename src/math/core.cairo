@@ -319,14 +319,14 @@ fn test_into() {
 fn test_try_into_u128() {
     // Positive unscaled
     let a = FixedTrait::new_unscaled(5_u128, false);
-    assert(a.try_into().unwrap() == 5, 'invalid result');
+    assert(a.try_into().unwrap() == 5_u128, 'invalid result');
 
     // Positive scaled
     let b = FixedTrait::new(5_u128 * ONE_u128, false);
-    assert(b.try_into().unwrap() == 5, 'invalid result');
+    assert(b.try_into().unwrap() == 5_u128, 'invalid result');
 
     let c = FixedTrait::new(PI_u128, false);
-    assert(c.try_into().unwrap() == 3, 'invalid result');
+    assert(c.try_into().unwrap() == 3_u128, 'invalid result');
 
     // Zero
     let d = FixedTrait::new_unscaled(0_u128, false);

@@ -1,16 +1,10 @@
 use debug::PrintTrait;
-use integer::u256_safe_divmod;
-use integer::u256_as_non_zero;
-use integer::u256_from_felt252;
+use integer::{u256_safe_divmod, u256_as_non_zero, u256_from_felt252};
 use option::OptionTrait;
-use result::ResultTrait;
-use result::ResultTraitImpl;
+use result::{ResultTrait, ResultTraitImpl};
 use traits::{TryInto, Into};
 
-use cubit::math::core;
-use cubit::math::hyp;
-use cubit::math::trig;
-
+use cubit::math::{core, hyp, trig};
 
 // CONSTANTS
 
@@ -200,6 +194,7 @@ impl FixedPrint of PrintTrait<Fixed> {
     }
 }
 
+// Into a raw felt without unscaling
 impl FixedInto of Into<Fixed, felt252> {
     fn into(self: Fixed) -> felt252 {
         let mag_felt = self.mag.into();
@@ -215,10 +210,54 @@ impl FixedInto of Into<Fixed, felt252> {
 impl FixedTryIntoU128 of TryInto<Fixed, u128> {
     fn try_into(self: Fixed) -> Option<u128> {
         if self.sign {
+            return Option::None(());
+        } else {
+            // Unscale the magnitude and round down
+            return Option::Some(self.mag / ONE_u128);
+        }
+    }
+}
+
+impl FixedTryIntoU64 of TryInto<Fixed, u64> {
+    fn try_into(self: Fixed) -> Option<u64> {
+        if self.sign {
+            return Option::None(());
+        } else {
+            // Unscale the magnitude and round down
+            return Into::<u128, felt252>::into(self.mag / ONE_u128).try_into();
+        }
+    }
+}
+
+impl FixedTryIntoU32 of TryInto<Fixed, u32> {
+    fn try_into(self: Fixed) -> Option<u32> {
+        if self.sign {
             Option::None(())
         } else {
             // Unscale the magnitude and round down
-            Option::Some(self.mag / ONE_u128)
+            return Into::<u128, felt252>::into(self.mag / ONE_u128).try_into();
+        }
+    }
+}
+
+impl FixedTryIntoU16 of TryInto<Fixed, u16> {
+    fn try_into(self: Fixed) -> Option<u16> {
+        if self.sign {
+            Option::None(())
+        } else {
+            // Unscale the magnitude and round down
+            return Into::<u128, felt252>::into(self.mag / ONE_u128).try_into();
+        }
+    }
+}
+
+impl FixedTryIntoU8 of TryInto<Fixed, u8> {
+    fn try_into(self: Fixed) -> Option<u8> {
+        if self.sign {
+            Option::None(())
+        } else {
+            // Unscale the magnitude and round down
+            return Into::<u128, felt252>::into(self.mag / ONE_u128).try_into();
         }
     }
 }
@@ -806,4 +845,21 @@ fn test_rem() {
     let a = FixedTrait::new_unscaled(10_u128, false);
     let b = FixedTrait::new_unscaled(3_u128, true);
     assert(core::rem(a, b) == FixedTrait::new(2_u128 * ONE_u128, true), 'invalid remainder');
+}
+
+#[test]
+fn test_try_into() {
+    let mut a = FixedTrait::new_unscaled(42, false);
+    assert(a.try_into().unwrap() == 42_u128, 'invalid u128 conversion');
+    assert(a.try_into().unwrap() == 42_u64, 'invalid u64 conversion');
+    assert(a.try_into().unwrap() == 42_u32, 'invalid u32 conversion');
+    assert(a.try_into().unwrap() == 42_u16, 'invalid u16 conversion');
+    assert(a.try_into().unwrap() == 42_u8, 'invalid u8 conversion');
+}
+
+#[test]
+#[should_panic]
+fn test_try_into_fail() {
+    let mut a = FixedTrait::new_unscaled(42, true);
+    let b: u128 = a.try_into().unwrap();
 }
