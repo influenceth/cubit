@@ -103,7 +103,7 @@ use cubit::types::fixed::FixedInto;
 
 
 #[test]
-#[available_gas(100000000)]
+#[available_gas(10000000)]
 fn test_delta_t_from_nu_elliptical() {
     let nu = FixedTrait::new(17488672759741688000, false);
     let ecc = FixedTrait::new(5995191823955604275, false);
@@ -114,7 +114,7 @@ fn test_delta_t_from_nu_elliptical() {
 }
 
 #[test]
-#[available_gas(100000000)]
+#[available_gas(10000000)]
 fn test_delta_t_from_nu_hyperbolic() {
     let nu = FixedTrait::new(2350410669365469696, false);
     let ecc = FixedTrait::new(31933158665998606336, false);
@@ -125,7 +125,7 @@ fn test_delta_t_from_nu_hyperbolic() {
 }
 
 #[test]
-#[available_gas(100000000)]
+#[available_gas(20000000)]
 fn test_delta_t_from_nu_parabolic_low() {
     let nu = FixedTrait::new(9223372036854775808, false);
     let ecc = FixedTrait::new(18354510353341003776, false);
@@ -136,7 +136,7 @@ fn test_delta_t_from_nu_parabolic_low() {
 }
 
 #[test]
-#[available_gas(100000000)]
+#[available_gas(20000000)]
 fn test_delta_t_from_nu_parabolic_high() {
     let nu = FixedTrait::new(18446744073709551616, false);
     let ecc = FixedTrait::new(18538977794078097408, false);
