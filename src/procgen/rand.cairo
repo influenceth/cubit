@@ -5,7 +5,7 @@ use traits::Into;
 use cubit::types::fixed::{Fixed, FixedTrait, ONE_u128};
 
 fn derive(seed: felt252, entropy: felt252) -> felt252 {
-    let mut input = Default::default();
+    let mut input = ArrayTrait::new();
     input.append(seed);
     input.append(entropy);
     return poseidon::poseidon_hash_span(input.span());

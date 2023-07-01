@@ -52,7 +52,7 @@ fn div(a: Fixed, b: Fixed) -> Fixed {
 }
 
 fn eq(a: @Fixed, b: @Fixed) -> bool {
-    return a.mag == b.mag && a.sign == b.sign;
+    *a.mag == *b.mag & *a.sign == *b.sign
 }
 
 // Calculates the natural exponent of x: e^x
@@ -205,7 +205,7 @@ fn mul(a: Fixed, b: Fixed) -> Fixed {
 }
 
 fn ne(a: @Fixed, b: @Fixed) -> bool {
-    return a.mag != b.mag || a.sign != b.sign;
+    return *a.mag != *b.mag | *a.sign != *b.sign;
 }
 
 fn neg(a: Fixed) -> Fixed {
