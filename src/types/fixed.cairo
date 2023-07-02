@@ -28,6 +28,7 @@ struct Fixed {
 // TRAITS
 
 trait FixedTrait {
+    fn one() -> Fixed;
     // Constructors
     fn new(mag: u128, sign: bool) -> Fixed;
     fn new_unscaled(mag: u128, sign: bool) -> Fixed;
@@ -64,6 +65,10 @@ trait FixedTrait {
 // IMPLS
 
 impl FixedImpl of FixedTrait {
+    fn one() -> Fixed {
+        return Fixed { mag: ONE_u128, sign: false };
+    }
+
     fn new(mag: u128, sign: bool) -> Fixed {
         return Fixed { mag: mag, sign: sign };
     }
