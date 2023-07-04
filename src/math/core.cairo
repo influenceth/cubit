@@ -50,8 +50,8 @@ fn div(a: Fixed, b: Fixed) -> Fixed {
     return FixedTrait::new(res_u256.low, a.sign ^ b.sign);
 }
 
-fn eq(a: Fixed, b: Fixed) -> bool {
-    return a.mag == b.mag & a.sign == b.sign;
+fn eq(a: @Fixed, b: @Fixed) -> bool {
+    *a.mag == *b.mag & *a.sign == *b.sign
 }
 
 // Calculates the natural exponent of x: e^x
@@ -188,8 +188,8 @@ fn mul(a: Fixed, b: Fixed) -> Fixed {
     return FixedTrait::new(scaled_u256.low, a.sign ^ b.sign);
 }
 
-fn ne(a: Fixed, b: Fixed) -> bool {
-    return a.mag != b.mag | a.sign != b.sign;
+fn ne(a: @Fixed, b: @Fixed) -> bool {
+    return *a.mag != *b.mag | *a.sign != *b.sign;
 }
 
 fn neg(a: Fixed) -> Fixed {

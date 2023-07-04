@@ -270,12 +270,12 @@ impl FixedTryIntoU8 of TryInto<Fixed, u8> {
 impl FixedPartialEq of PartialEq<Fixed> {
     #[inline(always)]
     fn eq(lhs: Fixed, rhs: Fixed) -> bool {
-        return core::eq(lhs, rhs);
+        return core::eq(@lhs, @rhs);
     }
 
     #[inline(always)]
     fn ne(lhs: Fixed, rhs: Fixed) -> bool {
-        return core::ne(lhs, rhs);
+        return core::ne(@lhs, @rhs);
     }
 }
 
@@ -634,12 +634,12 @@ fn test_log10() {
 fn test_eq() {
     let a = FixedTrait::from_unscaled_felt(42);
     let b = FixedTrait::from_unscaled_felt(42);
-    let c = core::eq(a, b);
+    let c = core::eq(@a, @b);
     assert(c == true, 'invalid result');
 
     let a = FixedTrait::from_unscaled_felt(42);
     let b = FixedTrait::from_unscaled_felt(-42);
-    let c = core::eq(a, b);
+    let c = core::eq(@a, @b);
     assert(c == false, 'invalid result');
 }
 
@@ -648,12 +648,12 @@ fn test_eq() {
 fn test_ne() {
     let a = FixedTrait::from_unscaled_felt(42);
     let b = FixedTrait::from_unscaled_felt(42);
-    let c = core::ne(a, b);
+    let c = core::ne(@a, @b);
     assert(c == false, 'invalid result');
 
     let a = FixedTrait::from_unscaled_felt(42);
     let b = FixedTrait::from_unscaled_felt(-42);
-    let c = core::ne(a, b);
+    let c = core::ne(@a, @b);
     assert(c == true, 'invalid result');
 }
 

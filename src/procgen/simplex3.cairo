@@ -1,6 +1,6 @@
 use array::array_append;
 use array::array_new;
-use gas::withdraw_gas_all;
+// use gas::withdraw_gas_all;
 
 use cubit::math::comp::{max, min};
 use cubit::types::fixed::{Fixed, FixedTrait, ONE_u128};
@@ -232,7 +232,7 @@ fn test_simplex3_octaves_1() {
 }
 
 #[test]
-#[available_gas(30000000)]
+#[available_gas(32500000)]
 fn test_simplex3_octaves_2() {
     // [0.5, -1.23, 1.63]
     let r = simplex3::noise_octaves(
@@ -264,7 +264,7 @@ fn test_simplex3_octaves_3() {
 }
 
 #[test]
-#[available_gas(50000000)]
+#[available_gas(47500000)]
 fn test_simplex3_octaves_4() {
     // [-9.99, 8.25, 6.98]
     let r = simplex3::noise_octaves(
@@ -280,7 +280,7 @@ fn test_simplex3_octaves_4() {
 }
 
 #[test]
-#[available_gas(60000000)]
+#[available_gas(55000000)]
 fn test_simplex3_octaves_5() {
     // [-0.005, 12.578, -2.87]
     let r = simplex3::noise_octaves(
