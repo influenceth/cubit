@@ -28,6 +28,7 @@ struct Fixed {
 // TRAITS
 
 trait FixedTrait {
+    fn one() -> Fixed;
     // Constructors
     fn new(mag: u128, sign: bool) -> Fixed;
     fn new_unscaled(mag: u128, sign: bool) -> Fixed;
@@ -64,6 +65,10 @@ trait FixedTrait {
 // IMPLS
 
 impl FixedImpl of FixedTrait {
+    fn one() -> Fixed {
+        return Fixed { mag: ONE_u128, sign: false };
+    }
+
     fn new(mag: u128, sign: bool) -> Fixed {
         return Fixed { mag: mag, sign: sign };
     }
@@ -264,13 +269,13 @@ impl FixedTryIntoU8 of TryInto<Fixed, u8> {
 
 impl FixedPartialEq of PartialEq<Fixed> {
     #[inline(always)]
-    fn eq(lhs: Fixed, rhs: Fixed) -> bool {
-        return core::eq(@lhs, @rhs);
+    fn eq(lhs: @Fixed, rhs: @Fixed) -> bool {
+        return core::eq(lhs, rhs);
     }
 
     #[inline(always)]
-    fn ne(lhs: Fixed, rhs: Fixed) -> bool {
-        return core::ne(@lhs, @rhs);
+    fn ne(lhs: @Fixed, rhs: @Fixed) -> bool {
+        return core::ne(lhs, rhs);
     }
 }
 

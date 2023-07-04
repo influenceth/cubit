@@ -7,20 +7,21 @@ on:
   pull_request:
     branches:
       - main
-      
+
 jobs:
   main:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-    
+
       - name: Install cairo compiler
         run: |
           curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
           rustup override set stable && rustup update
           git clone https://github.com/starkware-libs/cairo
           cd cairo
+          git checkout v2.0.1
           cargo build --all --release
           cd ../
 
