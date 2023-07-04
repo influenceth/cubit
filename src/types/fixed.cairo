@@ -269,13 +269,13 @@ impl FixedTryIntoU8 of TryInto<Fixed, u8> {
 
 impl FixedPartialEq of PartialEq<Fixed> {
     #[inline(always)]
-    fn eq(lhs: Fixed, rhs: Fixed) -> bool {
-        return core::eq(@lhs, @rhs);
+    fn eq(lhs: @Fixed, rhs: @Fixed) -> bool {
+        return core::eq(lhs, rhs);
     }
 
     #[inline(always)]
-    fn ne(lhs: Fixed, rhs: Fixed) -> bool {
-        return core::ne(@lhs, @rhs);
+    fn ne(lhs: @Fixed, rhs: @Fixed) -> bool {
+        return core::ne(lhs, rhs);
     }
 }
 

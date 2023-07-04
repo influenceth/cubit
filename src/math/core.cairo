@@ -29,10 +29,10 @@ fn add(a: Fixed, b: Fixed) -> Fixed {
 fn ceil(a: Fixed) -> Fixed {
     let (div_u128, rem_u128) = _split_unsigned(a);
 
-    if (rem_u128 == 0_u128) {
+    if (rem_u128 == 0) {
         return a;
     } else if (a.sign == false) {
-        return FixedTrait::new_unscaled(div_u128 + 1_u128, false);
+        return FixedTrait::new_unscaled(div_u128 + 1, false);
     } else {
         return FixedTrait::from_unscaled_felt(div_u128.into() * -1);
     }
@@ -41,17 +41,17 @@ fn ceil(a: Fixed) -> Fixed {
 fn div(a: Fixed, b: Fixed) -> Fixed {
     let (a_high, a_low) = integer::u128_wide_mul(a.mag, ONE_u128);
     let a_u256 = u256 { low: a_low, high: a_high };
-    let b_u256 = u256 { low: b.mag, high: 0_u128 };
+    let b_u256 = u256 { low: b.mag, high: 0 };
     let res_u256 = a_u256 / b_u256;
 
-    assert(res_u256.high == 0_u128, 'result overflow');
+    assert(res_u256.high == 0, 'result overflow');
 
     // Re-apply sign
     return FixedTrait::new(res_u256.low, a.sign ^ b.sign);
 }
 
 fn eq(a: @Fixed, b: @Fixed) -> bool {
-    *a.mag == *b.mag & *a.sign == *b.sign
+    return (*a.mag == *b.mag) && (*a.sign == *b.sign);
 }
 
 // Calculates the natural exponent of x: e^x
@@ -71,14 +71,14 @@ fn exp2(a: Fixed) -> Fixed {
 
     if frac_part > 0 {
         let frac_fixed = FixedTrait::new(frac_part, false);
-        let r8 = FixedTrait::new(41691949755436_u128, false) * frac_fixed;
-        let r7 = (r8 + FixedTrait::new(231817862090993_u128, false)) * frac_fixed;
-        let r6 = (r7 + FixedTrait::new(2911875592466782_u128, false)) * frac_fixed;
-        let r5 = (r6 + FixedTrait::new(24539637786416367_u128, false)) * frac_fixed;
-        let r4 = (r5 + FixedTrait::new(177449490038807528_u128, false)) * frac_fixed;
-        let r3 = (r4 + FixedTrait::new(1023863119786103800_u128, false)) * frac_fixed;
-        let r2 = (r3 + FixedTrait::new(4431397849999009866_u128, false)) * frac_fixed;
-        let r1 = (r2 + FixedTrait::new(12786308590235521577_u128, false)) * frac_fixed;
+        let r8 = FixedTrait::new(41691949755436, false) * frac_fixed;
+        let r7 = (r8 + FixedTrait::new(231817862090993, false)) * frac_fixed;
+        let r6 = (r7 + FixedTrait::new(2911875592466782, false)) * frac_fixed;
+        let r5 = (r6 + FixedTrait::new(24539637786416367, false)) * frac_fixed;
+        let r4 = (r5 + FixedTrait::new(177449490038807528, false)) * frac_fixed;
+        let r3 = (r4 + FixedTrait::new(1023863119786103800, false)) * frac_fixed;
+        let r2 = (r3 + FixedTrait::new(4431397849999009866, false)) * frac_fixed;
+        let r1 = (r2 + FixedTrait::new(12786308590235521577, false)) * frac_fixed;
         res_u = res_u * (r1 + FixedTrait::new(ONE_u128, false));
     }
 
@@ -96,7 +96,7 @@ fn exp2_int(exp: u128) -> Fixed {
 fn floor(a: Fixed) -> Fixed {
     let (div_u128, rem_u128) = _split_unsigned(a);
 
-    if (rem_u128 == 0_u128) {
+    if (rem_u128 == 0) {
         return a;
     } else if (a.sign == false) {
         return FixedTrait::new_unscaled(div_u128, false);
@@ -132,7 +132,7 @@ fn le(a: Fixed, b: Fixed) -> bool {
 // Calculates the natural logarithm of x: ln(x)
 // self must be greater than zero
 fn ln(a: Fixed) -> Fixed {
-    return FixedTrait::new(12786308645202655660_u128, false) * log2(a); // ln(2) = 0.693...
+    return FixedTrait::new(12786308645202655660, false) * log2(a); // ln(2) = 0.693...
 }
 
 // Calculates the binary logarithm of x: log2(x)
@@ -165,7 +165,7 @@ fn log2(a: Fixed) -> Fixed {
 // Calculates the base 10 log of x: log10(x)
 // self must be greater than zero
 fn log10(a: Fixed) -> Fixed {
-    return FixedTrait::new(5553023288523357132_u128, false) * log2(a); // log10(2) = 0.301...
+    return FixedTrait::new(5553023288523357132, false) * log2(a); // log10(2) = 0.301...
 }
 
 fn lt(a: Fixed, b: Fixed) -> bool {
@@ -179,17 +179,17 @@ fn lt(a: Fixed, b: Fixed) -> bool {
 fn mul(a: Fixed, b: Fixed) -> Fixed {
     let (high, low) = integer::u128_wide_mul(a.mag, b.mag);
     let res_u256 = u256 { low: low, high: high };
-    let ONE_u256 = u256 { low: ONE_u128, high: 0_u128 };
+    let ONE_u256 = u256 { low: ONE_u128, high: 0 };
     let (scaled_u256, _) = u256_safe_divmod(res_u256, u256_as_non_zero(ONE_u256));
 
-    assert(scaled_u256.high == 0_u128, 'result overflow');
+    assert(scaled_u256.high == 0, 'result overflow');
 
     // Re-apply sign
     return FixedTrait::new(scaled_u256.low, a.sign ^ b.sign);
 }
 
 fn ne(a: @Fixed, b: @Fixed) -> bool {
-    return *a.mag != *b.mag | *a.sign != *b.sign;
+    return (*a.mag != *b.mag) || (*a.sign != *b.sign);
 }
 
 fn neg(a: Fixed) -> Fixed {
@@ -207,7 +207,7 @@ fn pow(a: Fixed, b: Fixed) -> Fixed {
     let (div_u128, rem_u128) = _split_unsigned(b);
 
     // use the more performant integer pow when y is an int
-    if (rem_u128 == 0_u128) {
+    if (rem_u128 == 0) {
         return pow_int(a, b.mag / ONE_u128, b.sign);
     }
 
@@ -257,7 +257,7 @@ fn round(a: Fixed) -> Fixed {
     let (div_u128, rem_u128) = _split_unsigned(a);
 
     if (HALF_u128 <= rem_u128) {
-        return FixedTrait::new(ONE_u128 * (div_u128 + 1_u128), a.sign);
+        return FixedTrait::new(ONE_u128 * (div_u128 + 1), a.sign);
     } else {
         return FixedTrait::new(ONE_u128 * div_u128, a.sign);
     }
@@ -465,25 +465,25 @@ fn test_into() {
 #[test]
 fn test_try_into_u128() {
     // Positive unscaled
-    let a = FixedTrait::new_unscaled(5_u128, false);
+    let a = FixedTrait::new_unscaled(5, false);
     assert(a.try_into().unwrap() == 5_u128, 'invalid result');
 
     // Positive scaled
-    let b = FixedTrait::new(5_u128 * ONE_u128, false);
+    let b = FixedTrait::new(5 * ONE_u128, false);
     assert(b.try_into().unwrap() == 5_u128, 'invalid result');
 
     let c = FixedTrait::new(PI_u128, false);
     assert(c.try_into().unwrap() == 3_u128, 'invalid result');
 
     // Zero
-    let d = FixedTrait::new_unscaled(0_u128, false);
+    let d = FixedTrait::new_unscaled(0, false);
     assert(d.try_into().unwrap() == 0_u128, 'invalid result');
 }
 
 #[test]
 #[should_panic]
 fn test_negative_try_into_u128() {
-    let a = FixedTrait::new_unscaled(1_u128, true);
+    let a = FixedTrait::new_unscaled(1, true);
     let a: u128 = a.try_into().unwrap();
 }
 
@@ -536,14 +536,14 @@ fn test_asin() {
 #[test]
 #[available_gas(2000000)]
 fn test_atan() {
-    let a = FixedTrait::new(2_u128 * ONE_u128, false);
+    let a = FixedTrait::new(2 * ONE_u128, false);
 
     // use `DEFAULT_PRECISION`
     assert_precise(a.atan(), 20423289048683266000, 'invalid two', Option::None(()));
 
     // use `custom_precision`
     assert_precise(
-        a.atan(), 20423289048683266000, 'invalid two', Option::Some(184467440737_u128)
+        a.atan(), 20423289048683266000, 'invalid two', Option::Some(184467440737)
     ); // 1e-8
 }
 
@@ -850,14 +850,14 @@ fn test_tanh() {
 #[test]
 #[available_gas(1000000)]
 fn test_acosh() {
-    let a = FixedTrait::new(69400261067392811864_u128, false); // 3.762195691016423
+    let a = FixedTrait::new(69400261067392811864, false); // 3.762195691016423
     assert_precise(a.acosh(), 2 * ONE, 'invalid two', Option::None(()));
 }
 
 #[test]
 #[available_gas(1000000)]
 fn test_asinh() {
-    let a = FixedTrait::new(66903765733337761105_u128, false); // 3.6268604077773023
+    let a = FixedTrait::new(66903765733337761105, false); // 3.6268604077773023
     assert_precise(a.asinh(), 2 * ONE, 'invalid two', Option::None(()));
 }
 
