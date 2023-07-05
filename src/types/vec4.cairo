@@ -2,7 +2,7 @@ use debug::PrintTrait;
 
 use cubit::types::fixed::{Fixed, FixedTrait, FixedPrint};
 
-#[derive(Copy, Drop)]
+#[derive(Copy, Drop, Serde)]
 struct Vec4 {
     x: Fixed,
     y: Fixed,
