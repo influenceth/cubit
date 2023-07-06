@@ -194,6 +194,7 @@ fn mul(a: Fixed, b: Fixed) -> Fixed {
     let (high, low) = integer::u128_wide_mul(a.mag, b.mag);
     let res_u256 = u256 { low: low, high: high };
     let ONE_u256 = u256 { low: ONE_u128, high: 0 };
+
     let (scaled_u256, _) = u256_safe_divmod(res_u256, u256_as_non_zero(ONE_u256));
 
     assert(scaled_u256.high == 0, 'result overflow');
