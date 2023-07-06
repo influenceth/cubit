@@ -1,5 +1,8 @@
 use debug::PrintTrait;
 use integer::{u256_safe_divmod, u256_as_non_zero, u256_from_felt252};
+
+// TODO: https://github.com/BibliothecaDAO/loot-survivor/blob/main/contracts/pack/src/pack.cairo#L10
+
 use option::OptionTrait;
 use result::{ResultTrait, ResultTraitImpl};
 use traits::{TryInto, Into};

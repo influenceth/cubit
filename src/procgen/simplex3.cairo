@@ -124,30 +124,25 @@ fn noise(v: Vec3) -> Fixed {
         * m.dot(Vec4Trait::new(p0.dot(x0), p1.dot(x1), p2.dot(x2), p3.dot(x3)));
 }
 
-fn noise_octaves(v: Vec3, octaves: u128, persistence: Fixed) -> Fixed {
-    return _noise3_octaves_loop(
-        v: v,
-        p: persistence,
-        o: octaves,
-        s: FixedTrait::new(ONE_u128, false),
-        t: FixedTrait::new(0_u128, false),
-        n: FixedTrait::new(0_u128, false)
-    );
+use debug::PrintTrait;
+
+fn noise_octaves(v: Vec3, mut octaves: u128, persistence: Fixed) -> Fixed {
+    let mut s = FixedTrait::new(ONE_u128, false);
+    let mut t = FixedTrait::new(0, false);
+    let mut n = FixedTrait::new(0, false);
+
+    loop {
+        if octaves == 0 { break; }
+        octaves -= 1;
+        n += noise(v / Vec3Trait::splat(s)) * s;
+        t += s;
+        s *= persistence;
+    };
+
+    return n / t;
 }
 
 // TODO: get noise at percentile
-
-fn _noise3_octaves_loop(
-    v: Vec3, p: Fixed, o: u128, s: Fixed, t: Fixed, n: Fixed
-) -> Fixed {
-    if o == 0_u128 { return n / t; }
-    let resized_point = v / Vec3Trait::splat(s);
-    let current_noise = noise(resized_point);
-    let scaled_noise = current_noise * s;
-    let new_scale = s * p;
-
-    return _noise3_octaves_loop(v: v, p: p, o: o - 1_u128, s: new_scale, t: t + s, n: n + scaled_noise);
-}
 
 // Tests --------------------------------------------------------------------------------------------------------------
 
@@ -155,14 +150,14 @@ use cubit::procgen::simplex3;
 use cubit::test::helpers::assert_precise;
 
 #[test]
-#[available_gas(10000000)]
+#[available_gas(5000000)]
 fn test_simplex3_1() {
     let r = simplex3::noise(Vec3Trait::splat(FixedTrait::new(0_u128, false))); // [ 0, 0, 0 ]
     assert_precise(r, -8040438090352662000, '0,0,0 out of bounds', Option::None(())); // -0.43587
 }
 
 #[test]
-#[available_gas(10000000)]
+#[available_gas(5000000)]
 fn test_simplex3_2() {
     // [0.5, -1.23, 1.63]
     let r = simplex3::noise(
@@ -176,7 +171,7 @@ fn test_simplex3_2() {
 }
 
 #[test]
-#[available_gas(10000000)]
+#[available_gas(5000000)]
 fn test_simplex3_3() {
     // [-1.94, -1.25, -1.63]
     let r = simplex3::noise(
@@ -190,7 +185,7 @@ fn test_simplex3_3() {
 }
 
 #[test]
-#[available_gas(10000000)]
+#[available_gas(5000000)]
 fn test_simplex3_4() {
     // [-9.99, 8.25, 6.98]
     let r = simplex3::noise(
@@ -206,7 +201,7 @@ fn test_simplex3_4() {
 }
 
 #[test]
-#[available_gas(10000000)]
+#[available_gas(5000000)]
 fn test_simplex3_5() {
     // [-0.005, 12.578, -2.87]
     let r = simplex3::noise(
@@ -222,17 +217,17 @@ fn test_simplex3_5() {
 }
 
 #[test]
-#[available_gas(25000000)]
+#[available_gas(15000000)]
 fn test_simplex3_octaves_1() {
     // [0.0, 0.0, 0.0]
     let r = simplex3::noise_octaves(
-        Vec3Trait::splat(FixedTrait::new(0_u128, false)), 2_u128, FixedTrait::new(9223372036854775808_u128, false)
+        Vec3Trait::splat(FixedTrait::new(0, false)), 2, FixedTrait::new(9223372036854775808, false)
     );
     assert_precise(r, -8040438090352662000, '... out of bounds', Option::None(())); // -0.4359
 }
 
 #[test]
-#[available_gas(32500000)]
+#[available_gas(20000000)]
 fn test_simplex3_octaves_2() {
     // [0.5, -1.23, 1.63]
     let r = simplex3::noise_octaves(
@@ -241,14 +236,14 @@ fn test_simplex3_octaves_2() {
             FixedTrait::from_felt(-22689495210662750000),
             FixedTrait::from_felt(30068192840146567000),
         ),
-        3_u128,
-        FixedTrait::new(9223372036854775808_u128, false)
+        3,
+        FixedTrait::new(9223372036854775808, false)
     );
     assert_precise(r, 6054457010196317000, '... out of bounds', Option::None(())); // 0.3282
 }
 
 #[test]
-#[available_gas(40000000)]
+#[available_gas(25000000)]
 fn test_simplex3_octaves_3() {
     // [-1.94, -1.25, -1.63]
     let r = simplex3::noise_octaves(
@@ -264,7 +259,7 @@ fn test_simplex3_octaves_3() {
 }
 
 #[test]
-#[available_gas(47500000)]
+#[available_gas(30000000)]
 fn test_simplex3_octaves_4() {
     // [-9.99, 8.25, 6.98]
     let r = simplex3::noise_octaves(
@@ -280,7 +275,7 @@ fn test_simplex3_octaves_4() {
 }
 
 #[test]
-#[available_gas(55000000)]
+#[available_gas(35000000)]
 fn test_simplex3_octaves_5() {
     // [-0.005, 12.578, -2.87]
     let r = simplex3::noise_octaves(
