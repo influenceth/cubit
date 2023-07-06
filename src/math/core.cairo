@@ -1,7 +1,7 @@
 use option::OptionTrait;
 use result::{ResultTrait, ResultTraitImpl};
 use traits::{Into, TryInto};
-use integer::{u256_safe_divmod, u256_as_non_zero, u256_from_felt252, upcast};
+use integer::{u256_safe_divmod, u256_as_non_zero, upcast};
 
 use cubit::types::fixed::{
   HALF_u128,
@@ -23,18 +23,32 @@ fn abs(a: Fixed) -> Fixed {
 }
 
 fn add(a: Fixed, b: Fixed) -> Fixed {
-    return FixedTrait::from_felt(a.into() + b.into());
+    if a.sign == b.sign {
+        return FixedTrait::new(a.mag + b.mag, a.sign);
+    }
+
+    if a.mag == b.mag {
+        return FixedTrait::new(0, false);
+    }
+
+    if (a.mag > b.mag) {
+        return FixedTrait::new(a.mag - b.mag, a.sign);
+    } else {
+        return FixedTrait::new(b.mag - a.mag, b.sign);
+    }
 }
 
 fn ceil(a: Fixed) -> Fixed {
     let (div_u128, rem_u128) = _split_unsigned(a);
 
-    if (rem_u128 == 0) {
+    if rem_u128 == 0 {
         return a;
-    } else if (a.sign == false) {
+    } else if !a.sign {
         return FixedTrait::new_unscaled(div_u128 + 1, false);
+    } else if div_u128 == 0 {
+        return FixedTrait::new_unscaled(0, false);
     } else {
-        return FixedTrait::from_unscaled_felt(div_u128.into() * -1);
+        return FixedTrait::new_unscaled(div_u128, true);
     }
 }
 
@@ -96,36 +110,36 @@ fn exp2_int(exp: u128) -> Fixed {
 fn floor(a: Fixed) -> Fixed {
     let (div_u128, rem_u128) = _split_unsigned(a);
 
-    if (rem_u128 == 0) {
+    if rem_u128 == 0 {
         return a;
-    } else if (a.sign == false) {
+    } else if !a.sign {
         return FixedTrait::new_unscaled(div_u128, false);
     } else {
-        return FixedTrait::from_unscaled_felt(-1 * div_u128.into() - 1);
+        return FixedTrait::new_unscaled(div_u128 + 1, true);
     }
 }
 
 fn ge(a: Fixed, b: Fixed) -> bool {
-    if (a.sign != b.sign) {
+    if a.sign != b.sign {
         return !a.sign;
     } else {
-        return (a.mag == b.mag) | ((a.mag > b.mag) ^ a.sign);
+        return (a.mag == b.mag) || ((a.mag > b.mag) ^ a.sign);
     }
 }
 
 fn gt(a: Fixed, b: Fixed) -> bool {
-    if (a.sign != b.sign) {
+    if a.sign != b.sign {
         return !a.sign;
     } else {
-        return (a.mag != b.mag) & ((a.mag > b.mag) ^ a.sign);
+        return (a.mag != b.mag) && ((a.mag > b.mag) ^ a.sign);
     }
 }
 
 fn le(a: Fixed, b: Fixed) -> bool {
-    if (a.sign != b.sign) {
+    if a.sign != b.sign {
         return a.sign;
     } else {
-        return (a.mag == b.mag) | ((a.mag < b.mag) ^ a.sign);
+        return (a.mag == b.mag) || ((a.mag < b.mag) ^ a.sign);
     }
 }
 
@@ -169,10 +183,10 @@ fn log10(a: Fixed) -> Fixed {
 }
 
 fn lt(a: Fixed, b: Fixed) -> bool {
-    if (a.sign != b.sign) {
+    if a.sign != b.sign {
         return a.sign;
     } else {
-        return (a.mag != b.mag) & ((a.mag < b.mag) ^ a.sign);
+        return (a.mag != b.mag) && ((a.mag < b.mag) ^ a.sign);
     }
 }
 
@@ -193,8 +207,10 @@ fn ne(a: @Fixed, b: @Fixed) -> bool {
 }
 
 fn neg(a: Fixed) -> Fixed {
-    if (a.sign == false) {
-        return FixedTrait::new(a.mag, true);
+    if a.mag == 0 {
+        return a;
+    } else if !a.sign {
+        return FixedTrait::new(a.mag, !a.sign);
     } else {
         return FixedTrait::new(a.mag, false);
     }
@@ -274,7 +290,7 @@ fn sqrt(a: Fixed) -> Fixed {
 }
 
 fn sub(a: Fixed, b: Fixed) -> Fixed {
-    return FixedTrait::from_felt(a.into() - b.into());
+    return add(a, -b);
 }
 
 // Calculates the most significant bit
