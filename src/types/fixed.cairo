@@ -31,12 +31,15 @@ struct Fixed {
 // TRAITS
 
 trait FixedTrait {
+    fn zero() -> Fixed;
     fn one() -> Fixed;
+
     // Constructors
     fn new(mag: u128, sign: bool) -> Fixed;
     fn new_unscaled(mag: u128, sign: bool) -> Fixed;
     fn from_felt(val: felt252) -> Fixed;
     fn from_unscaled_felt(val: felt252) -> Fixed;
+
     // Math
     fn abs(self: Fixed) -> Fixed;
     fn ceil(self: Fixed) -> Fixed;
@@ -49,6 +52,7 @@ trait FixedTrait {
     fn pow(self: Fixed, b: Fixed) -> Fixed;
     fn round(self: Fixed) -> Fixed;
     fn sqrt(self: Fixed) -> Fixed;
+
     // Trigonometry
     fn acos(self: Fixed) -> Fixed;
     fn asin(self: Fixed) -> Fixed;
@@ -56,6 +60,7 @@ trait FixedTrait {
     fn cos(self: Fixed) -> Fixed;
     fn sin(self: Fixed) -> Fixed;
     fn tan(self: Fixed) -> Fixed;
+
     // Hyperbolic
     fn acosh(self: Fixed) -> Fixed;
     fn asinh(self: Fixed) -> Fixed;
@@ -68,6 +73,10 @@ trait FixedTrait {
 // IMPLS
 
 impl FixedImpl of FixedTrait {
+    fn zero() -> Fixed {
+        return Fixed { mag: 0, sign: false };
+    }
+
     fn one() -> Fixed {
         return Fixed { mag: ONE_u128, sign: false };
     }

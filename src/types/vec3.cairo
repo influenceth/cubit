@@ -19,6 +19,12 @@ trait Vec3Trait {
     fn dot(self: Vec3, rhs: Vec3) -> Fixed;
     fn floor(self: Vec3) -> Vec3;
     fn norm(self: Vec3) -> Fixed;
+    // Scalar Math
+    fn add(self: Vec3, scalar: Fixed) -> Vec3;
+    fn sub(self: Vec3, scalar: Fixed) -> Vec3;
+    fn mul(self: Vec3, scalar: Fixed) -> Vec3;
+    fn div(self: Vec3, scalar: Fixed) -> Vec3;
+    fn rem(self: Vec3, scalar: Fixed) -> Vec3;
 }
 
 // Implementations
@@ -54,6 +60,26 @@ impl Vec3Impl of Vec3Trait {
 
     fn norm(self: Vec3) -> Fixed {
         return norm(self);
+    }
+
+    fn add(self: Vec3, scalar: Fixed) -> Vec3 {
+        return Vec3 { x: self.x + scalar, y: self.y + scalar, z: self.z + scalar };
+    }
+
+    fn sub(self: Vec3, scalar: Fixed) -> Vec3 {
+        return Vec3 { x: self.x - scalar, y: self.y - scalar, z: self.z - scalar };
+    }
+
+    fn mul(self: Vec3, scalar: Fixed) -> Vec3 {
+        return Vec3 { x: self.x * scalar, y: self.y * scalar, z: self.z * scalar };
+    }
+
+    fn div(self: Vec3, scalar: Fixed) -> Vec3 {
+        return Vec3 { x: self.x / scalar, y: self.y / scalar, z: self.z / scalar };
+    }
+
+    fn rem(self: Vec3, scalar: Fixed) -> Vec3 {
+        return Vec3 { x: self.x % scalar, y: self.y % scalar, z: self.z % scalar };
     }
 }
 

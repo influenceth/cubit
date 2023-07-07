@@ -28,7 +28,7 @@ fn add(a: Fixed, b: Fixed) -> Fixed {
     }
 
     if a.mag == b.mag {
-        return FixedTrait::new(0, false);
+        return FixedTrait::zero();
     }
 
     if (a.mag > b.mag) {
@@ -76,7 +76,7 @@ fn exp(a: Fixed) -> Fixed {
 // Calculates the binary exponent of x: 2^x
 fn exp2(a: Fixed) -> Fixed {
     if (a.mag == 0) {
-        return FixedTrait::new(ONE_u128, false);
+        return FixedTrait::one();
     }
 
     let (int_part, frac_part) = _split_unsigned(a);
@@ -93,11 +93,11 @@ fn exp2(a: Fixed) -> Fixed {
         let r3 = (r4 + FixedTrait::new(1023863119786103800, false)) * frac_fixed;
         let r2 = (r3 + FixedTrait::new(4431397849999009866, false)) * frac_fixed;
         let r1 = (r2 + FixedTrait::new(12786308590235521577, false)) * frac_fixed;
-        res_u = res_u * (r1 + FixedTrait::new(ONE_u128, false));
+        res_u = res_u * (r1 + FixedTrait::one());
     }
 
     if (a.sign == true) {
-        return FixedTrait::new(ONE_u128, false) / res_u;
+        return FixedTrait::one() / res_u;
     } else {
         return res_u;
     }
@@ -155,10 +155,10 @@ fn log2(a: Fixed) -> Fixed {
     assert(a.sign == false, 'must be positive');
 
     if (a.mag == ONE_u128) {
-        return FixedTrait::new(0, false);
+        return FixedTrait::zero();
     } else if (a.mag < ONE_u128) {
         // Compute true inverse binary log if 0 < x < 1
-        let div = FixedTrait::new(ONE_u128, false) / a;
+        let div = FixedTrait::one() / a;
         return -log2(div);
     }
 
@@ -194,7 +194,6 @@ fn mul(a: Fixed, b: Fixed) -> Fixed {
     let (high, low) = integer::u128_wide_mul(a.mag, b.mag);
     let res_u256 = u256 { low: low, high: high };
     let ONE_u256 = u256 { low: ONE_u128, high: 0 };
-
     let (scaled_u256, _) = u256_safe_divmod(res_u256, u256_as_non_zero(ONE_u256));
 
     assert(scaled_u256.high == 0, 'result overflow');
@@ -238,14 +237,14 @@ fn pow_int(a: Fixed, b: u128, sign: bool) -> Fixed {
     let mut n = b;
 
     if sign == true {
-        x = FixedTrait::new(ONE_u128, false) / x;
+        x = FixedTrait::one() / x;
     }
 
     if n == 0 {
-        return FixedTrait::new(ONE_u128, false);
+        return FixedTrait::one();
     }
 
-    let mut y = FixedTrait::new(ONE_u128, false);
+    let mut y = FixedTrait::one();
     let two = integer::u128_as_non_zero(2);
 
     loop {
@@ -539,14 +538,14 @@ fn test_abs() {
 #[test]
 #[available_gas(1000000)]
 fn test_acos() {
-    let a = FixedTrait::new(ONE_u128, false);
+    let a = FixedTrait::one();
     assert(a.acos().into() == 0, 'invalid one');
 }
 
 #[test]
 #[available_gas(1000000)]
 fn test_asin() {
-    let a = FixedTrait::new(ONE_u128, false);
+    let a = FixedTrait::one();
     assert(a.asin().into() == 28976077832308491370, 'invalid one'); // PI / 2
 }
 
