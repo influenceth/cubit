@@ -55,11 +55,17 @@ trait FixedTrait {
 
     // Trigonometry
     fn acos(self: Fixed) -> Fixed;
+    fn acos_fast(self: Fixed) -> Fixed;
     fn asin(self: Fixed) -> Fixed;
+    fn asin_fast(self: Fixed) -> Fixed;
     fn atan(self: Fixed) -> Fixed;
+    fn atan_fast(self: Fixed) -> Fixed;
     fn cos(self: Fixed) -> Fixed;
+    fn cos_fast(self: Fixed) -> Fixed;
     fn sin(self: Fixed) -> Fixed;
+    fn sin_fast(self: Fixed) -> Fixed;
     fn tan(self: Fixed) -> Fixed;
+    fn tan_fast(self: Fixed) -> Fixed;
 
     // Hyperbolic
     fn acosh(self: Fixed) -> Fixed;
@@ -106,6 +112,10 @@ impl FixedImpl of FixedTrait {
         return trig::acos(self);
     }
 
+    fn acos_fast(self: Fixed) -> Fixed {
+        return trig::acos_fast(self);
+    }
+
     fn acosh(self: Fixed) -> Fixed {
         return hyp::acosh(self);
     }
@@ -114,12 +124,20 @@ impl FixedImpl of FixedTrait {
         return trig::asin(self);
     }
 
+    fn asin_fast(self: Fixed) -> Fixed {
+        return trig::asin_fast(self);
+    }
+
     fn asinh(self: Fixed) -> Fixed {
         return hyp::asinh(self);
     }
 
     fn atan(self: Fixed) -> Fixed {
         return trig::atan(self);
+    }
+
+    fn atan_fast(self: Fixed) -> Fixed {
+        return trig::atan_fast(self);
     }
 
     fn atanh(self: Fixed) -> Fixed {
@@ -132,6 +150,10 @@ impl FixedImpl of FixedTrait {
 
     fn cos(self: Fixed) -> Fixed {
         return trig::cos(self);
+    }
+
+    fn cos_fast(self: Fixed) -> Fixed {
+        return trig::cos_fast(self);
     }
 
     fn cosh(self: Fixed) -> Fixed {
@@ -185,6 +207,10 @@ impl FixedImpl of FixedTrait {
         return trig::sin(self);
     }
 
+    fn sin_fast(self: Fixed) -> Fixed {
+        return trig::sin_fast(self);
+    }
+
     fn sinh(self: Fixed) -> Fixed {
         return hyp::sinh(self);
     }
@@ -197,6 +223,10 @@ impl FixedImpl of FixedTrait {
 
     fn tan(self: Fixed) -> Fixed {
         return trig::tan(self);
+    }
+
+    fn tan_fast(self: Fixed) -> Fixed {
+        return trig::tan_fast(self);
     }
 
     fn tanh(self: Fixed) -> Fixed {
