@@ -1,3 +1,4 @@
+use debug::PrintTrait;
 use option::OptionTrait;
 use result::{ResultTrait, ResultTraitImpl};
 use traits::{Into, TryInto};
@@ -75,7 +76,7 @@ fn exp2(a: Fixed) -> Fixed {
     let int_res = FixedTrait::new_unscaled(lut::exp2(int_part), false);
     let mut res_u = int_res;
 
-    if frac_part > 0 {
+    if frac_part != 0 {
         let frac_fixed = FixedTrait::new(frac_part, false);
         let r8 = FixedTrait::new(41691949755436, false) * frac_fixed;
         let r7 = (r8 + FixedTrait::new(231817862090993, false)) * frac_fixed;

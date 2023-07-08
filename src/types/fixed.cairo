@@ -538,7 +538,7 @@ fn test_sqrt() {
 }
 
 #[test]
-#[available_gas(10000000)]
+#[available_gas(2750000)]
 fn test_pow_int() {
     let a = FixedTrait::from_unscaled_felt(3);
     let b = FixedTrait::from_unscaled_felt(4);
@@ -588,7 +588,7 @@ fn test_pow_frac() {
 }
 
 #[test]
-#[available_gas(10000000)]
+#[available_gas(1000000)]
 fn test_exp() {
     let a = FixedTrait::new_unscaled(2_u128, false);
     assert_precise(
@@ -605,7 +605,7 @@ fn test_exp() {
 }
 
 #[test]
-#[available_gas(10000000)]
+#[available_gas(1400000)]
 fn test_exp2() {
     let a = FixedTrait::new(27670116110564327424_u128, false); // 1.5
     assert_precise(
@@ -630,7 +630,7 @@ fn test_exp2() {
 }
 
 #[test]
-#[available_gas(10000000)]
+#[available_gas(1200000)]
 fn test_ln() {
     let a = FixedTrait::from_unscaled_felt(1);
     assert(core::ln(a).into() == 0, 'invalid ln of 1');
@@ -645,7 +645,7 @@ fn test_ln() {
 }
 
 #[test]
-#[available_gas(10000000)]
+#[available_gas(1000000)]
 fn test_log2() {
     let a = FixedTrait::from_unscaled_felt(32);
     assert_precise(core::log2(a), 5 * ONE, 'invalid log2 32', Option::None(()));
@@ -662,7 +662,7 @@ fn test_log2() {
 }
 
 #[test]
-#[available_gas(10000000)]
+#[available_gas(1000000)]
 fn test_log10() {
     let a = FixedTrait::from_unscaled_felt(100);
     assert_precise(core::log10(a), 2 * ONE, 'invalid log10', Option::None(()));
