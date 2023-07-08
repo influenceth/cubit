@@ -3,7 +3,7 @@ use traits::Into;
 
 use cubit::types::fixed::{Fixed, FixedTrait, FixedSub, FixedPartialEq, FixedPrint};
 
-const DEFAULT_PRECISION: u128 = 1844674407370_u128; // 1e-7
+const DEFAULT_PRECISION: u128 = 1844674407370; // 1e-7
 
 // To use `DEFAULT_PRECISION`, final arg is: `Option::None(())`.
 // To use `custom_precision` of 184467440737_u128: `Option::Some(184467440737_u128)`.

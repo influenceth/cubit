@@ -1,7 +1,8 @@
+use integer::{u128_safe_divmod, u128_as_non_zero};
 use option::OptionTrait;
 
+use cubit::math::lut;
 use cubit::types::fixed::{Fixed, FixedTrait, FixedAdd, FixedSub, FixedMul, FixedDiv, ONE_u128};
-
 
 // CONSTANTS
 
@@ -24,6 +25,18 @@ fn acos(a: Fixed) -> Fixed {
     }
 }
 
+fn acos_fast(a: Fixed) -> Fixed {
+    assert(a.mag <= ONE_u128, 'out of range');
+    let asin_arg = (FixedTrait::one() - a * a).sqrt();
+    let asin_res = asin_fast(asin_arg);
+
+    if (a.sign) {
+        return FixedTrait::new(PI_u128, false) - asin_res;
+    } else {
+        return asin_res;
+    }
+}
+
 // Calculates arcsin(a) for -1 <= a <= 1 (fixed point)
 // arcsin(a) = arctan(a / sqrt(1 - a^2))
 fn asin(a: Fixed) -> Fixed {
@@ -35,6 +48,17 @@ fn asin(a: Fixed) -> Fixed {
 
     let div = (FixedTrait::one() - a * a).sqrt();
     return atan(a / div);
+}
+
+fn asin_fast(a: Fixed) -> Fixed {
+    assert(a.mag <= ONE_u128, 'out of range');
+
+    if (a.mag == ONE_u128) {
+        return FixedTrait::new(HALF_PI_u128, a.sign);
+    }
+
+    let div = (FixedTrait::one() - a * a).sqrt();
+    return atan_fast(a / div);
 }
 
 // Calculates arctan(a) (fixed point)
@@ -80,20 +104,54 @@ fn atan(a: Fixed) -> Fixed {
     return FixedTrait::new(res.mag, a.sign);
 }
 
+fn atan_fast(a: Fixed) -> Fixed {
+    let mut at = a.abs();
+    let mut shift = false;
+    let mut invert = false;
+
+    // Invert value when a > 1
+    if (at.mag > ONE_u128) {
+        at = FixedTrait::one() / at;
+        invert = true;
+    }
+
+    // Account for lack of precision in polynomaial when a > 0.7
+    if (at.mag > 12912720851596686131) {
+        let sqrt3_3 = FixedTrait::new(10650232656328343401, false); // sqrt(3) / 3
+        at = (at - sqrt3_3) / (FixedTrait::one() + at * sqrt3_3);
+        shift = true;
+    }
+
+    let (start, low, high) = lut::atan(at.mag);
+    let partial_step = FixedTrait::new(at.mag - start, false) / FixedTrait::new(129127208515966848, false);
+    let mut res = partial_step * FixedTrait::new(high - low, false) + FixedTrait::new(low, false);
+
+    // Adjust for sign change, inversion, and shift
+    if (shift) {
+        res = res + FixedTrait::new(9658692610769497123, false); // pi / 6
+    }
+
+    if (invert) {
+        res = res - FixedTrait::new(HALF_PI_u128, false);
+    }
+
+    return FixedTrait::new(res.mag, a.sign);
+}
+
 // Calculates cos(a) with a in radians (fixed point)
 fn cos(a: Fixed) -> Fixed {
     return sin(FixedTrait::new(HALF_PI_u128, false) - a);
 }
 
+fn cos_fast(a: Fixed) -> Fixed {
+    return sin_fast(FixedTrait::new(HALF_PI_u128, false) - a);
+}
+
 fn sin(a: Fixed) -> Fixed {
     let a1_u128 = a.mag % (2 * PI_u128);
-    let whole_rem = a1_u128 / PI_u128;
-    let a2 = FixedTrait::new(a1_u128 % PI_u128, false);
-    let mut partial_sign = false;
-
-    if (whole_rem == 1) {
-        partial_sign = true;
-    }
+    let (whole_rem, partial_rem) = u128_safe_divmod(a1_u128, u128_as_non_zero(PI_u128));
+    let a2 = FixedTrait::new(partial_rem, false);
+    let partial_sign = whole_rem == 1;
 
     let acc = Fixed { mag: ONE_u128, sign: false };
     let loop_res = a2 * _sin_loop(a2, 7, acc);
@@ -101,10 +159,34 @@ fn sin(a: Fixed) -> Fixed {
     return FixedTrait::new(loop_res.mag, res_sign);
 }
 
+fn sin_fast(a: Fixed) -> Fixed {
+    let a1_u128 = a.mag % (2 * PI_u128);
+    let (whole_rem, mut partial_rem) = u128_safe_divmod(a1_u128, u128_as_non_zero(PI_u128));
+    let partial_sign = whole_rem == 1;
+
+    if partial_rem >= PI_u128 {
+        partial_rem = PI_u128 - partial_rem;
+    }
+
+    let (start, low, high) = lut::sin(partial_rem);
+    let partial_step = FixedTrait::new(partial_rem - start, false) / FixedTrait::new(113187804032455040, false);
+    let res = partial_step * (FixedTrait::new(high, false) - FixedTrait::new(low, false)) + FixedTrait::new(low, false);
+
+    let res_sign = a.sign ^ partial_sign;
+    return FixedTrait::new(res.mag, res_sign);
+}
+
 // Calculates tan(a) with a in radians (fixed point)
 fn tan(a: Fixed) -> Fixed {
     let sinx = sin(a);
     let cosx = cos(a);
+    assert(cosx.mag != 0, 'tan undefined');
+    return sinx / cosx;
+}
+
+fn tan_fast(a: Fixed) -> Fixed {
+    let sinx = sin_fast(a);
+    let cosx = cos_fast(a);
     assert(cosx.mag != 0, 'tan undefined');
     return sinx / cosx;
 }
@@ -126,7 +208,7 @@ fn _sin_loop(a: Fixed, i: u128, acc: Fixed) -> Fixed {
 
 use traits::Into;
 
-use cubit::test::helpers::assert_precise;
+use cubit::test::helpers::{assert_precise, assert_relative};
 use cubit::types::fixed::{ONE, FixedInto, FixedPartialEq, FixedPrint};
 
 #[test]
@@ -157,28 +239,57 @@ fn test_acos_fail() {
 }
 
 #[test]
-#[available_gas(3000000)]
-fn test_atan() {
+#[available_gas(1400000)]
+fn test_atan_fast() {
+    let error = Option::Some(184467440737095);
+
     let a = FixedTrait::new(2 * ONE_u128, false);
-    assert_precise(atan(a), 20423289048683266000, 'invalid two', Option::None(()));
+    assert_relative(atan_fast(a), 20423289048683266000, 'invalid two', error);
 
     let a = FixedTrait::one();
-    assert_precise(atan(a), 14488038916154245000, 'invalid one', Option::None(()));
+    assert_relative(atan_fast(a), 14488038916154245000, 'invalid one', error);
 
     let a = FixedTrait::new(ONE_u128 / 2, false);
-    assert_precise(atan(a), 8552788783625223000, 'invalid half', Option::None(()));
+    assert_relative(atan_fast(a), 8552788783625223000, 'invalid half', error);
+
+    let a = FixedTrait::zero();
+    assert(atan_fast(a).into() == 0, 'invalid zero');
+
+    let a = FixedTrait::new(ONE_u128 / 2, true);
+    assert_relative(atan_fast(a), -8552788783625223000, 'invalid neg half', error);
+
+    let a = FixedTrait::new(ONE_u128, true);
+    assert_relative(atan_fast(a), -14488038916154245000, 'invalid neg one', error);
+
+    let a = FixedTrait::new(2 * ONE_u128, true);
+    assert_relative(atan_fast(a), -20423289048683266000, 'invalid neg two', error);
+}
+
+use debug::PrintTrait;
+
+#[test]
+#[available_gas(2600000)]
+fn test_atan() {
+    let a = FixedTrait::new(2 * ONE_u128, false);
+    assert_relative(atan(a), 20423289048683266000, 'invalid two', Option::None(()));
+
+    let a = FixedTrait::one();
+    assert_relative(atan(a), 14488038916154245000, 'invalid one', Option::None(()));
+
+    let a = FixedTrait::new(ONE_u128 / 2, false);
+    assert_relative(atan(a), 8552788783625223000, 'invalid half', Option::None(()));
 
     let a = FixedTrait::zero();
     assert(atan(a).into() == 0, 'invalid zero');
 
     let a = FixedTrait::new(ONE_u128 / 2, true);
-    assert_precise(atan(a), -8552788783625223000, 'invalid neg half', Option::None(()));
+    assert_relative(atan(a), -8552788783625223000, 'invalid neg half', Option::None(()));
 
     let a = FixedTrait::new(ONE_u128, true);
-    assert_precise(atan(a), -14488038916154245000, 'invalid neg one', Option::None(()));
+    assert_relative(atan(a), -14488038916154245000, 'invalid neg one', Option::None(()));
 
     let a = FixedTrait::new(2 * ONE_u128, true);
-    assert_precise(atan(a), -20423289048683266000, 'invalid neg two', Option::None(()));
+    assert_relative(atan(a), -20423289048683266000, 'invalid neg two', Option::None(()));
 }
 
 #[test]
@@ -264,6 +375,30 @@ fn test_sin() {
     assert_precise(
         sin(a), 17734653485808441000, 'invalid -17', Option::None(())
     ); // 0.9613974918793389
+}
+
+#[test]
+#[available_gas(1000000)]
+fn test_sin_fast() {
+    let error = Option::Some(184467440737095);
+
+    let a = FixedTrait::new(HALF_PI_u128, false);
+    assert_precise(sin_fast(a), ONE, 'invalid half pi', error);
+
+    let a = FixedTrait::new(HALF_PI_u128 / 2, false);
+    assert_precise(sin_fast(a), 13043817825332781000, 'invalid quarter pi', error); // 0.7071067811865475
+
+    let a = FixedTrait::new(PI_u128, false);
+    assert(sin_fast(a).into() == 0, 'invalid pi');
+
+    let a = FixedTrait::new(HALF_PI_u128, true);
+    assert_precise(sin_fast(a), -ONE, 'invalid neg half pi', error); // 0.9999999999939766
+
+    let a = FixedTrait::new_unscaled(17, false);
+    assert_precise(sin_fast(a), -17734653485808441000, 'invalid 17', error); // -0.9613974918793389
+
+    let a = FixedTrait::new_unscaled(17, true);
+    assert_precise(sin_fast(a), 17734653485808441000, 'invalid -17', error); // 0.9613974918793389
 }
 
 #[test]
