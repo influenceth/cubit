@@ -1,5 +1,3 @@
-use core::traits::AddEq;
-use debug::PrintTrait;
 use option::OptionTrait;
 use result::{ResultTrait, ResultTraitImpl};
 use traits::{Into, TryInto};
@@ -153,7 +151,7 @@ fn log2(a: Fixed) -> Fixed {
     let whole = a.mag / ONE;
     let (msb, div) = lut::msb(whole);
 
-    if whole == div {
+    if a.mag == div * ONE {
         return FixedTrait::new_unscaled(msb, false);
     } else {
         let norm = a / FixedTrait::new_unscaled(div, false);
@@ -366,7 +364,6 @@ fn test_sqrt() {
     let mut a = FixedTrait::new_unscaled(0, false);
     assert(sqrt(a).mag == 0, 'invalid zero root');
     a = FixedTrait::new_unscaled(25, false);
-    sqrt(a).print();
     assert(sqrt(a).mag == 5 * ONE, 'invalid pos root');
 }
 
@@ -418,8 +415,11 @@ fn test_exp2_int() {
 #[test]
 #[available_gas(1000000)]
 fn test_ln() {
-    let a = FixedTrait::new_unscaled(1, false);
+    let mut a = FixedTrait::new_unscaled(1, false);
     assert(ln(a).mag == 0, 'invalid ln of 1');
+
+    a = FixedTrait::new(11674931554, false);
+    assert_relative(ln(a), ONE.into(), 'invalid ln of 2.7...', Option::None(()));
 }
 
 #[test]

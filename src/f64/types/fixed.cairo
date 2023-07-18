@@ -5,10 +5,11 @@ use result::{ResultTrait, ResultTraitImpl};
 use traits::{TryInto, Into};
 
 use cubit::utils;
-use cubit::f64::math::{core, trig};
+use cubit::f64::math::{core, hyp, trig};
 
 // CONSTANTS
 
+const TWO: u64 = 8589934592; // 2 ** 33
 const ONE: u64 = 4294967296; // 2 ** 32
 const HALF: u64 = 2147483648; // 2 ** 31
 
@@ -58,13 +59,13 @@ trait FixedTrait {
     fn tan(self: Fixed) -> Fixed;
     fn tan_fast(self: Fixed) -> Fixed;
 
-    // // Hyperbolic
-    // fn acosh(self: Fixed) -> Fixed;
-    // fn asinh(self: Fixed) -> Fixed;
-    // fn atanh(self: Fixed) -> Fixed;
-    // fn cosh(self: Fixed) -> Fixed;
-    // fn sinh(self: Fixed) -> Fixed;
-    // fn tanh(self: Fixed) -> Fixed;
+    // Hyperbolic
+    fn acosh(self: Fixed) -> Fixed;
+    fn asinh(self: Fixed) -> Fixed;
+    fn atanh(self: Fixed) -> Fixed;
+    fn cosh(self: Fixed) -> Fixed;
+    fn sinh(self: Fixed) -> Fixed;
+    fn tanh(self: Fixed) -> Fixed;
 }
 
 impl FixedImpl of FixedTrait {
@@ -101,9 +102,9 @@ impl FixedImpl of FixedTrait {
         return trig::acos_fast(self);
     }
 
-    // fn acosh(self: Fixed) -> Fixed {
-    //     return hyp::acosh(self);
-    // }
+    fn acosh(self: Fixed) -> Fixed {
+        return hyp::acosh(self);
+    }
 
     fn asin(self: Fixed) -> Fixed {
         return trig::asin(self);
@@ -113,9 +114,9 @@ impl FixedImpl of FixedTrait {
         return trig::asin_fast(self);
     }
 
-    // fn asinh(self: Fixed) -> Fixed {
-    //     return hyp::asinh(self);
-    // }
+    fn asinh(self: Fixed) -> Fixed {
+        return hyp::asinh(self);
+    }
 
     fn atan(self: Fixed) -> Fixed {
         return trig::atan(self);
@@ -125,9 +126,9 @@ impl FixedImpl of FixedTrait {
         return trig::atan_fast(self);
     }
 
-    // fn atanh(self: Fixed) -> Fixed {
-    //     return hyp::atanh(self);
-    // }
+    fn atanh(self: Fixed) -> Fixed {
+        return hyp::atanh(self);
+    }
 
     fn ceil(self: Fixed) -> Fixed {
         return core::ceil(self);
@@ -141,9 +142,9 @@ impl FixedImpl of FixedTrait {
         return trig::cos_fast(self);
     }
 
-    // fn cosh(self: Fixed) -> Fixed {
-    //     return hyp::cosh(self);
-    // }
+    fn cosh(self: Fixed) -> Fixed {
+        return hyp::cosh(self);
+    }
 
     fn floor(self: Fixed) -> Fixed {
         return core::floor(self);
@@ -196,9 +197,9 @@ impl FixedImpl of FixedTrait {
         return trig::sin_fast(self);
     }
 
-    // fn sinh(self: Fixed) -> Fixed {
-    //     return hyp::sinh(self);
-    // }
+    fn sinh(self: Fixed) -> Fixed {
+        return hyp::sinh(self);
+    }
 
     // Calculates the square root of a fixed point value
     // x must be positive
@@ -214,9 +215,9 @@ impl FixedImpl of FixedTrait {
         return trig::tan_fast(self);
     }
 
-    // fn tanh(self: Fixed) -> Fixed {
-    //     return hyp::tanh(self);
-    // }
+    fn tanh(self: Fixed) -> Fixed {
+        return hyp::tanh(self);
+    }
 }
 
 impl FixedPrint of PrintTrait<Fixed> {

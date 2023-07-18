@@ -161,6 +161,7 @@ fn test_simplex3_2() {
             FixedTrait::from_felt(30068192840146567000)
         )
     );
+
     assert_precise(r, 13375152626318328000, '0.5... out of bounds', Option::None(())); // 0.72507
 }
 
@@ -175,6 +176,7 @@ fn test_simplex3_3() {
             FixedTrait::from_felt(-30068192840146567000)
         )
     );
+
     assert_precise(r, 2842256034349449700, '-1.94... out of bounds', Option::None(())); // 0.15408
 }
 
@@ -189,9 +191,8 @@ fn test_simplex3_4() {
             FixedTrait::from_felt(128758273634492680000)
         )
     );
-    assert_precise(
-        r, -14610501553210167000, '-9.99... out of bounds', Option::None(())
-    ); // -0.79204
+
+    assert_precise(r, -14610501553210167000, '-9.99... out of bounds', Option::None(())); // -0.79204
 }
 
 #[test]
@@ -205,9 +206,8 @@ fn test_simplex3_5() {
             FixedTrait::from_felt(-52942155491546415000)
         )
     );
-    assert_precise(
-        r, -7380847965597703000, '-0.005... out of bounds', Option::None(())
-    ); // -0.40012
+
+    assert_precise(r, -7380847965597703000, '-0.005... out of bounds', Option::None(())); // -0.40012
 }
 
 #[test]
@@ -217,6 +217,7 @@ fn test_simplex3_octaves_1() {
     let r = simplex3::noise_octaves(
         Vec3Trait::splat(FixedTrait::ZERO()), 2, FixedTrait::new(9223372036854775808, false)
     );
+
     assert_precise(r, -8040438090352662000, '... out of bounds', Option::None(())); // -0.4359
 }
 
@@ -233,6 +234,7 @@ fn test_simplex3_octaves_2() {
         3,
         FixedTrait::new(9223372036854775808, false)
     );
+
     assert_precise(r, 6054457010196317000, '... out of bounds', Option::None(())); // 0.3282
 }
 
@@ -249,6 +251,7 @@ fn test_simplex3_octaves_3() {
         4,
         FixedTrait::new(9223372036854775808, false)
     );
+
     assert_precise(r, 2498284309949725700, '... out of bounds', Option::None(())); // 0.1354
 }
 
@@ -265,11 +268,12 @@ fn test_simplex3_octaves_4() {
         5,
         FixedTrait::new(9223372036854775808, false)
     );
+
     assert_precise(r, -6784442150430373000, '... out of bounds', Option::None(())); // -0.3678
 }
 
 #[test]
-#[available_gas(35000000)]
+#[available_gas(35000000)] // 342k steps
 fn test_simplex3_octaves_5() {
     // [-0.005, 12.578, -2.87]
     let r = simplex3::noise_octaves(
@@ -281,5 +285,6 @@ fn test_simplex3_octaves_5() {
         6,
         FixedTrait::new(9223372036854775808, false)
     );
+
     assert_precise(r, -3360150313341259000, '... out of bounds', Option::None(())); // -0.1822
 }
