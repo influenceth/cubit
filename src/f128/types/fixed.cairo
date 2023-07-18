@@ -1,16 +1,16 @@
 use debug::PrintTrait;
 use integer::{u256_safe_divmod, u256_as_non_zero, u256_from_felt252};
+
 use option::OptionTrait;
 use result::{ResultTrait, ResultTraitImpl};
 use traits::{TryInto, Into};
 
-use cubit::math::{core, hyp, trig};
+use cubit::utils;
+use cubit::f128::math::{core, hyp, trig};
 
 // CONSTANTS
 
 const PRIME: felt252 = 3618502788666131213697322783095070105623107215331596699973092056135872020480;
-const HALF_PRIME: felt252 =
-    1809251394333065606848661391547535052811553607665798349986546028067936010240;
 const ONE: felt252 = 18446744073709551616; // 2 ** 64
 const ONE_u128: u128 = 18446744073709551616_u128; // 2 ** 64
 const HALF: felt252 = 9223372036854775808; // 2 ** 63
@@ -28,12 +28,15 @@ struct Fixed {
 // TRAITS
 
 trait FixedTrait {
-    fn one() -> Fixed;
+    fn ZERO() -> Fixed;
+    fn ONE() -> Fixed;
+
     // Constructors
     fn new(mag: u128, sign: bool) -> Fixed;
     fn new_unscaled(mag: u128, sign: bool) -> Fixed;
     fn from_felt(val: felt252) -> Fixed;
     fn from_unscaled_felt(val: felt252) -> Fixed;
+
     // Math
     fn abs(self: Fixed) -> Fixed;
     fn ceil(self: Fixed) -> Fixed;
@@ -46,13 +49,21 @@ trait FixedTrait {
     fn pow(self: Fixed, b: Fixed) -> Fixed;
     fn round(self: Fixed) -> Fixed;
     fn sqrt(self: Fixed) -> Fixed;
+
     // Trigonometry
     fn acos(self: Fixed) -> Fixed;
+    fn acos_fast(self: Fixed) -> Fixed;
     fn asin(self: Fixed) -> Fixed;
+    fn asin_fast(self: Fixed) -> Fixed;
     fn atan(self: Fixed) -> Fixed;
+    fn atan_fast(self: Fixed) -> Fixed;
     fn cos(self: Fixed) -> Fixed;
+    fn cos_fast(self: Fixed) -> Fixed;
     fn sin(self: Fixed) -> Fixed;
+    fn sin_fast(self: Fixed) -> Fixed;
     fn tan(self: Fixed) -> Fixed;
+    fn tan_fast(self: Fixed) -> Fixed;
+
     // Hyperbolic
     fn acosh(self: Fixed) -> Fixed;
     fn asinh(self: Fixed) -> Fixed;
@@ -65,7 +76,11 @@ trait FixedTrait {
 // IMPLS
 
 impl FixedImpl of FixedTrait {
-    fn one() -> Fixed {
+    fn ZERO() -> Fixed {
+        return Fixed { mag: 0, sign: false };
+    }
+
+    fn ONE() -> Fixed {
         return Fixed { mag: ONE_u128, sign: false };
     }
 
@@ -78,8 +93,8 @@ impl FixedImpl of FixedTrait {
     }
 
     fn from_felt(val: felt252) -> Fixed {
-        let mag = integer::u128_try_from_felt252(_felt_abs(val)).unwrap();
-        return FixedTrait::new(mag, _felt_sign(val));
+        let mag = integer::u128_try_from_felt252(utils::felt_abs(val)).unwrap();
+        return FixedTrait::new(mag, utils::felt_sign(val));
     }
 
     fn from_unscaled_felt(val: felt252) -> Fixed {
@@ -94,6 +109,10 @@ impl FixedImpl of FixedTrait {
         return trig::acos(self);
     }
 
+    fn acos_fast(self: Fixed) -> Fixed {
+        return trig::acos_fast(self);
+    }
+
     fn acosh(self: Fixed) -> Fixed {
         return hyp::acosh(self);
     }
@@ -102,12 +121,20 @@ impl FixedImpl of FixedTrait {
         return trig::asin(self);
     }
 
+    fn asin_fast(self: Fixed) -> Fixed {
+        return trig::asin_fast(self);
+    }
+
     fn asinh(self: Fixed) -> Fixed {
         return hyp::asinh(self);
     }
 
     fn atan(self: Fixed) -> Fixed {
         return trig::atan(self);
+    }
+
+    fn atan_fast(self: Fixed) -> Fixed {
+        return trig::atan_fast(self);
     }
 
     fn atanh(self: Fixed) -> Fixed {
@@ -120,6 +147,10 @@ impl FixedImpl of FixedTrait {
 
     fn cos(self: Fixed) -> Fixed {
         return trig::cos(self);
+    }
+
+    fn cos_fast(self: Fixed) -> Fixed {
+        return trig::cos_fast(self);
     }
 
     fn cosh(self: Fixed) -> Fixed {
@@ -173,6 +204,10 @@ impl FixedImpl of FixedTrait {
         return trig::sin(self);
     }
 
+    fn sin_fast(self: Fixed) -> Fixed {
+        return trig::sin_fast(self);
+    }
+
     fn sinh(self: Fixed) -> Fixed {
         return hyp::sinh(self);
     }
@@ -185,6 +220,10 @@ impl FixedImpl of FixedTrait {
 
     fn tan(self: Fixed) -> Fixed {
         return trig::tan(self);
+    }
+
+    fn tan_fast(self: Fixed) -> Fixed {
+        return trig::tan_fast(self);
     }
 
     fn tanh(self: Fixed) -> Fixed {
@@ -367,30 +406,9 @@ impl FixedRem of Rem<Fixed> {
     }
 }
 
-
-// INTERNAL
-
-// Returns the sign of a signed `felt252` as with signed magnitude representation
-// true = negative
-// false = positive
-fn _felt_sign(a: felt252) -> bool {
-    return integer::u256_from_felt252(a) > integer::u256_from_felt252(HALF_PRIME);
-}
-
-// Returns the absolute value of a signed `felt252`
-fn _felt_abs(a: felt252) -> felt252 {
-    let a_sign = _felt_sign(a);
-
-    if (a_sign == true) {
-        return a * -1;
-    } else {
-        return a * 1;
-    }
-}
-
 // Tests --------------------------------------------------------------------------------------------------------------
 
-use cubit::test::helpers::assert_precise;
+use cubit::f128::test::helpers::assert_precise;
 
 #[test]
 #[available_gas(10000000)]
@@ -496,7 +514,7 @@ fn test_sqrt() {
 }
 
 #[test]
-#[available_gas(10000000)]
+#[available_gas(2750000)]
 fn test_pow_int() {
     let a = FixedTrait::from_unscaled_felt(3);
     let b = FixedTrait::from_unscaled_felt(4);
@@ -546,7 +564,7 @@ fn test_pow_frac() {
 }
 
 #[test]
-#[available_gas(10000000)]
+#[available_gas(1000000)]
 fn test_exp() {
     let a = FixedTrait::new_unscaled(2_u128, false);
     assert_precise(
@@ -563,7 +581,7 @@ fn test_exp() {
 }
 
 #[test]
-#[available_gas(10000000)]
+#[available_gas(1400000)]
 fn test_exp2() {
     let a = FixedTrait::new(27670116110564327424_u128, false); // 1.5
     assert_precise(
@@ -588,7 +606,7 @@ fn test_exp2() {
 }
 
 #[test]
-#[available_gas(10000000)]
+#[available_gas(1200000)]
 fn test_ln() {
     let a = FixedTrait::from_unscaled_felt(1);
     assert(core::ln(a).into() == 0, 'invalid ln of 1');
@@ -603,7 +621,7 @@ fn test_ln() {
 }
 
 #[test]
-#[available_gas(10000000)]
+#[available_gas(1000000)]
 fn test_log2() {
     let a = FixedTrait::from_unscaled_felt(32);
     assert_precise(core::log2(a), 5 * ONE, 'invalid log2 32', Option::None(()));
@@ -620,7 +638,7 @@ fn test_log2() {
 }
 
 #[test]
-#[available_gas(10000000)]
+#[available_gas(1000000)]
 fn test_log10() {
     let a = FixedTrait::from_unscaled_felt(100);
     assert_precise(core::log10(a), 2 * ONE, 'invalid log10', Option::None(()));

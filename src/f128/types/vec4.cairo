@@ -1,8 +1,8 @@
 use debug::PrintTrait;
 
-use cubit::types::fixed::{Fixed, FixedTrait, FixedPrint};
+use cubit::f128::types::fixed::{Fixed, FixedTrait, FixedPrint};
 
-#[derive(Copy, Drop)]
+#[derive(Copy, Drop, Serde)]
 struct Vec4 {
     x: Fixed,
     y: Fixed,
@@ -19,6 +19,12 @@ trait Vec4Trait {
     fn dot(self: Vec4, rhs: Vec4) -> Fixed;
     fn floor(self: Vec4) -> Vec4;
     fn norm(self: Vec4) -> Fixed;
+    // Scalar Math
+    fn add(self: Vec4, scalar: Fixed) -> Vec4;
+    fn sub(self: Vec4, scalar: Fixed) -> Vec4;
+    fn mul(self: Vec4, scalar: Fixed) -> Vec4;
+    fn div(self: Vec4, scalar: Fixed) -> Vec4;
+    fn rem(self: Vec4, scalar: Fixed) -> Vec4;
 }
 
 // Implementations
@@ -51,6 +57,26 @@ impl Vec4Impl of Vec4Trait {
 
     fn norm(self: Vec4) -> Fixed {
         return norm(self);
+    }
+
+    fn add(self: Vec4, scalar: Fixed) -> Vec4 {
+        return Vec4 { x: self.x + scalar, y: self.y + scalar, z: self.z + scalar, w: self.w + scalar };
+    }
+
+    fn sub(self: Vec4, scalar: Fixed) -> Vec4 {
+        return Vec4 { x: self.x - scalar, y: self.y - scalar, z: self.z - scalar, w: self.w - scalar };
+    }
+
+    fn mul(self: Vec4, scalar: Fixed) -> Vec4 {
+        return Vec4 { x: self.x * scalar, y: self.y * scalar, z: self.z * scalar, w: self.w * scalar };
+    }
+
+    fn div(self: Vec4, scalar: Fixed) -> Vec4 {
+        return Vec4 { x: self.x / scalar, y: self.y / scalar, z: self.z / scalar, w: self.w / scalar };
+    }
+
+    fn rem(self: Vec4, scalar: Fixed) -> Vec4 {
+        return Vec4 { x: self.x % scalar, y: self.y % scalar, z: self.z % scalar, w: self.w % scalar };
     }
 }
 
@@ -133,7 +159,7 @@ fn sub(a: Vec4, b: Vec4) -> Vec4 {
 
 // Tests --------------------------------------------------------------------------------------------------------------
 
-use cubit::test::helpers::assert_precise;
+use cubit::f128::test::helpers::assert_precise;
 
 #[test]
 fn test_add() {

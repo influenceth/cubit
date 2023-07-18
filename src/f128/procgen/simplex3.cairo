@@ -1,41 +1,37 @@
-use array::array_append;
-use array::array_new;
-// use gas::withdraw_gas_all;
-
-use cubit::math::comp::{max, min};
-use cubit::types::fixed::{Fixed, FixedTrait, ONE_u128};
-use cubit::types::vec3::{Vec3, Vec3Trait};
-use cubit::types::vec4::{Vec4, Vec4Trait};
+use cubit::f128::math::comp::{max, min};
+use cubit::f128::types::fixed::{Fixed, FixedTrait, ONE_u128};
+use cubit::f128::types::vec3::{Vec3, Vec3Trait};
+use cubit::f128::types::vec4::{Vec4, Vec4Trait};
 
 fn permute(x: Vec4) -> Vec4 {
-    let v34 = Vec4Trait::splat(FixedTrait::new(627189298506124754944_u128, false));
-    let v1 = Vec4Trait::splat(FixedTrait::new(ONE_u128, false));
-    let v289 = Vec4Trait::splat(FixedTrait::new(5331109037302060417024_u128, false));
+    let v34 = Vec4Trait::splat(FixedTrait::new(627189298506124754944, false));
+    let v1 = Vec4Trait::splat(FixedTrait::ONE());
+    let v289 = Vec4Trait::splat(FixedTrait::new(5331109037302060417024, false));
     return (((x * v34) + v1) * x) % v289;
 }
 
 fn taylor_inv_sqrt(r: Vec4) -> Vec4 {
-    let v1 = Vec4Trait::splat(FixedTrait::new(33072114398950993631_u128, false)); // 1.79284291400159
-    let v2 = Vec4Trait::splat(FixedTrait::new(15748625904262413056_u128, false)); // 0.85373472095314
+    let v1 = Vec4Trait::splat(FixedTrait::new(33072114398950993631, false)); // 1.79284291400159
+    let v2 = Vec4Trait::splat(FixedTrait::new(15748625904262413056, false)); // 0.85373472095314
     return v1 - v2 * r;
 }
 
 // For x, 0.0 is returned if x < edge, and 1.0 is returned otherwise
 fn step(edge: Fixed, x: Fixed) -> Fixed {
     if x < edge {
-        return FixedTrait::new(0, false);
+        return FixedTrait::ZERO();
     } else {
-        return FixedTrait::new(ONE_u128, false);
+        return FixedTrait::ONE();
     }
 }
 
 fn noise(v: Vec3) -> Fixed {
-    let zero = FixedTrait::new(0_u128, false);
-    let half = FixedTrait::new(9223372036854775808_u128, false); // 0.5
-    let one = FixedTrait::new(ONE_u128, false);
+    let zero = FixedTrait::ZERO();
+    let half = FixedTrait::new(9223372036854775808, false); // 0.5
+    let one = FixedTrait::ONE();
 
-    let Cx = FixedTrait::new(3074457345618258602_u128, false); // 1 / 6
-    let Cy = FixedTrait::new(6148914691236517205_u128, false); // 1 / 3
+    let Cx = FixedTrait::new(3074457345618258602, false); // 1 / 6
+    let Cy = FixedTrait::new(6148914691236517205, false); // 1 / 3
 
     // First corner
     let mut i = (v + Vec3Trait::splat(v.dot(Vec3Trait::splat(Cy)))).floor();
@@ -56,7 +52,7 @@ fn noise(v: Vec3) -> Fixed {
     let x3 = Vec3Trait::new(x0.x - half, x0.y - half, x0.z - half);
 
     // Permutations
-    i = i % Vec3Trait::splat(FixedTrait::new(5331109037302060417024_u128, false)); // 289
+    i = i.rem(FixedTrait::new(5331109037302060417024, false)); // 289
     let _p1 = permute(Vec4Trait::new(i.z + zero, i.z + i1.z, i.z + i2.z, i.z + one));
     let _p2 = permute(
         Vec4Trait::new(_p1.x + i.y + zero, _p1.y + i.y + i1.y, _p1.z + i.y + i2.y, _p1.w + i.y + one)
@@ -67,16 +63,16 @@ fn noise(v: Vec3) -> Fixed {
 
     // Gradients: 7x7 points over a square, mapped onto an octahedron.
     // The ring size 17*17 = 289 is close to a multiple of 49 (49*6 = 294)
-    let ns_x = FixedTrait::new(5270498306774157605_u128, false); // 2 / 7
-    let ns_y = FixedTrait::new(17129119497016012214_u128, true); // -13 / 14
-    let ns_z = FixedTrait::new(2635249153387078803_u128, false); // 1 / 7
+    let ns_x = FixedTrait::new(5270498306774157605, false); // 2 / 7
+    let ns_y = FixedTrait::new(17129119497016012214, true); // -13 / 14
+    let ns_z = FixedTrait::new(2635249153387078803, false); // 1 / 7
 
-    let j = p % Vec4Trait::splat(FixedTrait::new(903890459611768029184_u128, false)); // 49
-    let x_ = (j * Vec4Trait::splat(ns_z)).floor();
-    let y_ = (j - x_ * Vec4Trait::splat(FixedTrait::new(129127208515966861312_u128, false))).floor(); // 7
+    let j = p.rem(FixedTrait::new(903890459611768029184, false)); // 49
+    let x_ = (j.mul(ns_z)).floor();
+    let y_ = (j - x_.mul(FixedTrait::new(129127208515966861312, false))).floor(); // 7
 
-    let x = x_ * Vec4Trait::splat(ns_x) + Vec4Trait::splat(ns_y);
-    let y = y_ * Vec4Trait::splat(ns_x) + Vec4Trait::splat(ns_y);
+    let x = x_.mul(ns_x).add(ns_y);
+    let y = y_.mul(ns_x).add(ns_y);
     let h = Vec4Trait::splat(one) - x.abs() - y.abs();
 
     // Revoke AP tracking until handled by compiler
@@ -87,8 +83,8 @@ fn noise(v: Vec3) -> Fixed {
 
     // vec4 s0 = vec4(lessThan(b0,0.0))*2.0 - 1.0;
     // vec4 s1 = vec4(lessThan(b1,0.0))*2.0 - 1.0;
-    let s0 = b0.floor() * Vec4Trait::splat(FixedTrait::new_unscaled(2_u128, false)) + Vec4Trait::splat(one);
-    let s1 = b1.floor() * Vec4Trait::splat(FixedTrait::new_unscaled(2_u128, false)) + Vec4Trait::splat(one);
+    let s0 = b0.floor().mul(FixedTrait::new(36893488147419103232, false)).add(one);
+    let s1 = b1.floor().mul(FixedTrait::new(36893488147419103232, false)).add(one);
     let sh = Vec4Trait::new(-step(h.x, zero), -step(h.y, zero), -step(h.z, zero), -step(h.w, zero));
 
     let a0 = Vec4Trait::new(
@@ -120,49 +116,42 @@ fn noise(v: Vec3) -> Fixed {
 
     m = (m * m) * (m * m);
 
-    return FixedTrait::new_unscaled(105_u128, false)
+    return FixedTrait::new_unscaled(105, false)
         * m.dot(Vec4Trait::new(p0.dot(x0), p1.dot(x1), p2.dot(x2), p3.dot(x3)));
 }
 
-fn noise_octaves(v: Vec3, octaves: u128, persistence: Fixed) -> Fixed {
-    return _noise3_octaves_loop(
-        v: v,
-        p: persistence,
-        o: octaves,
-        s: FixedTrait::new(ONE_u128, false),
-        t: FixedTrait::new(0_u128, false),
-        n: FixedTrait::new(0_u128, false)
-    );
+fn noise_octaves(v: Vec3, mut octaves: u128, persistence: Fixed) -> Fixed {
+    let mut s = FixedTrait::ONE();
+    let mut t = FixedTrait::ZERO();
+    let mut n = FixedTrait::ZERO();
+
+    loop {
+        if octaves == 0 { break; }
+        octaves -= 1;
+        n += noise(v / Vec3Trait::splat(s)) * s;
+        t += s;
+        s *= persistence;
+    };
+
+    return n / t;
 }
 
 // TODO: get noise at percentile
 
-fn _noise3_octaves_loop(
-    v: Vec3, p: Fixed, o: u128, s: Fixed, t: Fixed, n: Fixed
-) -> Fixed {
-    if o == 0_u128 { return n / t; }
-    let resized_point = v / Vec3Trait::splat(s);
-    let current_noise = noise(resized_point);
-    let scaled_noise = current_noise * s;
-    let new_scale = s * p;
-
-    return _noise3_octaves_loop(v: v, p: p, o: o - 1_u128, s: new_scale, t: t + s, n: n + scaled_noise);
-}
-
 // Tests --------------------------------------------------------------------------------------------------------------
 
-use cubit::procgen::simplex3;
-use cubit::test::helpers::assert_precise;
+use cubit::f128::procgen::simplex3;
+use cubit::f128::test::helpers::assert_precise;
 
 #[test]
-#[available_gas(10000000)]
+#[available_gas(5000000)]
 fn test_simplex3_1() {
-    let r = simplex3::noise(Vec3Trait::splat(FixedTrait::new(0_u128, false))); // [ 0, 0, 0 ]
+    let r = simplex3::noise(Vec3Trait::splat(FixedTrait::ZERO())); // [ 0, 0, 0 ]
     assert_precise(r, -8040438090352662000, '0,0,0 out of bounds', Option::None(())); // -0.43587
 }
 
 #[test]
-#[available_gas(10000000)]
+#[available_gas(5000000)]
 fn test_simplex3_2() {
     // [0.5, -1.23, 1.63]
     let r = simplex3::noise(
@@ -176,7 +165,7 @@ fn test_simplex3_2() {
 }
 
 #[test]
-#[available_gas(10000000)]
+#[available_gas(5000000)]
 fn test_simplex3_3() {
     // [-1.94, -1.25, -1.63]
     let r = simplex3::noise(
@@ -190,7 +179,7 @@ fn test_simplex3_3() {
 }
 
 #[test]
-#[available_gas(10000000)]
+#[available_gas(5000000)]
 fn test_simplex3_4() {
     // [-9.99, 8.25, 6.98]
     let r = simplex3::noise(
@@ -206,7 +195,7 @@ fn test_simplex3_4() {
 }
 
 #[test]
-#[available_gas(10000000)]
+#[available_gas(5000000)]
 fn test_simplex3_5() {
     // [-0.005, 12.578, -2.87]
     let r = simplex3::noise(
@@ -222,17 +211,17 @@ fn test_simplex3_5() {
 }
 
 #[test]
-#[available_gas(25000000)]
+#[available_gas(15000000)]
 fn test_simplex3_octaves_1() {
     // [0.0, 0.0, 0.0]
     let r = simplex3::noise_octaves(
-        Vec3Trait::splat(FixedTrait::new(0_u128, false)), 2_u128, FixedTrait::new(9223372036854775808_u128, false)
+        Vec3Trait::splat(FixedTrait::ZERO()), 2, FixedTrait::new(9223372036854775808, false)
     );
     assert_precise(r, -8040438090352662000, '... out of bounds', Option::None(())); // -0.4359
 }
 
 #[test]
-#[available_gas(32500000)]
+#[available_gas(20000000)]
 fn test_simplex3_octaves_2() {
     // [0.5, -1.23, 1.63]
     let r = simplex3::noise_octaves(
@@ -241,14 +230,14 @@ fn test_simplex3_octaves_2() {
             FixedTrait::from_felt(-22689495210662750000),
             FixedTrait::from_felt(30068192840146567000),
         ),
-        3_u128,
-        FixedTrait::new(9223372036854775808_u128, false)
+        3,
+        FixedTrait::new(9223372036854775808, false)
     );
     assert_precise(r, 6054457010196317000, '... out of bounds', Option::None(())); // 0.3282
 }
 
 #[test]
-#[available_gas(40000000)]
+#[available_gas(25000000)]
 fn test_simplex3_octaves_3() {
     // [-1.94, -1.25, -1.63]
     let r = simplex3::noise_octaves(
@@ -257,14 +246,14 @@ fn test_simplex3_octaves_3() {
             FixedTrait::from_felt(-23058430092136940000),
             FixedTrait::from_felt(-30068192840146567000)
         ),
-        4_u128,
-        FixedTrait::new(9223372036854775808_u128, false)
+        4,
+        FixedTrait::new(9223372036854775808, false)
     );
     assert_precise(r, 2498284309949725700, '... out of bounds', Option::None(())); // 0.1354
 }
 
 #[test]
-#[available_gas(47500000)]
+#[available_gas(30000000)]
 fn test_simplex3_octaves_4() {
     // [-9.99, 8.25, 6.98]
     let r = simplex3::noise_octaves(
@@ -273,14 +262,14 @@ fn test_simplex3_octaves_4() {
             FixedTrait::from_felt(152185638608103800000),
             FixedTrait::from_felt(128758273634492680000)
         ),
-        5_u128,
-        FixedTrait::new(9223372036854775808_u128, false)
+        5,
+        FixedTrait::new(9223372036854775808, false)
     );
     assert_precise(r, -6784442150430373000, '... out of bounds', Option::None(())); // -0.3678
 }
 
 #[test]
-#[available_gas(55000000)]
+#[available_gas(35000000)]
 fn test_simplex3_octaves_5() {
     // [-0.005, 12.578, -2.87]
     let r = simplex3::noise_octaves(
@@ -289,8 +278,8 @@ fn test_simplex3_octaves_5() {
             FixedTrait::from_felt(232023146959118730000),
             FixedTrait::from_felt(-52942155491546415000)
         ),
-        6_u128,
-        FixedTrait::new(9223372036854775808_u128, false)
+        6,
+        FixedTrait::new(9223372036854775808, false)
     );
     assert_precise(r, -3360150313341259000, '... out of bounds', Option::None(())); // -0.1822
 }

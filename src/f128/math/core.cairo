@@ -1,19 +1,12 @@
+use debug::PrintTrait;
 use option::OptionTrait;
 use result::{ResultTrait, ResultTraitImpl};
 use traits::{Into, TryInto};
-use integer::{u256_safe_divmod, u256_as_non_zero, u256_from_felt252, upcast};
+use integer::{u256_safe_divmod, u256_as_non_zero, upcast};
 
-use cubit::types::fixed::{
-  HALF_u128,
-  MAX_u128,
-  ONE_u128,
-  Fixed,
-  FixedInto,
-  FixedTrait,
-  FixedAdd,
-  FixedDiv,
-  FixedMul,
-  FixedNeg
+use cubit::f128::math::lut;
+use cubit::f128::types::fixed::{
+  HALF_u128, MAX_u128, ONE_u128, Fixed, FixedInto, FixedTrait, FixedAdd, FixedDiv, FixedMul, FixedNeg
 };
 
 // PUBLIC
@@ -23,18 +16,32 @@ fn abs(a: Fixed) -> Fixed {
 }
 
 fn add(a: Fixed, b: Fixed) -> Fixed {
-    return FixedTrait::from_felt(a.into() + b.into());
+    if a.sign == b.sign {
+        return FixedTrait::new(a.mag + b.mag, a.sign);
+    }
+
+    if a.mag == b.mag {
+        return FixedTrait::ZERO();
+    }
+
+    if (a.mag > b.mag) {
+        return FixedTrait::new(a.mag - b.mag, a.sign);
+    } else {
+        return FixedTrait::new(b.mag - a.mag, b.sign);
+    }
 }
 
 fn ceil(a: Fixed) -> Fixed {
     let (div_u128, rem_u128) = _split_unsigned(a);
 
-    if (rem_u128 == 0) {
+    if rem_u128 == 0 {
         return a;
-    } else if (a.sign == false) {
+    } else if !a.sign {
         return FixedTrait::new_unscaled(div_u128 + 1, false);
+    } else if div_u128 == 0 {
+        return FixedTrait::new_unscaled(0, false);
     } else {
-        return FixedTrait::from_unscaled_felt(div_u128.into() * -1);
+        return FixedTrait::new_unscaled(div_u128, true);
     }
 }
 
@@ -62,14 +69,14 @@ fn exp(a: Fixed) -> Fixed {
 // Calculates the binary exponent of x: 2^x
 fn exp2(a: Fixed) -> Fixed {
     if (a.mag == 0) {
-        return FixedTrait::new(ONE_u128, false);
+        return FixedTrait::ONE();
     }
 
     let (int_part, frac_part) = _split_unsigned(a);
-    let int_res = FixedTrait::new_unscaled(_exp2(int_part), false);
+    let int_res = FixedTrait::new_unscaled(lut::exp2(int_part), false);
     let mut res_u = int_res;
 
-    if frac_part > 0 {
+    if frac_part != 0 {
         let frac_fixed = FixedTrait::new(frac_part, false);
         let r8 = FixedTrait::new(41691949755436, false) * frac_fixed;
         let r7 = (r8 + FixedTrait::new(231817862090993, false)) * frac_fixed;
@@ -79,53 +86,53 @@ fn exp2(a: Fixed) -> Fixed {
         let r3 = (r4 + FixedTrait::new(1023863119786103800, false)) * frac_fixed;
         let r2 = (r3 + FixedTrait::new(4431397849999009866, false)) * frac_fixed;
         let r1 = (r2 + FixedTrait::new(12786308590235521577, false)) * frac_fixed;
-        res_u = res_u * (r1 + FixedTrait::new(ONE_u128, false));
+        res_u = res_u * (r1 + FixedTrait::ONE());
     }
 
     if (a.sign == true) {
-        return FixedTrait::new(ONE_u128, false) / res_u;
+        return FixedTrait::ONE() / res_u;
     } else {
         return res_u;
     }
 }
 
 fn exp2_int(exp: u128) -> Fixed {
-    return FixedTrait::new_unscaled(_exp2(exp), false);
+    return FixedTrait::new_unscaled(lut::exp2(exp), false);
 }
 
 fn floor(a: Fixed) -> Fixed {
     let (div_u128, rem_u128) = _split_unsigned(a);
 
-    if (rem_u128 == 0) {
+    if rem_u128 == 0 {
         return a;
-    } else if (a.sign == false) {
+    } else if !a.sign {
         return FixedTrait::new_unscaled(div_u128, false);
     } else {
-        return FixedTrait::from_unscaled_felt(-1 * div_u128.into() - 1);
+        return FixedTrait::new_unscaled(div_u128 + 1, true);
     }
 }
 
 fn ge(a: Fixed, b: Fixed) -> bool {
-    if (a.sign != b.sign) {
+    if a.sign != b.sign {
         return !a.sign;
     } else {
-        return (a.mag == b.mag) | ((a.mag > b.mag) ^ a.sign);
+        return (a.mag == b.mag) || ((a.mag > b.mag) ^ a.sign);
     }
 }
 
 fn gt(a: Fixed, b: Fixed) -> bool {
-    if (a.sign != b.sign) {
+    if a.sign != b.sign {
         return !a.sign;
     } else {
-        return (a.mag != b.mag) & ((a.mag > b.mag) ^ a.sign);
+        return (a.mag != b.mag) && ((a.mag > b.mag) ^ a.sign);
     }
 }
 
 fn le(a: Fixed, b: Fixed) -> bool {
-    if (a.sign != b.sign) {
+    if a.sign != b.sign {
         return a.sign;
     } else {
-        return (a.mag == b.mag) | ((a.mag < b.mag) ^ a.sign);
+        return (a.mag == b.mag) || ((a.mag < b.mag) ^ a.sign);
     }
 }
 
@@ -141,14 +148,14 @@ fn log2(a: Fixed) -> Fixed {
     assert(a.sign == false, 'must be positive');
 
     if (a.mag == ONE_u128) {
-        return FixedTrait::new(0, false);
+        return FixedTrait::ZERO();
     } else if (a.mag < ONE_u128) {
         // Compute true inverse binary log if 0 < x < 1
-        let div = FixedTrait::new(ONE_u128, false) / a;
+        let div = FixedTrait::ONE() / a;
         return -log2(div);
     }
 
-    let (msb, div) = msb(a.mag);
+    let (msb, div) = lut::msb(a.mag / ONE_u128);
     let norm = a / FixedTrait::new_unscaled(div, false);
 
     let r8 = FixedTrait::new(167660832607149504, true) * norm;
@@ -169,10 +176,10 @@ fn log10(a: Fixed) -> Fixed {
 }
 
 fn lt(a: Fixed, b: Fixed) -> bool {
-    if (a.sign != b.sign) {
+    if a.sign != b.sign {
         return a.sign;
     } else {
-        return (a.mag != b.mag) & ((a.mag < b.mag) ^ a.sign);
+        return (a.mag != b.mag) && ((a.mag < b.mag) ^ a.sign);
     }
 }
 
@@ -188,13 +195,26 @@ fn mul(a: Fixed, b: Fixed) -> Fixed {
     return FixedTrait::new(scaled_u256.low, a.sign ^ b.sign);
 }
 
+#[derive(Copy, Drop, Serde)]
+struct f64 {
+    mag: u64,
+    sign: bool
+}
+
+fn mul_64(a: f64, b: f64) -> f64 {
+    let prod_u128 = integer::u64_wide_mul(a.mag, b.mag);
+    return f64 { mag: (prod_u128 / 4294967296).try_into().unwrap(), sign: a.sign ^ b.sign };
+}
+
 fn ne(a: @Fixed, b: @Fixed) -> bool {
     return (*a.mag != *b.mag) || (*a.sign != *b.sign);
 }
 
 fn neg(a: Fixed) -> Fixed {
-    if (a.sign == false) {
-        return FixedTrait::new(a.mag, true);
+    if a.mag == 0 {
+        return a;
+    } else if !a.sign {
+        return FixedTrait::new(a.mag, !a.sign);
     } else {
         return FixedTrait::new(a.mag, false);
     }
@@ -221,14 +241,14 @@ fn pow_int(a: Fixed, b: u128, sign: bool) -> Fixed {
     let mut n = b;
 
     if sign == true {
-        x = FixedTrait::new(ONE_u128, false) / x;
+        x = FixedTrait::ONE() / x;
     }
 
     if n == 0 {
-        return FixedTrait::new(ONE_u128, false);
+        return FixedTrait::ONE();
     }
 
-    let mut y = FixedTrait::new(ONE_u128, false);
+    let mut y = FixedTrait::ONE();
     let two = integer::u128_as_non_zero(2);
 
     loop {
@@ -274,162 +294,7 @@ fn sqrt(a: Fixed) -> Fixed {
 }
 
 fn sub(a: Fixed, b: Fixed) -> Fixed {
-    return FixedTrait::from_felt(a.into() - b.into());
-}
-
-// Calculates the most significant bit
-fn msb(a: u128) -> (u128, u128) {
-    let whole = a / ONE_u128;
-
-    if whole < 256 {
-        if whole < 2 { return (0, 1); }
-        if whole < 4 { return (1, 2); }
-        if whole < 8 { return (2, 4); }
-        if whole < 16 { return (3, 8); }
-        if whole < 32 { return (4, 16); }
-        if whole < 64 { return (5, 32); }
-        if whole < 128 { return (6, 64); }
-        if whole < 256 { return (7, 128); }
-    } else if whole < 65536 {
-        if whole < 512 { return (8, 256); }
-        if whole < 1024 { return (9, 512); }
-        if whole < 2048 { return (10, 1024); }
-        if whole < 4096 { return (11, 2048); }
-        if whole < 8192 { return (12, 4096); }
-        if whole < 16384 { return (13, 8192); }
-        if whole < 32768 { return (14, 16384); }
-        if whole < 65536 { return (15, 32768); }
-    } else if whole < 16777216 {
-        if whole < 131072 { return (16, 65536); }
-        if whole < 262144 { return (17, 131072); }
-        if whole < 524288 { return (18, 262144); }
-        if whole < 1048576 { return (19, 524288); }
-        if whole < 2097152 { return (20, 1048576); }
-        if whole < 4194304 { return (21, 2097152); }
-        if whole < 8388608 { return (22, 4194304); }
-        if whole < 16777216 { return (23, 8388608); }
-    } else if whole < 4294967296 {
-        if whole < 33554432 { return (24, 16777216); }
-        if whole < 67108864 { return (25, 33554432); }
-        if whole < 134217728 { return (26, 67108864); }
-        if whole < 268435456 { return (27, 134217728); }
-        if whole < 536870912 { return (28, 268435456); }
-        if whole < 1073741824 { return (29, 536870912); }
-        if whole < 2147483648 { return (30, 1073741824); }
-        if whole < 4294967296 { return (31, 2147483648); }
-    } else if whole < 1099511627776 {
-        if whole < 8589934592 { return (32, 4294967296); }
-        if whole < 17179869184 { return (33, 8589934592); }
-        if whole < 34359738368 { return (34, 17179869184); }
-        if whole < 68719476736 { return (35, 34359738368); }
-        if whole < 137438953472 { return (36, 68719476736); }
-        if whole < 274877906944 { return (37, 137438953472); }
-        if whole < 549755813888 { return (38, 274877906944); }
-        if whole < 1099511627776 { return (39, 549755813888); }
-    } else if whole < 281474976710656 {
-        if whole < 2199023255552 { return (40, 1099511627776); }
-        if whole < 4398046511104 { return (41, 2199023255552); }
-        if whole < 8796093022208 { return (42, 4398046511104); }
-        if whole < 17592186044416 { return (43, 8796093022208); }
-        if whole < 35184372088832 { return (44, 17592186044416); }
-        if whole < 70368744177664 { return (45, 35184372088832); }
-        if whole < 140737488355328 { return (46, 70368744177664); }
-        if whole < 281474976710656 { return (47, 140737488355328); }
-    } else if whole < 72057594037927936 {
-        if whole < 562949953421312 { return (48, 281474976710656); }
-        if whole < 1125899906842624 { return (49, 562949953421312); }
-        if whole < 2251799813685248 { return (50, 1125899906842624); }
-        if whole < 4503599627370496 { return (51, 2251799813685248); }
-        if whole < 9007199254740992 { return (52, 4503599627370496); }
-        if whole < 18014398509481984 { return (53, 9007199254740992); }
-        if whole < 36028797018963968 { return (54, 18014398509481984); }
-        if whole < 72057594037927936 { return (55, 36028797018963968); }
-    } else {
-        if whole < 144115188075855872 { return (56, 72057594037927936); }
-        if whole < 288230376151711744 { return (57, 144115188075855872); }
-        if whole < 576460752303423488 { return (58, 288230376151711744); }
-        if whole < 1152921504606846976 { return (59, 576460752303423488); }
-        if whole < 2305843009213693952 { return (60, 1152921504606846976); }
-        if whole < 4611686018427387904 { return (61, 2305843009213693952); }
-        if whole < 9223372036854775808 { return (62, 4611686018427387904); }
-        if whole < 18446744073709551616 { return (63, 9223372036854775808); }
-    }
-
-    return (64, 18446744073709551616);
-}
-
-fn _exp2(exp: u128) -> u128 {
-    if exp <= 16 {
-        if exp == 0 { return 1; }
-        if exp == 1 { return 2; }
-        if exp == 2 { return 4; }
-        if exp == 3 { return 8; }
-        if exp == 4 { return 16; }
-        if exp == 5 { return 32; }
-        if exp == 6 { return 64; }
-        if exp == 7 { return 128; }
-        if exp == 8 { return 256; }
-        if exp == 9 { return 512; }
-        if exp == 10 { return 1024; }
-        if exp == 11 { return 2048; }
-        if exp == 12 { return 4096; }
-        if exp == 13 { return 8192; }
-        if exp == 14 { return 16384; }
-        if exp == 15 { return 32768; }
-        if exp == 16 { return 65536; }
-    } else if exp <= 32 {
-        if exp == 17 { return 131072; }
-        if exp == 18 { return 262144; }
-        if exp == 19 { return 524288; }
-        if exp == 20 { return 1048576; }
-        if exp == 21 { return 2097152; }
-        if exp == 22 { return 4194304; }
-        if exp == 23 { return 8388608; }
-        if exp == 24 { return 16777216; }
-        if exp == 25 { return 33554432; }
-        if exp == 26 { return 67108864; }
-        if exp == 27 { return 134217728; }
-        if exp == 28 { return 268435456; }
-        if exp == 29 { return 536870912; }
-        if exp == 30 { return 1073741824; }
-        if exp == 31 { return 2147483648; }
-        if exp == 32 { return 4294967296; }
-    } else if exp <= 48 {
-        if exp == 33 { return 8589934592; }
-        if exp == 34 { return 17179869184; }
-        if exp == 35 { return 34359738368; }
-        if exp == 36 { return 68719476736; }
-        if exp == 37 { return 137438953472; }
-        if exp == 38 { return 274877906944; }
-        if exp == 39 { return 549755813888; }
-        if exp == 40 { return 1099511627776; }
-        if exp == 41 { return 2199023255552; }
-        if exp == 42 { return 4398046511104; }
-        if exp == 43 { return 8796093022208; }
-        if exp == 44 { return 17592186044416; }
-        if exp == 45 { return 35184372088832; }
-        if exp == 46 { return 70368744177664; }
-        if exp == 47 { return 140737488355328; }
-        if exp == 48 { return 281474976710656; }
-    } else {
-        if exp == 49 { return 562949953421312; }
-        if exp == 50 { return 1125899906842624; }
-        if exp == 51 { return 2251799813685248; }
-        if exp == 52 { return 4503599627370496; }
-        if exp == 53 { return 9007199254740992; }
-        if exp == 54 { return 18014398509481984; }
-        if exp == 55 { return 36028797018963968; }
-        if exp == 56 { return 72057594037927936; }
-        if exp == 57 { return 144115188075855872; }
-        if exp == 58 { return 288230376151711744; }
-        if exp == 59 { return 576460752303423488; }
-        if exp == 60 { return 1152921504606846976; }
-        if exp == 61 { return 2305843009213693952; }
-        if exp == 62 { return 4611686018427387904; }
-        if exp == 63 { return 9223372036854775808; }
-    }
-
-    return 18446744073709551616;
+    return add(a, -b);
 }
 
 // Ignores sign and always returns false
@@ -439,12 +304,10 @@ fn _split_unsigned(a: Fixed) -> (u128, u128) {
 
 // Tests --------------------------------------------------------------------------------------------------------------
 
-use cubit::test::helpers::assert_precise;
-use cubit::types::fixed::{
+use cubit::f128::test::helpers::assert_precise;
+use cubit::f128::types::fixed::{
   ONE,
   HALF,
-  _felt_abs,
-  _felt_sign,
   FixedPartialEq,
   FixedPartialOrd,
   FixedAddEq,
@@ -453,8 +316,8 @@ use cubit::types::fixed::{
   FixedMulEq
 };
 
-use cubit::math::trig::HALF_PI_u128;
-use cubit::math::trig::PI_u128;
+use cubit::f128::math::trig::HALF_PI_u128;
+use cubit::f128::math::trig::PI_u128;
 
 #[test]
 fn test_into() {
@@ -502,34 +365,16 @@ fn test_overflow_small() {
 }
 
 #[test]
-fn test_sign() {
-    let min = -1809251394333065606848661391547535052811553607665798349986546028067936010240;
-    let max = 1809251394333065606848661391547535052811553607665798349986546028067936010240;
-    assert(_felt_sign(min) == true, 'invalid result');
-    assert(_felt_sign(-1) == true, 'invalid result');
-    assert(_felt_sign(0) == false, 'invalid result');
-    assert(_felt_sign(1) == false, 'invalid result');
-    assert(_felt_sign(max) == false, 'invalid result');
-}
-
-#[test]
-fn test_abs() {
-    assert(_felt_abs(5) == 5, 'abs of pos should be pos');
-    assert(_felt_abs(-5) == 5, 'abs of neg should be pos');
-    assert(_felt_abs(0) == 0, 'abs of 0 should be 0');
-}
-
-#[test]
 #[available_gas(1000000)]
 fn test_acos() {
-    let a = FixedTrait::new(ONE_u128, false);
+    let a = FixedTrait::ONE();
     assert(a.acos().into() == 0, 'invalid one');
 }
 
 #[test]
 #[available_gas(1000000)]
 fn test_asin() {
-    let a = FixedTrait::new(ONE_u128, false);
+    let a = FixedTrait::ONE();
     assert(a.asin().into() == 28976077832308491370, 'invalid one'); // PI / 2
 }
 
@@ -582,13 +427,13 @@ fn test_sqrt() {
 #[available_gas(100000)]
 fn test_msb() {
     let a = FixedTrait::new_unscaled(4503599627370495, false);
-    let (msb, div) = msb(a.mag);
+    let (msb, div) = lut::msb(a.mag / ONE_u128);
     assert(msb == 51, 'invalid msb');
     assert(div == 2251799813685248, 'invalid msb ceil');
 }
 
 #[test]
-#[available_gas(600000)] // 600k
+#[available_gas(600000)] // 260k
 fn test_pow() {
     let a = FixedTrait::new_unscaled(3, false);
     let b = FixedTrait::new_unscaled(4, false);
@@ -596,7 +441,7 @@ fn test_pow() {
 }
 
 #[test]
-#[available_gas(900000)] // 1000k
+#[available_gas(900000)] // 550k
 fn test_pow_frac() {
     let a = FixedTrait::new_unscaled(3, false);
     let b = FixedTrait::new(9223372036854775808, false); // 0.5
@@ -604,7 +449,7 @@ fn test_pow_frac() {
 }
 
 #[test]
-#[available_gas(1000000)]
+#[available_gas(1000000)] // 267k
 fn test_exp() {
     let a = FixedTrait::new_unscaled(2, false);
     assert(a.exp().into() == 136304026800730572984, 'invalid exp of 2'); // 7.389056098793725
@@ -692,11 +537,12 @@ fn test_sub_eq() {
 }
 
 #[test]
+#[available_gas(100000)] // 22k
 fn test_mul_pos() {
-    let a = FixedTrait::from_unscaled_felt(5);
-    let b = FixedTrait::from_unscaled_felt(2);
+    let a = FixedTrait::new(53495557813757699680, false); // 2.9
+    let b = FixedTrait::new(53495557813757699680, false); // 2.9
     let c = a * b;
-    assert(c.into() == 10 * ONE, 'invalid result');
+    assert(c.into() == 155137117659897329053, 'invalid result');
 }
 
 #[test]
