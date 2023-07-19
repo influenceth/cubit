@@ -7,6 +7,7 @@ use traits::{TryInto, Into};
 
 use cubit::utils;
 use cubit::f128::math::{core, hyp, trig};
+use cubit::f64::{Fixed as Fixed64, FixedTrait as FixedTrait64, ONE as ONE_u64};
 
 // CONSTANTS
 
@@ -228,6 +229,19 @@ impl FixedImpl of FixedTrait {
 
     fn tanh(self: Fixed) -> Fixed {
         return hyp::tanh(self);
+    }
+}
+
+impl Fixed128TryIntoFixed64 of TryInto<Fixed, Fixed64> {
+    fn try_into(self: Fixed) -> Option<Fixed64> {
+        let max = 0x1000000000000000000000000; // 2^96
+
+        if self.mag >= max {
+            return Option::None(());
+        } else {
+            let mag = (self.mag / ONE_u64.into()).try_into().unwrap();
+            return Option::Some(FixedTrait64::new(mag, self.sign));
+        }
     }
 }
 
@@ -885,4 +899,18 @@ fn test_try_into() {
 fn test_try_into_fail() {
     let mut a = FixedTrait::new_unscaled(42, true);
     let b: u128 = a.try_into().unwrap();
+}
+
+#[test]
+fn test_try_into_f64() {
+    let a = FixedTrait::new_unscaled(42, true);
+    let b: Fixed64 = a.try_into().unwrap();
+    assert(b.mag == 42 * ONE_u64, 'invalid conversion');
+}
+
+#[test]
+#[should_panic]
+fn test_try_into_f64_fail() {
+    let a = FixedTrait::new_unscaled(ONE_u64.into(), true);
+    let b: Fixed64 = a.try_into().unwrap();
 }

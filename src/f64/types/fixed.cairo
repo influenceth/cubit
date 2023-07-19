@@ -6,6 +6,7 @@ use traits::{TryInto, Into};
 
 use cubit::utils;
 use cubit::f64::math::{core, hyp, trig};
+use cubit::f128::{Fixed as Fixed128, FixedTrait as FixedTrait128, ONE_u128};
 
 // CONSTANTS
 
@@ -227,6 +228,12 @@ impl FixedPrint of PrintTrait<Fixed> {
     }
 }
 
+impl Fixed64IntoFixed128 of Into<Fixed, Fixed128> {
+    fn into(self: Fixed) -> Fixed128 {
+        return FixedTrait128::new(self.mag.into() * ONE.into(), self.sign);
+    }
+}
+
 // Into a raw felt without unscaling
 impl FixedIntoFelt252 of Into<Fixed, felt252> {
     fn into(self: Fixed) -> felt252 {
@@ -393,4 +400,11 @@ impl FixedRem of Rem<Fixed> {
     fn rem(lhs: Fixed, rhs: Fixed) -> Fixed {
         return core::rem(lhs, rhs);
     }
+}
+
+#[test]
+fn test_into_f128() {
+    let a = FixedTrait::new_unscaled(42, true);
+    let b: Fixed128 = a.into();
+    assert(b.mag == 42 * ONE_u128, 'invalid conversion');
 }
