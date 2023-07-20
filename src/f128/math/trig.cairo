@@ -7,7 +7,7 @@ use cubit::f128::types::fixed::{Fixed, FixedTrait, FixedAdd, FixedSub, FixedMul,
 
 // CONSTANTS
 
-const PI_u128: u128 = 57952155664616982739_u128;
+const PI_u128: u128 = 57952155664616982739;
 const HALF_PI_u128: u128 = 28976077832308491370;
 
 // PUBLIC

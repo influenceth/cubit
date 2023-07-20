@@ -1,0 +1,42 @@
+{
+  "name": "@influenceth/cubit",
+  "version": "1.0.0",
+  "description": "Fixed point math for Cairo and Starknet",
+  "type": "module",
+  "module": "./build/index.js",
+  "exports": {
+    "import": "./build/index.js",
+    "require": "./build/index.cjs"
+  },
+  "files": [
+    "build/*"
+  ],
+  "scripts": {
+    "build": "rollup --config ./rollup.config.js",
+    "prepublishOnly": "npm run build",
+    "test": "NODE_ENV=test ./node_modules/.bin/mocha --recursive"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/influenceth/cubit.git"
+  },
+  "author": "Unstoppable Games, Inc.",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/influenceth/cubit/issues"
+  },
+  "homepage": "https://github.com/influenceth/cubit#readme",
+  "dependencies": {
+    "bignumber.js": "^9.1.1"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.22.9",
+    "@rollup/plugin-babel": "^6.0.3",
+    "acorn-import-assertions": "^1.9.0",
+    "almost-equal": "^1.1.0",
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0",
+    "rollup-plugin-cleanup": "^3.2.1",
+    "rollup-plugin-import-assert": "^3.0.1"
+  }
+}

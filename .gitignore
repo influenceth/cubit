@@ -1,5 +1,3 @@
-#######
-Scarb
-#######
-
 target
+node_modules
+build
