@@ -1,7 +1,7 @@
 use debug::PrintTrait;
 use traits::Into;
 
-use cubit::types::fixed::{Fixed, FixedTrait, FixedSub, FixedPartialEq, FixedPrint};
+use cubit::f128::types::fixed::{Fixed, FixedTrait, FixedSub, FixedPartialEq, FixedPrint};
 
 const DEFAULT_PRECISION: u128 = 1844674407370; // 1e-7
 

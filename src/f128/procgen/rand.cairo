@@ -2,7 +2,7 @@ use array::ArrayTrait;
 use integer::{u128_safe_divmod, u128_as_non_zero, u256_from_felt252};
 use traits::Into;
 
-use cubit::types::fixed::{Fixed, FixedTrait, ONE_u128};
+use cubit::f128::types::fixed::{Fixed, FixedTrait, ONE_u128};
 
 fn derive(seed: felt252, entropy: felt252) -> felt252 {
     let mut input = ArrayTrait::new();
@@ -26,7 +26,11 @@ fn u128_between(seed: felt252, low: u128, high: u128) -> u128 {
 }
 
 fn fixed_normal_between(seed: felt252, low: Fixed, high: Fixed) -> Fixed {
+<<<<<<< HEAD:src/procgen/rand.cairo
     let acc = _fixed_normal_between_loop(seed, low, high, FixedTrait::zero(), 5);
+=======
+    let acc = _fixed_normal_between_loop(seed, low, high, FixedTrait::ZERO(), 5);
+>>>>>>> next:src/f128/procgen/rand.cairo
     return acc / FixedTrait::new_unscaled(5, false);
 }
 
@@ -58,9 +62,9 @@ fn _u128_normal_between_loop(seed: felt252, low: u128, high: u128, acc: u128, it
 }
 // Tests --------------------------------------------------------------------------------------------------------------
 
-use cubit::procgen::rand;
-use cubit::test::helpers::assert_precise;
-use cubit::types::fixed::FixedPrint;
+use cubit::f128::procgen::rand;
+use cubit::f128::test::helpers::assert_precise;
+use cubit::f128::types::fixed::FixedPrint;
 
 // TODO: finish tests
 

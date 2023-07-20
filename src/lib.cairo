@@ -1,4 +1,3 @@
-mod math;
-mod procgen;
-mod test;
-mod types;
+mod f64;
+mod f128;
+mod utils;

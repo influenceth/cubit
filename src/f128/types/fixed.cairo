@@ -1,19 +1,22 @@
 use debug::PrintTrait;
 use integer::{u256_safe_divmod, u256_as_non_zero, u256_from_felt252};
 
+<<<<<<< HEAD:src/types/fixed.cairo
 // TODO: https://github.com/BibliothecaDAO/loot-survivor/blob/main/contracts/pack/src/pack.cairo#L10
 
+=======
+>>>>>>> next:src/f128/types/fixed.cairo
 use option::OptionTrait;
 use result::{ResultTrait, ResultTraitImpl};
 use traits::{TryInto, Into};
 
-use cubit::math::{core, hyp, trig};
+use cubit::utils;
+use cubit::f128::math::{core, hyp, trig};
+use cubit::f64::{Fixed as Fixed64, FixedTrait as FixedTrait64, ONE as ONE_u64};
 
 // CONSTANTS
 
 const PRIME: felt252 = 3618502788666131213697322783095070105623107215331596699973092056135872020480;
-const HALF_PRIME: felt252 =
-    1809251394333065606848661391547535052811553607665798349986546028067936010240;
 const ONE: felt252 = 18446744073709551616; // 2 ** 64
 const ONE_u128: u128 = 18446744073709551616_u128; // 2 ** 64
 const HALF: felt252 = 9223372036854775808; // 2 ** 63
@@ -31,8 +34,13 @@ struct Fixed {
 // TRAITS
 
 trait FixedTrait {
+<<<<<<< HEAD:src/types/fixed.cairo
     fn zero() -> Fixed;
     fn one() -> Fixed;
+=======
+    fn ZERO() -> Fixed;
+    fn ONE() -> Fixed;
+>>>>>>> next:src/f128/types/fixed.cairo
 
     // Constructors
     fn new(mag: u128, sign: bool) -> Fixed;
@@ -79,11 +87,19 @@ trait FixedTrait {
 // IMPLS
 
 impl FixedImpl of FixedTrait {
+<<<<<<< HEAD:src/types/fixed.cairo
     fn zero() -> Fixed {
         return Fixed { mag: 0, sign: false };
     }
 
     fn one() -> Fixed {
+=======
+    fn ZERO() -> Fixed {
+        return Fixed { mag: 0, sign: false };
+    }
+
+    fn ONE() -> Fixed {
+>>>>>>> next:src/f128/types/fixed.cairo
         return Fixed { mag: ONE_u128, sign: false };
     }
 
@@ -96,8 +112,8 @@ impl FixedImpl of FixedTrait {
     }
 
     fn from_felt(val: felt252) -> Fixed {
-        let mag = integer::u128_try_from_felt252(_felt_abs(val)).unwrap();
-        return FixedTrait::new(mag, _felt_sign(val));
+        let mag = integer::u128_try_from_felt252(utils::felt_abs(val)).unwrap();
+        return FixedTrait::new(mag, utils::felt_sign(val));
     }
 
     fn from_unscaled_felt(val: felt252) -> Fixed {
@@ -231,6 +247,19 @@ impl FixedImpl of FixedTrait {
 
     fn tanh(self: Fixed) -> Fixed {
         return hyp::tanh(self);
+    }
+}
+
+impl Fixed128TryIntoFixed64 of TryInto<Fixed, Fixed64> {
+    fn try_into(self: Fixed) -> Option<Fixed64> {
+        let max = 0x1000000000000000000000000; // 2^96
+
+        if self.mag >= max {
+            return Option::None(());
+        } else {
+            let mag = (self.mag / ONE_u64.into()).try_into().unwrap();
+            return Option::Some(FixedTrait64::new(mag, self.sign));
+        }
     }
 }
 
@@ -409,30 +438,9 @@ impl FixedRem of Rem<Fixed> {
     }
 }
 
-
-// INTERNAL
-
-// Returns the sign of a signed `felt252` as with signed magnitude representation
-// true = negative
-// false = positive
-fn _felt_sign(a: felt252) -> bool {
-    return integer::u256_from_felt252(a) > integer::u256_from_felt252(HALF_PRIME);
-}
-
-// Returns the absolute value of a signed `felt252`
-fn _felt_abs(a: felt252) -> felt252 {
-    let a_sign = _felt_sign(a);
-
-    if (a_sign == true) {
-        return a * -1;
-    } else {
-        return a * 1;
-    }
-}
-
 // Tests --------------------------------------------------------------------------------------------------------------
 
-use cubit::test::helpers::assert_precise;
+use cubit::f128::test::helpers::assert_precise;
 
 #[test]
 #[available_gas(10000000)]
@@ -909,4 +917,18 @@ fn test_try_into() {
 fn test_try_into_fail() {
     let mut a = FixedTrait::new_unscaled(42, true);
     let b: u128 = a.try_into().unwrap();
+}
+
+#[test]
+fn test_try_into_f64() {
+    let a = FixedTrait::new_unscaled(42, true);
+    let b: Fixed64 = a.try_into().unwrap();
+    assert(b.mag == 42 * ONE_u64, 'invalid conversion');
+}
+
+#[test]
+#[should_panic]
+fn test_try_into_f64_fail() {
+    let a = FixedTrait::new_unscaled(ONE_u64.into(), true);
+    let b: Fixed64 = a.try_into().unwrap();
 }

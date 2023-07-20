@@ -1,15 +1,15 @@
-use array::array_append;
-use array::array_new;
-// use gas::withdraw_gas_all;
-
-use cubit::math::comp::{max, min};
-use cubit::types::fixed::{Fixed, FixedTrait, ONE_u128};
-use cubit::types::vec3::{Vec3, Vec3Trait};
-use cubit::types::vec4::{Vec4, Vec4Trait};
+use cubit::f128::math::comp::{max, min};
+use cubit::f128::types::fixed::{Fixed, FixedTrait, ONE_u128};
+use cubit::f128::types::vec3::{Vec3, Vec3Trait};
+use cubit::f128::types::vec4::{Vec4, Vec4Trait};
 
 fn permute(x: Vec4) -> Vec4 {
     let v34 = Vec4Trait::splat(FixedTrait::new(627189298506124754944, false));
+<<<<<<< HEAD:src/procgen/simplex3.cairo
     let v1 = Vec4Trait::splat(FixedTrait::one());
+=======
+    let v1 = Vec4Trait::splat(FixedTrait::ONE());
+>>>>>>> next:src/f128/procgen/simplex3.cairo
     let v289 = Vec4Trait::splat(FixedTrait::new(5331109037302060417024, false));
     return (((x * v34) + v1) * x) % v289;
 }
@@ -23,16 +23,28 @@ fn taylor_inv_sqrt(r: Vec4) -> Vec4 {
 // For x, 0.0 is returned if x < edge, and 1.0 is returned otherwise
 fn step(edge: Fixed, x: Fixed) -> Fixed {
     if x < edge {
+<<<<<<< HEAD:src/procgen/simplex3.cairo
         return FixedTrait::zero();
     } else {
         return FixedTrait::one();
+=======
+        return FixedTrait::ZERO();
+    } else {
+        return FixedTrait::ONE();
+>>>>>>> next:src/f128/procgen/simplex3.cairo
     }
 }
 
 fn noise(v: Vec3) -> Fixed {
+<<<<<<< HEAD:src/procgen/simplex3.cairo
     let zero = FixedTrait::zero();
     let half = FixedTrait::new(9223372036854775808, false); // 0.5
     let one = FixedTrait::one();
+=======
+    let zero = FixedTrait::ZERO();
+    let half = FixedTrait::new(9223372036854775808, false); // 0.5
+    let one = FixedTrait::ONE();
+>>>>>>> next:src/f128/procgen/simplex3.cairo
 
     let Cx = FixedTrait::new(3074457345618258602, false); // 1 / 6
     let Cy = FixedTrait::new(6148914691236517205, false); // 1 / 3
@@ -125,9 +137,15 @@ fn noise(v: Vec3) -> Fixed {
 }
 
 fn noise_octaves(v: Vec3, mut octaves: u128, persistence: Fixed) -> Fixed {
+<<<<<<< HEAD:src/procgen/simplex3.cairo
     let mut s = FixedTrait::one();
     let mut t = FixedTrait::zero();
     let mut n = FixedTrait::zero();
+=======
+    let mut s = FixedTrait::ONE();
+    let mut t = FixedTrait::ZERO();
+    let mut n = FixedTrait::ZERO();
+>>>>>>> next:src/f128/procgen/simplex3.cairo
 
     loop {
         if octaves == 0 { break; }
@@ -144,13 +162,17 @@ fn noise_octaves(v: Vec3, mut octaves: u128, persistence: Fixed) -> Fixed {
 
 // Tests --------------------------------------------------------------------------------------------------------------
 
-use cubit::procgen::simplex3;
-use cubit::test::helpers::assert_precise;
+use cubit::f128::procgen::simplex3;
+use cubit::f128::test::helpers::assert_precise;
 
 #[test]
 #[available_gas(5000000)]
 fn test_simplex3_1() {
+<<<<<<< HEAD:src/procgen/simplex3.cairo
     let r = simplex3::noise(Vec3Trait::splat(FixedTrait::zero())); // [ 0, 0, 0 ]
+=======
+    let r = simplex3::noise(Vec3Trait::splat(FixedTrait::ZERO())); // [ 0, 0, 0 ]
+>>>>>>> next:src/f128/procgen/simplex3.cairo
     assert_precise(r, -8040438090352662000, '0,0,0 out of bounds', Option::None(())); // -0.43587
 }
 
@@ -165,6 +187,7 @@ fn test_simplex3_2() {
             FixedTrait::from_felt(30068192840146567000)
         )
     );
+
     assert_precise(r, 13375152626318328000, '0.5... out of bounds', Option::None(())); // 0.72507
 }
 
@@ -179,6 +202,7 @@ fn test_simplex3_3() {
             FixedTrait::from_felt(-30068192840146567000)
         )
     );
+
     assert_precise(r, 2842256034349449700, '-1.94... out of bounds', Option::None(())); // 0.15408
 }
 
@@ -193,9 +217,8 @@ fn test_simplex3_4() {
             FixedTrait::from_felt(128758273634492680000)
         )
     );
-    assert_precise(
-        r, -14610501553210167000, '-9.99... out of bounds', Option::None(())
-    ); // -0.79204
+
+    assert_precise(r, -14610501553210167000, '-9.99... out of bounds', Option::None(())); // -0.79204
 }
 
 #[test]
@@ -209,9 +232,8 @@ fn test_simplex3_5() {
             FixedTrait::from_felt(-52942155491546415000)
         )
     );
-    assert_precise(
-        r, -7380847965597703000, '-0.005... out of bounds', Option::None(())
-    ); // -0.40012
+
+    assert_precise(r, -7380847965597703000, '-0.005... out of bounds', Option::None(())); // -0.40012
 }
 
 #[test]
@@ -219,8 +241,13 @@ fn test_simplex3_5() {
 fn test_simplex3_octaves_1() {
     // [0.0, 0.0, 0.0]
     let r = simplex3::noise_octaves(
+<<<<<<< HEAD:src/procgen/simplex3.cairo
         Vec3Trait::splat(FixedTrait::zero()), 2, FixedTrait::new(9223372036854775808, false)
+=======
+        Vec3Trait::splat(FixedTrait::ZERO()), 2, FixedTrait::new(9223372036854775808, false)
+>>>>>>> next:src/f128/procgen/simplex3.cairo
     );
+
     assert_precise(r, -8040438090352662000, '... out of bounds', Option::None(())); // -0.4359
 }
 
@@ -237,6 +264,7 @@ fn test_simplex3_octaves_2() {
         3,
         FixedTrait::new(9223372036854775808, false)
     );
+
     assert_precise(r, 6054457010196317000, '... out of bounds', Option::None(())); // 0.3282
 }
 
@@ -253,6 +281,7 @@ fn test_simplex3_octaves_3() {
         4,
         FixedTrait::new(9223372036854775808, false)
     );
+
     assert_precise(r, 2498284309949725700, '... out of bounds', Option::None(())); // 0.1354
 }
 
@@ -269,11 +298,16 @@ fn test_simplex3_octaves_4() {
         5,
         FixedTrait::new(9223372036854775808, false)
     );
+
     assert_precise(r, -6784442150430373000, '... out of bounds', Option::None(())); // -0.3678
 }
 
 #[test]
+<<<<<<< HEAD:src/procgen/simplex3.cairo
 #[available_gas(35000000)]
+=======
+#[available_gas(35000000)] // 342k steps
+>>>>>>> next:src/f128/procgen/simplex3.cairo
 fn test_simplex3_octaves_5() {
     // [-0.005, 12.578, -2.87]
     let r = simplex3::noise_octaves(
@@ -285,5 +319,6 @@ fn test_simplex3_octaves_5() {
         6,
         FixedTrait::new(9223372036854775808, false)
     );
+
     assert_precise(r, -3360150313341259000, '... out of bounds', Option::None(())); // -0.1822
 }

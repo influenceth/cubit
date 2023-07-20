@@ -4,8 +4,13 @@ use result::{ResultTrait, ResultTraitImpl};
 use traits::{Into, TryInto};
 use integer::{u256_safe_divmod, u256_as_non_zero, upcast};
 
+<<<<<<< HEAD:src/math/core.cairo
 use cubit::math::lut;
 use cubit::types::fixed::{
+=======
+use cubit::f128::math::lut;
+use cubit::f128::types::fixed::{
+>>>>>>> next:src/f128/math/core.cairo
   HALF_u128, MAX_u128, ONE_u128, Fixed, FixedInto, FixedTrait, FixedAdd, FixedDiv, FixedMul, FixedNeg
 };
 
@@ -21,7 +26,11 @@ fn add(a: Fixed, b: Fixed) -> Fixed {
     }
 
     if a.mag == b.mag {
+<<<<<<< HEAD:src/math/core.cairo
         return FixedTrait::zero();
+=======
+        return FixedTrait::ZERO();
+>>>>>>> next:src/f128/math/core.cairo
     }
 
     if (a.mag > b.mag) {
@@ -69,7 +78,11 @@ fn exp(a: Fixed) -> Fixed {
 // Calculates the binary exponent of x: 2^x
 fn exp2(a: Fixed) -> Fixed {
     if (a.mag == 0) {
+<<<<<<< HEAD:src/math/core.cairo
         return FixedTrait::one();
+=======
+        return FixedTrait::ONE();
+>>>>>>> next:src/f128/math/core.cairo
     }
 
     let (int_part, frac_part) = _split_unsigned(a);
@@ -86,11 +99,19 @@ fn exp2(a: Fixed) -> Fixed {
         let r3 = (r4 + FixedTrait::new(1023863119786103800, false)) * frac_fixed;
         let r2 = (r3 + FixedTrait::new(4431397849999009866, false)) * frac_fixed;
         let r1 = (r2 + FixedTrait::new(12786308590235521577, false)) * frac_fixed;
+<<<<<<< HEAD:src/math/core.cairo
         res_u = res_u * (r1 + FixedTrait::one());
     }
 
     if (a.sign == true) {
         return FixedTrait::one() / res_u;
+=======
+        res_u = res_u * (r1 + FixedTrait::ONE());
+    }
+
+    if (a.sign == true) {
+        return FixedTrait::ONE() / res_u;
+>>>>>>> next:src/f128/math/core.cairo
     } else {
         return res_u;
     }
@@ -148,10 +169,17 @@ fn log2(a: Fixed) -> Fixed {
     assert(a.sign == false, 'must be positive');
 
     if (a.mag == ONE_u128) {
+<<<<<<< HEAD:src/math/core.cairo
         return FixedTrait::zero();
     } else if (a.mag < ONE_u128) {
         // Compute true inverse binary log if 0 < x < 1
         let div = FixedTrait::one() / a;
+=======
+        return FixedTrait::ZERO();
+    } else if (a.mag < ONE_u128) {
+        // Compute true inverse binary log if 0 < x < 1
+        let div = FixedTrait::ONE() / a;
+>>>>>>> next:src/f128/math/core.cairo
         return -log2(div);
     }
 
@@ -195,6 +223,17 @@ fn mul(a: Fixed, b: Fixed) -> Fixed {
     return FixedTrait::new(scaled_u256.low, a.sign ^ b.sign);
 }
 
+#[derive(Copy, Drop, Serde)]
+struct f64 {
+    mag: u64,
+    sign: bool
+}
+
+fn mul_64(a: f64, b: f64) -> f64 {
+    let prod_u128 = integer::u64_wide_mul(a.mag, b.mag);
+    return f64 { mag: (prod_u128 / 4294967296).try_into().unwrap(), sign: a.sign ^ b.sign };
+}
+
 fn ne(a: @Fixed, b: @Fixed) -> bool {
     return (*a.mag != *b.mag) || (*a.sign != *b.sign);
 }
@@ -230,6 +269,7 @@ fn pow_int(a: Fixed, b: u128, sign: bool) -> Fixed {
     let mut n = b;
 
     if sign == true {
+<<<<<<< HEAD:src/math/core.cairo
         x = FixedTrait::one() / x;
     }
 
@@ -238,6 +278,16 @@ fn pow_int(a: Fixed, b: u128, sign: bool) -> Fixed {
     }
 
     let mut y = FixedTrait::one();
+=======
+        x = FixedTrait::ONE() / x;
+    }
+
+    if n == 0 {
+        return FixedTrait::ONE();
+    }
+
+    let mut y = FixedTrait::ONE();
+>>>>>>> next:src/f128/math/core.cairo
     let two = integer::u128_as_non_zero(2);
 
     loop {
@@ -293,12 +343,10 @@ fn _split_unsigned(a: Fixed) -> (u128, u128) {
 
 // Tests --------------------------------------------------------------------------------------------------------------
 
-use cubit::test::helpers::assert_precise;
-use cubit::types::fixed::{
+use cubit::f128::test::helpers::assert_precise;
+use cubit::f128::types::fixed::{
   ONE,
   HALF,
-  _felt_abs,
-  _felt_sign,
   FixedPartialEq,
   FixedPartialOrd,
   FixedAddEq,
@@ -307,8 +355,8 @@ use cubit::types::fixed::{
   FixedMulEq
 };
 
-use cubit::math::trig::HALF_PI_u128;
-use cubit::math::trig::PI_u128;
+use cubit::f128::math::trig::HALF_PI_u128;
+use cubit::f128::math::trig::PI_u128;
 
 #[test]
 fn test_into() {
@@ -356,34 +404,24 @@ fn test_overflow_small() {
 }
 
 #[test]
-fn test_sign() {
-    let min = -1809251394333065606848661391547535052811553607665798349986546028067936010240;
-    let max = 1809251394333065606848661391547535052811553607665798349986546028067936010240;
-    assert(_felt_sign(min) == true, 'invalid result');
-    assert(_felt_sign(-1) == true, 'invalid result');
-    assert(_felt_sign(0) == false, 'invalid result');
-    assert(_felt_sign(1) == false, 'invalid result');
-    assert(_felt_sign(max) == false, 'invalid result');
-}
-
-#[test]
-fn test_abs() {
-    assert(_felt_abs(5) == 5, 'abs of pos should be pos');
-    assert(_felt_abs(-5) == 5, 'abs of neg should be pos');
-    assert(_felt_abs(0) == 0, 'abs of 0 should be 0');
-}
-
-#[test]
 #[available_gas(1000000)]
 fn test_acos() {
+<<<<<<< HEAD:src/math/core.cairo
     let a = FixedTrait::one();
+=======
+    let a = FixedTrait::ONE();
+>>>>>>> next:src/f128/math/core.cairo
     assert(a.acos().into() == 0, 'invalid one');
 }
 
 #[test]
 #[available_gas(1000000)]
 fn test_asin() {
+<<<<<<< HEAD:src/math/core.cairo
     let a = FixedTrait::one();
+=======
+    let a = FixedTrait::ONE();
+>>>>>>> next:src/f128/math/core.cairo
     assert(a.asin().into() == 28976077832308491370, 'invalid one'); // PI / 2
 }
 
@@ -442,7 +480,7 @@ fn test_msb() {
 }
 
 #[test]
-#[available_gas(600000)] // 600k
+#[available_gas(600000)] // 260k
 fn test_pow() {
     let a = FixedTrait::new_unscaled(3, false);
     let b = FixedTrait::new_unscaled(4, false);
@@ -450,7 +488,7 @@ fn test_pow() {
 }
 
 #[test]
-#[available_gas(900000)] // 1000k
+#[available_gas(900000)] // 550k
 fn test_pow_frac() {
     let a = FixedTrait::new_unscaled(3, false);
     let b = FixedTrait::new(9223372036854775808, false); // 0.5
@@ -458,7 +496,7 @@ fn test_pow_frac() {
 }
 
 #[test]
-#[available_gas(1000000)]
+#[available_gas(1000000)] // 267k
 fn test_exp() {
     let a = FixedTrait::new_unscaled(2, false);
     assert(a.exp().into() == 136304026800730572984, 'invalid exp of 2'); // 7.389056098793725
@@ -546,11 +584,12 @@ fn test_sub_eq() {
 }
 
 #[test]
+#[available_gas(100000)] // 22k
 fn test_mul_pos() {
-    let a = FixedTrait::from_unscaled_felt(5);
-    let b = FixedTrait::from_unscaled_felt(2);
+    let a = FixedTrait::new(53495557813757699680, false); // 2.9
+    let b = FixedTrait::new(53495557813757699680, false); // 2.9
     let c = a * b;
-    assert(c.into() == 10 * ONE, 'invalid result');
+    assert(c.into() == 155137117659897329053, 'invalid result');
 }
 
 #[test]

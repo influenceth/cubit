@@ -1,6 +1,6 @@
 use debug::PrintTrait;
 
-use cubit::types::fixed::{Fixed, FixedTrait, FixedPrint};
+use cubit::f128::types::fixed::{Fixed, FixedTrait, FixedPrint};
 
 #[derive(Copy, Drop, Serde)]
 struct Vec3 {
@@ -167,7 +167,7 @@ fn sub(a: Vec3, b: Vec3) -> Vec3 {
 
 // Tests --------------------------------------------------------------------------------------------------------------
 
-use cubit::test::helpers::assert_precise;
+use cubit::f128::test::helpers::assert_precise;
 
 #[test]
 fn test_add() {

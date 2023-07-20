@@ -1,4 +1,4 @@
-use cubit::types::fixed::{Fixed, FixedTrait, FixedPartialOrd};
+use cubit::f128::types::fixed::{Fixed, FixedTrait, FixedPartialOrd};
 
 fn max(a: Fixed, b: Fixed) -> Fixed {
     if (a >= b) {
@@ -18,7 +18,7 @@ fn min(a: Fixed, b: Fixed) -> Fixed {
 
 // Tests --------------------------------------------------------------------------------------------------------------
 
-use cubit::types::fixed::FixedPartialEq;
+use cubit::f128::types::fixed::FixedPartialEq;
 
 #[test]
 fn test_max() {

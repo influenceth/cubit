@@ -1,6 +1,6 @@
 use debug::PrintTrait;
 
-use cubit::types::fixed::{Fixed, FixedTrait, FixedPrint};
+use cubit::f64::types::fixed::{Fixed, FixedTrait, FixedPrint};
 
 #[derive(Copy, Drop, Serde)]
 struct Vec4 {
@@ -159,149 +159,149 @@ fn sub(a: Vec4, b: Vec4) -> Vec4 {
 
 // Tests --------------------------------------------------------------------------------------------------------------
 
-use cubit::test::helpers::assert_precise;
+use cubit::f64::test::helpers::assert_precise;
 
 #[test]
 fn test_add() {
     let a = Vec4Trait::new(
-        FixedTrait::new(1_u128, false),
-        FixedTrait::new(2_u128, false),
-        FixedTrait::new(3_u128, false),
-        FixedTrait::new(4_u128, false)
+        FixedTrait::new(1, false),
+        FixedTrait::new(2, false),
+        FixedTrait::new(3, false),
+        FixedTrait::new(4, false)
     );
     let b = Vec4Trait::new(
-        FixedTrait::new(5_u128, false),
-        FixedTrait::new(6_u128, false),
-        FixedTrait::new(7_u128, false),
-        FixedTrait::new(8_u128, false)
+        FixedTrait::new(5, false),
+        FixedTrait::new(6, false),
+        FixedTrait::new(7, false),
+        FixedTrait::new(8, false)
     );
     let c = a + b;
-    assert(c.x == FixedTrait::new(6_u128, false), 'invalid add');
-    assert(c.y == FixedTrait::new(8_u128, false), 'invalid add');
-    assert(c.z == FixedTrait::new(10_u128, false), 'invalid add');
-    assert(c.w == FixedTrait::new(12_u128, false), 'invalid add');
+    assert(c.x == FixedTrait::new(6, false), 'invalid add');
+    assert(c.y == FixedTrait::new(8, false), 'invalid add');
+    assert(c.z == FixedTrait::new(10, false), 'invalid add');
+    assert(c.w == FixedTrait::new(12, false), 'invalid add');
 }
 
 #[test]
 fn test_sub() {
     let a = Vec4Trait::new(
-        FixedTrait::new(1_u128, false),
-        FixedTrait::new(2_u128, false),
-        FixedTrait::new(3_u128, false),
-        FixedTrait::new(4_u128, false)
+        FixedTrait::new(1, false),
+        FixedTrait::new(2, false),
+        FixedTrait::new(3, false),
+        FixedTrait::new(4, false)
     );
     let b = Vec4Trait::new(
-        FixedTrait::new(5_u128, false),
-        FixedTrait::new(6_u128, false),
-        FixedTrait::new(7_u128, false),
-        FixedTrait::new(8_u128, false)
+        FixedTrait::new(5, false),
+        FixedTrait::new(6, false),
+        FixedTrait::new(7, false),
+        FixedTrait::new(8, false)
     );
     let c = a - b;
-    assert(c.x == FixedTrait::new(4_u128, true), 'invalid sub');
-    assert(c.y == FixedTrait::new(4_u128, true), 'invalid sub');
-    assert(c.z == FixedTrait::new(4_u128, true), 'invalid sub');
-    assert(c.w == FixedTrait::new(4_u128, true), 'invalid sub');
+    assert(c.x == FixedTrait::new(4, true), 'invalid sub');
+    assert(c.y == FixedTrait::new(4, true), 'invalid sub');
+    assert(c.z == FixedTrait::new(4, true), 'invalid sub');
+    assert(c.w == FixedTrait::new(4, true), 'invalid sub');
 }
 
 #[test]
 fn test_mul() {
     let a = Vec4Trait::new(
-        FixedTrait::new_unscaled(1_u128, false),
-        FixedTrait::new_unscaled(2_u128, false),
-        FixedTrait::new_unscaled(3_u128, false),
-        FixedTrait::new_unscaled(4_u128, false)
+        FixedTrait::new_unscaled(1, false),
+        FixedTrait::new_unscaled(2, false),
+        FixedTrait::new_unscaled(3, false),
+        FixedTrait::new_unscaled(4, false)
     );
     let b = Vec4Trait::new(
-        FixedTrait::new_unscaled(5_u128, false),
-        FixedTrait::new_unscaled(6_u128, false),
-        FixedTrait::new_unscaled(7_u128, false),
-        FixedTrait::new_unscaled(8_u128, false)
+        FixedTrait::new_unscaled(5, false),
+        FixedTrait::new_unscaled(6, false),
+        FixedTrait::new_unscaled(7, false),
+        FixedTrait::new_unscaled(8, false)
     );
     let c = a * b;
-    assert(c.x == FixedTrait::new_unscaled(5_u128, false), 'invalid mul');
-    assert(c.y == FixedTrait::new_unscaled(12_u128, false), 'invalid mul');
-    assert(c.z == FixedTrait::new_unscaled(21_u128, false), 'invalid mul');
-    assert(c.w == FixedTrait::new_unscaled(32_u128, false), 'invalid mul');
+    assert(c.x == FixedTrait::new_unscaled(5, false), 'invalid mul');
+    assert(c.y == FixedTrait::new_unscaled(12, false), 'invalid mul');
+    assert(c.z == FixedTrait::new_unscaled(21, false), 'invalid mul');
+    assert(c.w == FixedTrait::new_unscaled(32, false), 'invalid mul');
 }
 
 #[test]
 fn test_div() {
     let a = Vec4Trait::new(
-        FixedTrait::new(15_u128, false),
-        FixedTrait::new(20_u128, false),
-        FixedTrait::new(1_u128, false),
-        FixedTrait::new(8_u128, false)
+        FixedTrait::new(15, false),
+        FixedTrait::new(20, false),
+        FixedTrait::new(1, false),
+        FixedTrait::new(8, false)
     );
     let b = Vec4Trait::new(
-        FixedTrait::new(5_u128, false),
-        FixedTrait::new(4_u128, false),
-        FixedTrait::new(1_u128, false),
-        FixedTrait::new(4_u128, false)
+        FixedTrait::new(5, false),
+        FixedTrait::new(4, false),
+        FixedTrait::new(1, false),
+        FixedTrait::new(4, false)
     );
     let c = a / b;
-    assert(c.x == FixedTrait::new_unscaled(3_u128, false), 'invalid div');
-    assert(c.y == FixedTrait::new_unscaled(5_u128, false), 'invalid div');
-    assert(c.z == FixedTrait::new_unscaled(1_u128, false), 'invalid div');
-    assert(c.w == FixedTrait::new_unscaled(2_u128, false), 'invalid div');
+    assert(c.x == FixedTrait::new_unscaled(3, false), 'invalid div');
+    assert(c.y == FixedTrait::new_unscaled(5, false), 'invalid div');
+    assert(c.z == FixedTrait::new_unscaled(1, false), 'invalid div');
+    assert(c.w == FixedTrait::new_unscaled(2, false), 'invalid div');
 }
 
 #[test]
 fn test_dot() {
     let a = Vec4Trait::new(
-        FixedTrait::new_unscaled(1_u128, false),
-        FixedTrait::new_unscaled(2_u128, false),
-        FixedTrait::new_unscaled(3_u128, false),
-        FixedTrait::new_unscaled(4_u128, false)
+        FixedTrait::new_unscaled(1, false),
+        FixedTrait::new_unscaled(2, false),
+        FixedTrait::new_unscaled(3, false),
+        FixedTrait::new_unscaled(4, false)
     );
     let b = Vec4Trait::new(
-        FixedTrait::new_unscaled(5_u128, false),
-        FixedTrait::new_unscaled(6_u128, false),
-        FixedTrait::new_unscaled(7_u128, false),
-        FixedTrait::new_unscaled(8_u128, false)
+        FixedTrait::new_unscaled(5, false),
+        FixedTrait::new_unscaled(6, false),
+        FixedTrait::new_unscaled(7, false),
+        FixedTrait::new_unscaled(8, false)
     );
     let c = a.dot(b);
-    assert(c == FixedTrait::new_unscaled(70_u128, false), 'invalid dot');
+    assert(c == FixedTrait::new_unscaled(70, false), 'invalid dot');
 }
 
 #[test]
 fn test_norm() {
     let a = Vec4Trait::new(
-        FixedTrait::new_unscaled(1_u128, false),
-        FixedTrait::new_unscaled(2_u128, false),
-        FixedTrait::new_unscaled(3_u128, false),
-        FixedTrait::new_unscaled(4_u128, false)
+        FixedTrait::new_unscaled(1, false),
+        FixedTrait::new_unscaled(2, false),
+        FixedTrait::new_unscaled(3, false),
+        FixedTrait::new_unscaled(4, false)
     );
     let b = a.norm();
-    assert_precise(b, 101036978416954620000, 'invalid norm', Option::None(())); // sqrt(30)
+    assert_precise(b, 23524504718, 'invalid norm', Option::None(())); // sqrt(30)
 }
 
 #[test]
 fn test_abs() {
     let a = Vec4Trait::new(
-        FixedTrait::new_unscaled(1_u128, false),
-        FixedTrait::new_unscaled(2_u128, true),
-        FixedTrait::new_unscaled(3_u128, true),
-        FixedTrait::new_unscaled(4_u128, false)
+        FixedTrait::new_unscaled(1, false),
+        FixedTrait::new_unscaled(2, true),
+        FixedTrait::new_unscaled(3, true),
+        FixedTrait::new_unscaled(4, false)
     );
     let b = a.abs();
-    assert(b.x == FixedTrait::new_unscaled(1_u128, false), 'invalid abs');
-    assert(b.y == FixedTrait::new_unscaled(2_u128, false), 'invalid abs');
-    assert(b.z == FixedTrait::new_unscaled(3_u128, false), 'invalid abs');
-    assert(b.w == FixedTrait::new_unscaled(4_u128, false), 'invalid abs');
+    assert(b.x == FixedTrait::new_unscaled(1, false), 'invalid abs');
+    assert(b.y == FixedTrait::new_unscaled(2, false), 'invalid abs');
+    assert(b.z == FixedTrait::new_unscaled(3, false), 'invalid abs');
+    assert(b.w == FixedTrait::new_unscaled(4, false), 'invalid abs');
 }
 
 #[test]
 fn test_floor() {
     let a = Vec4Trait::new(
-        FixedTrait::new(27670116110564327000_u128, false), // 1.5
-        FixedTrait::new(59029581035870570000_u128, true), // -3.2
-        FixedTrait::new(0_u128, false),
-        FixedTrait::new(0_u128, false)
+        FixedTrait::new(6442450944, false), // 1.5
+        FixedTrait::new(13743895347, true), // -3.2
+        FixedTrait::new(0, false),
+        FixedTrait::new(0, false)
     );
 
     let b = a.floor();
-    assert(b.x == FixedTrait::new_unscaled(1_u128, false), 'invalid floor');
-    assert(b.y == FixedTrait::new_unscaled(4_u128, true), 'invalid floor');
-    assert(b.z == FixedTrait::new(0_u128, false), 'invalid floor');
-    assert(b.w == FixedTrait::new(0_u128, false), 'invalid floor');
+    assert(b.x == FixedTrait::new_unscaled(1, false), 'invalid floor');
+    assert(b.y == FixedTrait::new_unscaled(4, true), 'invalid floor');
+    assert(b.z == FixedTrait::new(0, false), 'invalid floor');
+    assert(b.w == FixedTrait::new(0, false), 'invalid floor');
 }
