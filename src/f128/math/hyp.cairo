@@ -3,11 +3,7 @@ use cubit::f128::types::fixed::{Fixed, FixedTrait, FixedAdd, FixedSub, FixedMul,
 // Calculates hyperbolic cosine of a (fixed point)
 fn cosh(a: Fixed) -> Fixed {
     let ea = a.exp();
-<<<<<<< HEAD:src/math/hyp.cairo
-    let num = ea + (FixedTrait::one() / ea);
-=======
     let num = ea + (FixedTrait::ONE() / ea);
->>>>>>> next:src/f128/math/hyp.cairo
     let den = FixedTrait::new_unscaled(2_u128, false);
     return num / den;
 }
@@ -15,11 +11,7 @@ fn cosh(a: Fixed) -> Fixed {
 // Calculates hyperbolic sine of a (fixed point)
 fn sinh(a: Fixed) -> Fixed {
     let ea = a.exp();
-<<<<<<< HEAD:src/math/hyp.cairo
-    let num = ea - (FixedTrait::one() / ea);
-=======
     let num = ea - (FixedTrait::ONE() / ea);
->>>>>>> next:src/f128/math/hyp.cairo
     let den = FixedTrait::new_unscaled(2_u128, false);
     return num / den;
 }
@@ -27,41 +19,25 @@ fn sinh(a: Fixed) -> Fixed {
 // Calculates hyperbolic tangent of a (fixed point)
 fn tanh(a: Fixed) -> Fixed {
     let ea = a.exp();
-<<<<<<< HEAD:src/math/hyp.cairo
-    let ea_i = FixedTrait::one() / ea;
-=======
     let ea_i = FixedTrait::ONE() / ea;
->>>>>>> next:src/f128/math/hyp.cairo
     return (ea - ea_i) / (ea + ea_i);
 }
 
 // Calculates inverse hyperbolic cosine of a (fixed point)
 fn acosh(a: Fixed) -> Fixed {
-<<<<<<< HEAD:src/math/hyp.cairo
-    let root = (a * a - FixedTrait::one()).sqrt();
-=======
     let root = (a * a - FixedTrait::ONE()).sqrt();
->>>>>>> next:src/f128/math/hyp.cairo
     return (a + root).ln();
 }
 
 // Calculates inverse hyperbolic sine of a (fixed point)
 fn asinh(a: Fixed) -> Fixed {
-<<<<<<< HEAD:src/math/hyp.cairo
-    let root = (a * a + FixedTrait::one()).sqrt();
-=======
     let root = (a * a + FixedTrait::ONE()).sqrt();
->>>>>>> next:src/f128/math/hyp.cairo
     return (a + root).ln();
 }
 
 // Calculates inverse hyperbolic tangent of a (fixed point)
 fn atanh(a: Fixed) -> Fixed {
-<<<<<<< HEAD:src/math/hyp.cairo
-    let one = FixedTrait::one();
-=======
     let one = FixedTrait::ONE();
->>>>>>> next:src/f128/math/hyp.cairo
     let ln_arg = (one + a) / (one - a);
     return ln_arg.ln() / FixedTrait::new_unscaled(2_u128, false);
 }
@@ -82,11 +58,7 @@ fn test_cosh() {
         cosh(a), 69400261068632590000, 'invalid two', Option::None(())
     ); // 3.762195691016423
 
-<<<<<<< HEAD:src/math/hyp.cairo
-    let a = FixedTrait::one();
-=======
     let a = FixedTrait::ONE();
->>>>>>> next:src/f128/math/hyp.cairo
     assert_precise(
         cosh(a), 28464813555534070000, 'invalid one', Option::None(())
     ); // 1.5430806347841253
@@ -113,11 +85,7 @@ fn test_sinh() {
         sinh(a), 66903765734623805000, 'invalid two', Option::None(())
     ); // 3.6268604077773023
 
-<<<<<<< HEAD:src/math/hyp.cairo
-    let a = FixedTrait::one();
-=======
     let a = FixedTrait::ONE();
->>>>>>> next:src/f128/math/hyp.cairo
     assert_precise(
         sinh(a), 21678635654265184000, 'invalid one', Option::None(())
     ); // 1.1752011936029418
@@ -144,11 +112,7 @@ fn test_tanh() {
         tanh(a), 17783170049656136000, 'invalid two', Option::None(())
     ); // 0.9640275800745076
 
-<<<<<<< HEAD:src/math/hyp.cairo
-    let a = FixedTrait::one();
-=======
     let a = FixedTrait::ONE();
->>>>>>> next:src/f128/math/hyp.cairo
     assert_precise(
         tanh(a), 14048932482948833000, 'invalid one', Option::None(())
     ); // 0.7615941559446443
@@ -176,11 +140,7 @@ fn test_acosh() {
     let a = FixedTrait::new(28464813554960036081_u128, false); // 1.5430806347841253
     assert_precise(acosh(a), ONE, 'invalid one', Option::None(()));
 
-<<<<<<< HEAD:src/math/hyp.cairo
-    let a = FixedTrait::one(); // 1
-=======
     let a = FixedTrait::ONE(); // 1
->>>>>>> next:src/f128/math/hyp.cairo
     assert(acosh(a).into() == 0, 'invalid zero');
 }
 

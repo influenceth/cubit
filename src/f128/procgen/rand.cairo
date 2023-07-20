@@ -26,11 +26,7 @@ fn u128_between(seed: felt252, low: u128, high: u128) -> u128 {
 }
 
 fn fixed_normal_between(seed: felt252, low: Fixed, high: Fixed) -> Fixed {
-<<<<<<< HEAD:src/procgen/rand.cairo
-    let acc = _fixed_normal_between_loop(seed, low, high, FixedTrait::zero(), 5);
-=======
     let acc = _fixed_normal_between_loop(seed, low, high, FixedTrait::ZERO(), 5);
->>>>>>> next:src/f128/procgen/rand.cairo
     return acc / FixedTrait::new_unscaled(5, false);
 }
 

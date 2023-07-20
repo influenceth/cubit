@@ -1,11 +1,6 @@
 use debug::PrintTrait;
 use integer::{u256_safe_divmod, u256_as_non_zero, u256_from_felt252};
 
-<<<<<<< HEAD:src/types/fixed.cairo
-// TODO: https://github.com/BibliothecaDAO/loot-survivor/blob/main/contracts/pack/src/pack.cairo#L10
-
-=======
->>>>>>> next:src/f128/types/fixed.cairo
 use option::OptionTrait;
 use result::{ResultTrait, ResultTraitImpl};
 use traits::{TryInto, Into};
@@ -34,13 +29,8 @@ struct Fixed {
 // TRAITS
 
 trait FixedTrait {
-<<<<<<< HEAD:src/types/fixed.cairo
-    fn zero() -> Fixed;
-    fn one() -> Fixed;
-=======
     fn ZERO() -> Fixed;
     fn ONE() -> Fixed;
->>>>>>> next:src/f128/types/fixed.cairo
 
     // Constructors
     fn new(mag: u128, sign: bool) -> Fixed;
@@ -87,19 +77,11 @@ trait FixedTrait {
 // IMPLS
 
 impl FixedImpl of FixedTrait {
-<<<<<<< HEAD:src/types/fixed.cairo
-    fn zero() -> Fixed {
-        return Fixed { mag: 0, sign: false };
-    }
-
-    fn one() -> Fixed {
-=======
     fn ZERO() -> Fixed {
         return Fixed { mag: 0, sign: false };
     }
 
     fn ONE() -> Fixed {
->>>>>>> next:src/f128/types/fixed.cairo
         return Fixed { mag: ONE_u128, sign: false };
     }
 

@@ -4,13 +4,8 @@ use result::{ResultTrait, ResultTraitImpl};
 use traits::{Into, TryInto};
 use integer::{u256_safe_divmod, u256_as_non_zero, upcast};
 
-<<<<<<< HEAD:src/math/core.cairo
-use cubit::math::lut;
-use cubit::types::fixed::{
-=======
 use cubit::f128::math::lut;
 use cubit::f128::types::fixed::{
->>>>>>> next:src/f128/math/core.cairo
   HALF_u128, MAX_u128, ONE_u128, Fixed, FixedInto, FixedTrait, FixedAdd, FixedDiv, FixedMul, FixedNeg
 };
 
@@ -26,11 +21,7 @@ fn add(a: Fixed, b: Fixed) -> Fixed {
     }
 
     if a.mag == b.mag {
-<<<<<<< HEAD:src/math/core.cairo
-        return FixedTrait::zero();
-=======
         return FixedTrait::ZERO();
->>>>>>> next:src/f128/math/core.cairo
     }
 
     if (a.mag > b.mag) {
@@ -78,11 +69,7 @@ fn exp(a: Fixed) -> Fixed {
 // Calculates the binary exponent of x: 2^x
 fn exp2(a: Fixed) -> Fixed {
     if (a.mag == 0) {
-<<<<<<< HEAD:src/math/core.cairo
-        return FixedTrait::one();
-=======
         return FixedTrait::ONE();
->>>>>>> next:src/f128/math/core.cairo
     }
 
     let (int_part, frac_part) = _split_unsigned(a);
@@ -99,19 +86,11 @@ fn exp2(a: Fixed) -> Fixed {
         let r3 = (r4 + FixedTrait::new(1023863119786103800, false)) * frac_fixed;
         let r2 = (r3 + FixedTrait::new(4431397849999009866, false)) * frac_fixed;
         let r1 = (r2 + FixedTrait::new(12786308590235521577, false)) * frac_fixed;
-<<<<<<< HEAD:src/math/core.cairo
-        res_u = res_u * (r1 + FixedTrait::one());
-    }
-
-    if (a.sign == true) {
-        return FixedTrait::one() / res_u;
-=======
         res_u = res_u * (r1 + FixedTrait::ONE());
     }
 
     if (a.sign == true) {
         return FixedTrait::ONE() / res_u;
->>>>>>> next:src/f128/math/core.cairo
     } else {
         return res_u;
     }
@@ -169,17 +148,10 @@ fn log2(a: Fixed) -> Fixed {
     assert(a.sign == false, 'must be positive');
 
     if (a.mag == ONE_u128) {
-<<<<<<< HEAD:src/math/core.cairo
-        return FixedTrait::zero();
-    } else if (a.mag < ONE_u128) {
-        // Compute true inverse binary log if 0 < x < 1
-        let div = FixedTrait::one() / a;
-=======
         return FixedTrait::ZERO();
     } else if (a.mag < ONE_u128) {
         // Compute true inverse binary log if 0 < x < 1
         let div = FixedTrait::ONE() / a;
->>>>>>> next:src/f128/math/core.cairo
         return -log2(div);
     }
 
@@ -269,16 +241,6 @@ fn pow_int(a: Fixed, b: u128, sign: bool) -> Fixed {
     let mut n = b;
 
     if sign == true {
-<<<<<<< HEAD:src/math/core.cairo
-        x = FixedTrait::one() / x;
-    }
-
-    if n == 0 {
-        return FixedTrait::one();
-    }
-
-    let mut y = FixedTrait::one();
-=======
         x = FixedTrait::ONE() / x;
     }
 
@@ -287,7 +249,6 @@ fn pow_int(a: Fixed, b: u128, sign: bool) -> Fixed {
     }
 
     let mut y = FixedTrait::ONE();
->>>>>>> next:src/f128/math/core.cairo
     let two = integer::u128_as_non_zero(2);
 
     loop {
@@ -406,22 +367,14 @@ fn test_overflow_small() {
 #[test]
 #[available_gas(1000000)]
 fn test_acos() {
-<<<<<<< HEAD:src/math/core.cairo
-    let a = FixedTrait::one();
-=======
     let a = FixedTrait::ONE();
->>>>>>> next:src/f128/math/core.cairo
     assert(a.acos().into() == 0, 'invalid one');
 }
 
 #[test]
 #[available_gas(1000000)]
 fn test_asin() {
-<<<<<<< HEAD:src/math/core.cairo
-    let a = FixedTrait::one();
-=======
     let a = FixedTrait::ONE();
->>>>>>> next:src/f128/math/core.cairo
     assert(a.asin().into() == 28976077832308491370, 'invalid one'); // PI / 2
 }
 
