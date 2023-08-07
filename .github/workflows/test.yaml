@@ -21,7 +21,7 @@ jobs:
           rustup override set stable && rustup update
           git clone https://github.com/starkware-libs/cairo
           cd cairo
-          git checkout v2.0.1
+          git checkout v2.1.0
           cargo build --all --release
           cd ../
 

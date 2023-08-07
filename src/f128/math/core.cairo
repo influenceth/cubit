@@ -2,7 +2,7 @@ use debug::PrintTrait;
 use option::OptionTrait;
 use result::{ResultTrait, ResultTraitImpl};
 use traits::{Into, TryInto};
-use integer::{u256_safe_divmod, u256_as_non_zero, upcast};
+use integer::{u256_safe_div_rem, u256_as_non_zero, upcast};
 
 use cubit::f128::math::lut;
 use cubit::f128::types::fixed::{
@@ -187,7 +187,7 @@ fn mul(a: Fixed, b: Fixed) -> Fixed {
     let (high, low) = integer::u128_wide_mul(a.mag, b.mag);
     let res_u256 = u256 { low: low, high: high };
     let ONE_u256 = u256 { low: ONE_u128, high: 0 };
-    let (scaled_u256, _) = u256_safe_divmod(res_u256, u256_as_non_zero(ONE_u256));
+    let (scaled_u256, _) = u256_safe_div_rem(res_u256, u256_as_non_zero(ONE_u256));
 
     assert(scaled_u256.high == 0, 'result overflow');
 
