@@ -16,7 +16,7 @@ const HALF: u64 = 2147483648; // 2 ** 31
 
 // STRUCTS
 
-#[derive(Copy, Drop, Serde)]
+#[derive(Copy, Drop, Serde, Store)]
 struct Fixed {
     mag: u64,
     sign: bool

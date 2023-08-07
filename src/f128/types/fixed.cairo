@@ -20,7 +20,7 @@ const MAX_u128: u128 = 340282366920938463463374607431768211455_u128; // 2 ** 128
 
 // STRUCTS
 
-#[derive(Copy, Drop, Serde)]
+#[derive(Copy, Drop, Serde, Store)]
 struct Fixed {
     mag: u128,
     sign: bool

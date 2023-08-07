@@ -195,7 +195,7 @@ fn mul(a: Fixed, b: Fixed) -> Fixed {
     return FixedTrait::new(scaled_u256.low, a.sign ^ b.sign);
 }
 
-#[derive(Copy, Drop, Serde)]
+#[derive(Copy, Drop, Serde, Store)]
 struct f64 {
     mag: u64,
     sign: bool
