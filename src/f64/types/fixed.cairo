@@ -1,8 +1,11 @@
 use debug::PrintTrait;
 
+use integer::{U128DivRem, u128_as_non_zero};
 use option::OptionTrait;
 use result::{ResultTrait, ResultTraitImpl};
 use traits::{TryInto, Into};
+
+use starknet::storage_access::StorePacking;
 
 use cubit::utils;
 use cubit::f64::math::{core, hyp, trig};
@@ -16,7 +19,7 @@ const HALF: u64 = 2147483648; // 2 ** 31
 
 // STRUCTS
 
-#[derive(Copy, Drop, Serde, Store)]
+#[derive(Copy, Drop, Serde)]
 struct Fixed {
     mag: u64,
     sign: bool
@@ -399,6 +402,22 @@ impl FixedRem of Rem<Fixed> {
     #[inline(always)]
     fn rem(lhs: Fixed, rhs: Fixed) -> Fixed {
         return core::rem(lhs, rhs);
+    }
+}
+
+impl PackFixed of StorePacking<Fixed, felt252> {
+    fn pack(value: Fixed) -> felt252 {
+        let MAX_MAG_PLUS_ONE = 0x10000000000000000; // 2**64
+        let packed_sign = MAX_MAG_PLUS_ONE * value.sign.into();
+        value.mag.into() + packed_sign
+    }
+
+    fn unpack(value: felt252) -> Fixed {
+        let value_u128: u128 = value.try_into().unwrap();
+        let (q, r) = U128DivRem::div_rem(value_u128, u128_as_non_zero(0x10000000000000000));
+        let mag: u64 = q.try_into().unwrap();
+        let sign: bool = r.into() == 1;
+        Fixed {mag: mag, sign: sign}
     }
 }
 
