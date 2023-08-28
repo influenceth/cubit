@@ -22,7 +22,7 @@ const MAX_u128: u128 = 340282366920938463463374607431768211455_u128; // 2 ** 128
 
 // STRUCTS
 
-#[derive(Copy, Drop, Serde)]
+#[derive(Copy, Drop, Serde, SerdeLen)]
 struct Fixed {
     mag: u128,
     sign: bool
@@ -430,10 +430,12 @@ impl PackFixed of StorePacking<Fixed, felt252> {
     }
 
     fn unpack(value: felt252) -> Fixed {
-        let (q, r) = U256DivRem::div_rem(value.into(), u256_as_non_zero(0x100000000000000000000000000000000));
+        let (q, r) = U256DivRem::div_rem(
+            value.into(), u256_as_non_zero(0x100000000000000000000000000000000)
+        );
         let mag: u128 = q.try_into().unwrap();
         let sign: bool = r.into() == 1;
-        Fixed {mag: mag, sign: sign}
+        Fixed { mag: mag, sign: sign }
     }
 }
 
