@@ -35,6 +35,7 @@ trait FixedTrait {
     fn new(mag: u64, sign: bool) -> Fixed;
     fn new_unscaled(mag: u64, sign: bool) -> Fixed;
     fn from_felt(val: felt252) -> Fixed;
+    fn from_unscaled_felt(val: felt252) -> Fixed;
 
     // // Math
     fn abs(self: Fixed) -> Fixed;
@@ -92,6 +93,10 @@ impl FixedImpl of FixedTrait {
     fn from_felt(val: felt252) -> Fixed {
         let mag = integer::u64_try_from_felt252(utils::felt_abs(val)).unwrap();
         return FixedTrait::new(mag, utils::felt_sign(val));
+    }
+
+    fn from_unscaled_felt(val: felt252) -> Fixed {
+        return FixedTrait::from_felt(val * ONE.into());
     }
 
     fn abs(self: Fixed) -> Fixed {
