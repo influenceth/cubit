@@ -19,7 +19,7 @@ const HALF: u64 = 2147483648; // 2 ** 31
 
 // STRUCTS
 
-#[derive(Copy, Drop, Serde, SerdeLen)]
+#[derive(Copy, Drop, Serde)]
 struct Fixed {
     mag: u64,
     sign: bool
@@ -422,7 +422,7 @@ impl PackFixed of StorePacking<Fixed, felt252> {
         let (q, r) = U128DivRem::div_rem(value_u128, u128_as_non_zero(0x10000000000000000));
         let mag: u64 = q.try_into().unwrap();
         let sign: bool = r.into() == 1;
-        Fixed { mag: mag, sign: sign }
+        Fixed {mag: mag, sign: sign}
     }
 }
 
