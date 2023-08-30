@@ -5,9 +5,6 @@ cairo-version = "2.1.0"
 description = "Math library in Cairo using a 64.64 fixed point representation"
 homepage = "https://github.com/influenceth/cubit"
 
-[scripts]
-test = "cairo-test ."
-
 [lib]
 sierra = false  # Enable Sierra codegen.
 casm = false   # Enable CASM codegen.
