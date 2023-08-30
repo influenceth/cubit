@@ -430,10 +430,12 @@ impl PackFixed of StorePacking<Fixed, felt252> {
     }
 
     fn unpack(value: felt252) -> Fixed {
-        let (q, r) = U256DivRem::div_rem(value.into(), u256_as_non_zero(0x100000000000000000000000000000000));
-        let mag: u128 = q.try_into().unwrap();
-        let sign: bool = r.into() == 1;
-        Fixed {mag: mag, sign: sign}
+        let (q, r) = U256DivRem::div_rem(
+            value.into(), u256_as_non_zero(0x100000000000000000000000000000000)
+        );
+        let mag: u128 = r.try_into().unwrap();
+        let sign: bool = q.into() == 1;
+        Fixed { mag: mag, sign: sign }
     }
 }
 
@@ -930,4 +932,55 @@ fn test_try_into_f64() {
 fn test_try_into_f64_fail() {
     let a = FixedTrait::new_unscaled(ONE_u64.into(), true);
     let b: Fixed64 = a.try_into().unwrap();
+}
+
+#[available_gas(10000000)]
+#[test]
+fn test_packing() {
+    let num1 = FixedTrait::new_unscaled(1500, true);
+    let num2 = FixedTrait::new_unscaled(1500, false);
+    let num3 = FixedTrait::new_unscaled(1900, true);
+    let num4 = FixedTrait::new_unscaled(1900, false);
+    let num5 = FixedTrait::new(20813682699295371264, true); // 1.128312 * 2**64
+    let num6 = FixedTrait::new(20813682699295371264, false);
+    let num7 = FixedTrait::new(2079202843536212642234368, true); // 112_713.812 * 2**64
+    let num8 = FixedTrait::new(2079202843536212642234368, false);
+
+    // Test packing
+    let pack1 = PackFixed::pack(num1);
+    let pack2 = PackFixed::pack(num2);
+    let pack3 = PackFixed::pack(num3);
+    let pack4 = PackFixed::pack(num4);
+    let pack5 = PackFixed::pack(num5);
+    let pack6 = PackFixed::pack(num6);
+    let pack7 = PackFixed::pack(num7);
+    let pack8 = PackFixed::pack(num8);
+
+    assert(pack1 == 340282366920938491133490717996095635456, 'Pack 1 Failed');
+    assert(pack2 == 27670116110564327424000, 'Pack 2 failed');
+    assert(pack3 == 340282366920938498512188347479916281856, 'Pack 3 failed');
+    assert(pack4 == 35048813740048148070400, 'Pack 4 failed');
+    assert(pack5 == 340282366920938463484188290131063582720, 'Pack 5 failed');
+    assert(pack6 == 20813682699295371264, 'Pack 6 failed');
+    assert(pack7 == 340282366920940542666218143644410445824, 'Pack 7 failed');
+    assert(pack8 == 2079202843536212642234368, 'Pack 8 failed');
+
+    // Test unpacking
+    let unpack1 = PackFixed::unpack(pack1);
+    let unpack2 = PackFixed::unpack(pack2);
+    let unpack3 = PackFixed::unpack(pack3);
+    let unpack4 = PackFixed::unpack(pack4);
+    let unpack5 = PackFixed::unpack(pack5);
+    let unpack6 = PackFixed::unpack(pack6);
+    let unpack7 = PackFixed::unpack(pack7);
+    let unpack8 = PackFixed::unpack(pack8);
+
+    assert(unpack1 == num1, 'unpack 1 failed');
+    assert(unpack2 == num2, 'unpack 2 failed');
+    assert(unpack3 == num3, 'unpack 3 failed');
+    assert(unpack4 == num4, 'unpack 4 failed');
+    assert(unpack5 == num5, 'unpack 5 failed');
+    assert(unpack6 == num6, 'unpack 6 failed');
+    assert(unpack7 == num7, 'unpack 7 failed');
+    assert(unpack8 == num8, 'unpack 8 failed');
 }
