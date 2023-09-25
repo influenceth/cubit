@@ -1,4 +1,6 @@
-use cubit::f128::types::fixed::{Fixed, FixedTrait, FixedAdd, FixedSub, FixedMul, FixedDiv, ONE_u128};
+use cubit::f128::types::fixed::{
+    Fixed, FixedTrait, FixedAdd, FixedSub, FixedMul, FixedDiv, ONE_u128
+};
 
 // Calculates hyperbolic cosine of a (fixed point)
 fn cosh(a: Fixed) -> Fixed {

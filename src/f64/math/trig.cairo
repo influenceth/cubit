@@ -163,8 +163,10 @@ fn sin_fast(a: Fixed) -> Fixed {
     }
 
     let (start, low, high) = lut::sin(partial_rem);
-    let partial_step = FixedTrait::new(partial_rem - start, false) / FixedTrait::new(26353589, false);
-    let res = partial_step * (FixedTrait::new(high, false) - FixedTrait::new(low, false)) + FixedTrait::new(low, false);
+    let partial_step = FixedTrait::new(partial_rem - start, false)
+        / FixedTrait::new(26353589, false);
+    let res = partial_step * (FixedTrait::new(high, false) - FixedTrait::new(low, false))
+        + FixedTrait::new(low, false);
 
     return FixedTrait::new(res.mag, a.sign ^ partial_sign && res.mag != 0);
 }
@@ -342,7 +344,9 @@ fn test_cos() {
     assert(cos(a).into() == 0, 'invalid half pi');
 
     let a = FixedTrait::new(HALF_PI / 2, false);
-    assert_relative(cos(a), 3037000500, 'invalid quarter pi', Option::None(())); // 0.7071067811865475
+    assert_relative(
+        cos(a), 3037000500, 'invalid quarter pi', Option::None(())
+    ); // 0.7071067811865475
 
     let a = FixedTrait::new(PI, false);
     assert_relative(cos(a), -1 * ONE.into(), 'invalid pi', Option::None(()));
@@ -388,13 +392,17 @@ fn test_sin() {
     assert_precise(sin(a), ONE.into(), 'invalid half pi', Option::None(()));
 
     let a = FixedTrait::new(HALF_PI / 2, false);
-    assert_precise(sin(a), 3037000500, 'invalid quarter pi', Option::None(())); // 0.7071067811865475
+    assert_precise(
+        sin(a), 3037000500, 'invalid quarter pi', Option::None(())
+    ); // 0.7071067811865475
 
     let a = FixedTrait::new(PI, false);
     assert(sin(a).into() == 0, 'invalid pi');
 
     let a = FixedTrait::new(HALF_PI, true);
-    assert_precise(sin(a), -ONE.into(), 'invalid neg half pi', Option::None(())); // 0.9999999999939766
+    assert_precise(
+        sin(a), -ONE.into(), 'invalid neg half pi', Option::None(())
+    ); // 0.9999999999939766
 
     let a = FixedTrait::new_unscaled(17, false);
     assert_precise(sin(a), -4129170786, 'invalid 17', Option::None(())); // -0.9613974918793389

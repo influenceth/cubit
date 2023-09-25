@@ -6,7 +6,8 @@ use integer::{u256_safe_div_rem, u256_as_non_zero, upcast};
 
 use cubit::f128::math::lut;
 use cubit::f128::types::fixed::{
-  HALF_u128, MAX_u128, ONE_u128, Fixed, FixedInto, FixedTrait, FixedAdd, FixedDiv, FixedMul, FixedNeg
+    HALF_u128, MAX_u128, ONE_u128, Fixed, FixedInto, FixedTrait, FixedAdd, FixedDiv, FixedMul,
+    FixedNeg
 };
 
 // PUBLIC
@@ -306,14 +307,7 @@ fn _split_unsigned(a: Fixed) -> (u128, u128) {
 
 use cubit::f128::test::helpers::assert_precise;
 use cubit::f128::types::fixed::{
-  ONE,
-  HALF,
-  FixedPartialEq,
-  FixedPartialOrd,
-  FixedAddEq,
-  FixedSub,
-  FixedSubEq,
-  FixedMulEq
+    ONE, HALF, FixedPartialEq, FixedPartialOrd, FixedAddEq, FixedSub, FixedSubEq, FixedMulEq
 };
 
 use cubit::f128::math::trig::HALF_PI_u128;
@@ -445,7 +439,9 @@ fn test_pow() {
 fn test_pow_frac() {
     let a = FixedTrait::new_unscaled(3, false);
     let b = FixedTrait::new(9223372036854775808, false); // 0.5
-    assert_precise(a.pow(b), 31950697969885030000, 'invalid pos base power', Option::None(())); // 1.7320508075688772
+    assert_precise(
+        a.pow(b), 31950697969885030000, 'invalid pos base power', Option::None(())
+    ); // 1.7320508075688772
 }
 
 #[test]

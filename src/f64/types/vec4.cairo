@@ -60,23 +60,33 @@ impl Vec4Impl of Vec4Trait {
     }
 
     fn add(self: Vec4, scalar: Fixed) -> Vec4 {
-        return Vec4 { x: self.x + scalar, y: self.y + scalar, z: self.z + scalar, w: self.w + scalar };
+        return Vec4 {
+            x: self.x + scalar, y: self.y + scalar, z: self.z + scalar, w: self.w + scalar
+        };
     }
 
     fn sub(self: Vec4, scalar: Fixed) -> Vec4 {
-        return Vec4 { x: self.x - scalar, y: self.y - scalar, z: self.z - scalar, w: self.w - scalar };
+        return Vec4 {
+            x: self.x - scalar, y: self.y - scalar, z: self.z - scalar, w: self.w - scalar
+        };
     }
 
     fn mul(self: Vec4, scalar: Fixed) -> Vec4 {
-        return Vec4 { x: self.x * scalar, y: self.y * scalar, z: self.z * scalar, w: self.w * scalar };
+        return Vec4 {
+            x: self.x * scalar, y: self.y * scalar, z: self.z * scalar, w: self.w * scalar
+        };
     }
 
     fn div(self: Vec4, scalar: Fixed) -> Vec4 {
-        return Vec4 { x: self.x / scalar, y: self.y / scalar, z: self.z / scalar, w: self.w / scalar };
+        return Vec4 {
+            x: self.x / scalar, y: self.y / scalar, z: self.z / scalar, w: self.w / scalar
+        };
     }
 
     fn rem(self: Vec4, scalar: Fixed) -> Vec4 {
-        return Vec4 { x: self.x % scalar, y: self.y % scalar, z: self.z % scalar, w: self.w % scalar };
+        return Vec4 {
+            x: self.x % scalar, y: self.y % scalar, z: self.z % scalar, w: self.w % scalar
+        };
     }
 }
 

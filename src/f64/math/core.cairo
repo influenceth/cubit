@@ -389,7 +389,9 @@ fn test_pow() {
 fn test_pow_frac() {
     let a = FixedTrait::new_unscaled(3, false);
     let b = FixedTrait::new(2147483648, false); // 0.5
-    assert_relative(pow(a, b), 7439101574, 'invalid pos base power', Option::None(())); // 1.7320508075688772
+    assert_relative(
+        pow(a, b), 7439101574, 'invalid pos base power', Option::None(())
+    ); // 1.7320508075688772
 }
 
 #[test]
@@ -615,7 +617,6 @@ fn test_tan() {
     let a = FixedTrait::new(HALF_PI / 2, false);
     assert(a.tan().mag == ONE, 'invalid quarter pi');
 }
-
 // #[test]
 // #[available_gas(1000000)]
 // fn test_cosh() {
@@ -665,3 +666,4 @@ fn test_tan() {
 //         a.atanh(), 27157656144668970000, 'invalid 0.9', Option::None(())
 //     ); // 1.4722194895832204
 // }
+

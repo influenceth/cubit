@@ -124,7 +124,8 @@ fn atan_fast(a: Fixed) -> Fixed {
     }
 
     let (start, low, high) = lut::atan(at.mag);
-    let partial_step = FixedTrait::new(at.mag - start, false) / FixedTrait::new(129127208515966848, false);
+    let partial_step = FixedTrait::new(at.mag - start, false)
+        / FixedTrait::new(129127208515966848, false);
     let mut res = partial_step * FixedTrait::new(high - low, false) + FixedTrait::new(low, false);
 
     // Adjust for sign change, inversion, and shift
@@ -168,8 +169,10 @@ fn sin_fast(a: Fixed) -> Fixed {
     }
 
     let (start, low, high) = lut::sin(partial_rem);
-    let partial_step = FixedTrait::new(partial_rem - start, false) / FixedTrait::new(113187804032455040, false);
-    let res = partial_step * (FixedTrait::new(high, false) - FixedTrait::new(low, false)) + FixedTrait::new(low, false);
+    let partial_step = FixedTrait::new(partial_rem - start, false)
+        / FixedTrait::new(113187804032455040, false);
+    let res = partial_step * (FixedTrait::new(high, false) - FixedTrait::new(low, false))
+        + FixedTrait::new(low, false);
 
     return FixedTrait::new(res.mag, a.sign ^ partial_sign && res.mag != 0);
 }
@@ -352,7 +355,9 @@ fn test_cos_fast() {
     assert(cos_fast(a).into() == 0, 'invalid half pi');
 
     let a = FixedTrait::new(HALF_PI_u128 / 2, false);
-    assert_precise(cos_fast(a), 13043817825332783000, 'invalid quarter pi', error); // 0.7071067811865475
+    assert_precise(
+        cos_fast(a), 13043817825332783000, 'invalid quarter pi', error
+    ); // 0.7071067811865475
 
     let a = FixedTrait::new(PI_u128, false);
     assert_precise(cos_fast(a), -18446744073709552000, 'invalid pi', error);
@@ -382,9 +387,7 @@ fn test_sin() {
     assert(sin(a).into() == 0, 'invalid pi');
 
     let a = FixedTrait::new(HALF_PI_u128, true);
-    assert_precise(
-        sin(a), -ONE, 'invalid neg half pi', Option::None(())
-    ); // 0.9999999999939766
+    assert_precise(sin(a), -ONE, 'invalid neg half pi', Option::None(())); // 0.9999999999939766
 
     let a = FixedTrait::new_unscaled(17, false);
     assert_precise(
@@ -406,7 +409,9 @@ fn test_sin_fast() {
     assert_precise(sin_fast(a), ONE, 'invalid half pi', error);
 
     let a = FixedTrait::new(HALF_PI_u128 / 2, false);
-    assert_precise(sin_fast(a), 13043817825332781000, 'invalid quarter pi', error); // 0.7071067811865475
+    assert_precise(
+        sin_fast(a), 13043817825332781000, 'invalid quarter pi', error
+    ); // 0.7071067811865475
 
     let a = FixedTrait::new(PI_u128, false);
     assert(sin_fast(a).into() == 0, 'invalid pi');

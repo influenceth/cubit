@@ -55,10 +55,14 @@ fn noise(v: Vec3) -> Fixed {
     i = i.rem(FixedTrait::new(5331109037302060417024, false)); // 289
     let _p1 = permute(Vec4Trait::new(i.z + zero, i.z + i1.z, i.z + i2.z, i.z + one));
     let _p2 = permute(
-        Vec4Trait::new(_p1.x + i.y + zero, _p1.y + i.y + i1.y, _p1.z + i.y + i2.y, _p1.w + i.y + one)
+        Vec4Trait::new(
+            _p1.x + i.y + zero, _p1.y + i.y + i1.y, _p1.z + i.y + i2.y, _p1.w + i.y + one
+        )
     );
     let p = permute(
-        Vec4Trait::new(_p2.x + i.x + zero, _p2.y + i.x + i1.x, _p2.z + i.x + i2.x, _p2.w + i.x + one)
+        Vec4Trait::new(
+            _p2.x + i.x + zero, _p2.y + i.x + i1.x, _p2.z + i.x + i2.x, _p2.w + i.x + one
+        )
     );
 
     // Gradients: 7x7 points over a square, mapped onto an octahedron.
@@ -126,7 +130,9 @@ fn noise_octaves(v: Vec3, mut octaves: u128, persistence: Fixed) -> Fixed {
     let mut n = FixedTrait::ZERO();
 
     loop {
-        if octaves == 0 { break; }
+        if octaves == 0 {
+            break;
+        }
         octaves -= 1;
         n += noise(v / Vec3Trait::splat(s)) * s;
         t += s;
@@ -192,7 +198,9 @@ fn test_simplex3_4() {
         )
     );
 
-    assert_precise(r, -14610501553210167000, '-9.99... out of bounds', Option::None(())); // -0.79204
+    assert_precise(
+        r, -14610501553210167000, '-9.99... out of bounds', Option::None(())
+    ); // -0.79204
 }
 
 #[test]
@@ -207,7 +215,9 @@ fn test_simplex3_5() {
         )
     );
 
-    assert_precise(r, -7380847965597703000, '-0.005... out of bounds', Option::None(())); // -0.40012
+    assert_precise(
+        r, -7380847965597703000, '-0.005... out of bounds', Option::None(())
+    ); // -0.40012
 }
 
 #[test]

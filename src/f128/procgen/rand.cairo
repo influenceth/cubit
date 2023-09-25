@@ -42,16 +42,24 @@ fn u128_normal_between(seed: felt252, low: u128, high: u128) -> u128 {
     }
 }
 
-fn _fixed_normal_between_loop(seed: felt252, low: Fixed, high: Fixed, acc: Fixed, iter: felt252) -> Fixed {
-    if (iter == 0) { return acc; }
+fn _fixed_normal_between_loop(
+    seed: felt252, low: Fixed, high: Fixed, acc: Fixed, iter: felt252
+) -> Fixed {
+    if (iter == 0) {
+        return acc;
+    }
     let iter_seed = derive(seed, iter);
     let sample = fixed_between(iter_seed, low, high);
     return _fixed_normal_between_loop(seed, low, high, acc + sample, iter - 1);
 }
 
 
-fn _u128_normal_between_loop(seed: felt252, low: u128, high: u128, acc: u128, iter: felt252) -> u128 {
-    if iter == 0 { return acc; }
+fn _u128_normal_between_loop(
+    seed: felt252, low: u128, high: u128, acc: u128, iter: felt252
+) -> u128 {
+    if iter == 0 {
+        return acc;
+    }
     let iter_seed = derive(seed, iter);
     let sample = u128_between(iter_seed, low, high);
     return _u128_normal_between_loop(seed, low, high, acc + sample, iter - 1);
@@ -82,9 +90,7 @@ fn test_u128_between() {
 fn test_fixed_between() {
     let seed = rand::derive(432352, 701023);
     let r = rand::fixed_between(
-        seed,
-        FixedTrait::new_unscaled(1, false),
-        FixedTrait::new_unscaled(10, false)
+        seed, FixedTrait::new_unscaled(1, false), FixedTrait::new_unscaled(10, false)
     );
 }
 
@@ -100,8 +106,6 @@ fn test_u128_normal_between() {
 fn test_fixed_normal_between() {
     let seed = rand::derive(432352, 701023);
     let r = rand::fixed_normal_between(
-        seed,
-        FixedTrait::new_unscaled(1, false),
-        FixedTrait::new_unscaled(10, false)
+        seed, FixedTrait::new_unscaled(1, false), FixedTrait::new_unscaled(10, false)
     );
 }
