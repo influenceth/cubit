@@ -1,6 +1,6 @@
 {
   "name": "@influenceth/cubit",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Fixed point math for Cairo and Starknet",
   "type": "module",
   "module": "./build/index.js",
