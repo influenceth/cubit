@@ -34,8 +34,12 @@ fn u64_normal_between(seed: felt252, low: u64, high: u64) -> u64 {
     return fixed.round().mag / ONE;
 }
 
-fn _fixed_normal_between_loop(seed: felt252, low: Fixed, high: Fixed, acc: Fixed, iter: felt252) -> Fixed {
-    if (iter == 0) { return acc; }
+fn _fixed_normal_between_loop(
+    seed: felt252, low: Fixed, high: Fixed, acc: Fixed, iter: felt252
+) -> Fixed {
+    if (iter == 0) {
+        return acc;
+    }
     let iter_seed = derive(seed, iter);
     let sample = fixed_between(iter_seed, low, high);
     return _fixed_normal_between_loop(seed, low, high, acc + sample, iter - 1);

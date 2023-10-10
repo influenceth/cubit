@@ -79,10 +79,14 @@ fn test_sinh() {
     assert(sinh(a).into() == 0, 'invalid zero');
 
     let a = FixedTrait::new(ONE, true);
-    assert_precise(sinh(a), -5047450693, 'invalid neg one', Option::None(())); // -1.1752011936029418
+    assert_precise(
+        sinh(a), -5047450693, 'invalid neg one', Option::None(())
+    ); // -1.1752011936029418
 
     let a = FixedTrait::new(TWO, true);
-    assert_precise(sinh(a), -15577246839, 'invalid neg two', Option::None(())); // -3.6268604077773023
+    assert_precise(
+        sinh(a), -15577246839, 'invalid neg two', Option::None(())
+    ); // -3.6268604077773023
 }
 
 #[test]
@@ -98,7 +102,9 @@ fn test_tanh() {
     assert(tanh(a).into() == 0, 'invalid zero');
 
     let a = FixedTrait::new(ONE, true);
-    assert_precise(tanh(a), -3271021993, 'invalid neg one', Option::None(())); // -0.7615941559446443
+    assert_precise(
+        tanh(a), -3271021993, 'invalid neg one', Option::None(())
+    ); // -0.7615941559446443
 
     let a = FixedTrait::new(TWO, true);
     assert_precise(tanh(a), -4140466929, 'invalid neg two', Option::None(())); // 0.9640275800745076
@@ -149,7 +155,9 @@ fn test_atanh() {
     assert(atanh(a).into() == 0, 'invalid zero');
 
     let a = FixedTrait::new(HALF, true); // 0.5
-    assert_precise(atanh(a), -2359251925, 'invalid neg half', Option::None(())); // 0.5493061443340548
+    assert_precise(
+        atanh(a), -2359251925, 'invalid neg half', Option::None(())
+    ); // 0.5493061443340548
 
     let a = FixedTrait::new(3865470566, true); // 0.9
     assert_precise(atanh(a), -6323134560, 'invalid -0.9', Option::None(())); // 1.4722194895832204
