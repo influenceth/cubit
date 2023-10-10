@@ -1,6 +1,6 @@
 [package]
 name = "cubit"
-version = "1.0.0"
+version = "1.2.0"
 cairo-version = "2.2.0"
 description = "Math library in Cairo using a 64.64 fixed point representation"
 homepage = "https://github.com/influenceth/cubit"
