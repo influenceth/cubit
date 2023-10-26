@@ -426,9 +426,15 @@ impl PackFixed of StorePacking<Fixed, felt252> {
     }
 }
 
-#[test]
-fn test_into_f128() {
-    let a = FixedTrait::new_unscaled(42, true);
-    let b: Fixed128 = a.into();
-    assert(b.mag == 42 * ONE_u128, 'invalid conversion');
+
+#[cfg(test)]
+mod tests {
+    use super::{FixedTrait, Fixed128, ONE_u128};
+
+    #[test]
+    fn test_into_f128() {
+        let a = FixedTrait::new_unscaled(42, true);
+        let b: Fixed128 = a.into();
+        assert(b.mag == 42 * ONE_u128, 'invalid conversion');
+    }
 }

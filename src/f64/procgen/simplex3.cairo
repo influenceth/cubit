@@ -147,170 +147,175 @@ fn noise_octaves(v: Vec3, mut octaves: u64, persistence: Fixed) -> Fixed {
 
 // Tests --------------------------------------------------------------------------------------------------------------
 
-use cubit::f64::procgen::simplex3;
-use cubit::f64::test::helpers::assert_precise;
+#[cfg(test)]
+mod tests {
+    use cubit::f64::procgen::simplex3;
+    use cubit::f64::test::helpers::assert_precise;
 
-#[test]
-#[available_gas(5000000)]
-fn test_simplex3_1() {
-    let error = Option::Some(429497);
-    let r = simplex3::noise(Vec3Trait::splat(FixedTrait::ZERO())); // [ 0, 0, 0 ]
-    assert_precise(r, -1872047395, '0,0,0 out of bounds', error); // -0.43587
-}
+    use super::{Vec3Trait, FixedTrait, HALF};
 
-#[test]
-#[available_gas(5000000)]
-fn test_simplex3_2() {
-    let error = Option::Some(429497);
+    #[test]
+    #[available_gas(5000000)]
+    fn test_simplex3_1() {
+        let error = Option::Some(429497);
+        let r = simplex3::noise(Vec3Trait::splat(FixedTrait::ZERO())); // [ 0, 0, 0 ]
+        assert_precise(r, -1872047395, '0,0,0 out of bounds', error); // -0.43587
+    }
 
-    // [0.5, -1.23, 1.63]
-    let r = simplex3::noise(
-        Vec3Trait::new(
-            FixedTrait::new(2147483648, false),
-            FixedTrait::new(5282809774, true),
-            FixedTrait::new(7000796692, false)
-        )
-    );
+    #[test]
+    #[available_gas(5000000)]
+    fn test_simplex3_2() {
+        let error = Option::Some(429497);
 
-    assert_precise(r, 3114145395, '0.5... out of bounds', error); // 0.72507
-}
+        // [0.5, -1.23, 1.63]
+        let r = simplex3::noise(
+            Vec3Trait::new(
+                FixedTrait::new(2147483648, false),
+                FixedTrait::new(5282809774, true),
+                FixedTrait::new(7000796692, false)
+            )
+        );
 
-#[test]
-#[available_gas(5000000)]
-fn test_simplex3_3() {
-    let error = Option::Some(42950);
+        assert_precise(r, 3114145395, '0.5... out of bounds', error); // 0.72507
+    }
 
-    // [-1.94, -1.25, -1.63]
-    let r = simplex3::noise(
-        Vec3Trait::new(
-            FixedTrait::new(8332236554, true),
-            FixedTrait::new(5368709120, true),
-            FixedTrait::new(7000796692, true)
-        )
-    );
+    #[test]
+    #[available_gas(5000000)]
+    fn test_simplex3_3() {
+        let error = Option::Some(42950);
 
-    assert_precise(r, 661764302, '-1.94... out of bounds', error); // 0.15408
-}
+        // [-1.94, -1.25, -1.63]
+        let r = simplex3::noise(
+            Vec3Trait::new(
+                FixedTrait::new(8332236554, true),
+                FixedTrait::new(5368709120, true),
+                FixedTrait::new(7000796692, true)
+            )
+        );
 
-#[test]
-#[available_gas(5000000)]
-fn test_simplex3_4() {
-    let error = Option::Some(429497);
+        assert_precise(r, 661764302, '-1.94... out of bounds', error); // 0.15408
+    }
 
-    // [-9.99, 8.25, 6.98]
-    let r = simplex3::noise(
-        Vec3Trait::new(
-            FixedTrait::new(42906723287, true),
-            FixedTrait::new(35433480192, false),
-            FixedTrait::new(29978871726, false)
-        )
-    );
+    #[test]
+    #[available_gas(5000000)]
+    fn test_simplex3_4() {
+        let error = Option::Some(429497);
 
-    assert_precise(r, -3401772481, '-9.99... out of bounds', error); // -0.79204
-}
+        // [-9.99, 8.25, 6.98]
+        let r = simplex3::noise(
+            Vec3Trait::new(
+                FixedTrait::new(42906723287, true),
+                FixedTrait::new(35433480192, false),
+                FixedTrait::new(29978871726, false)
+            )
+        );
 
-#[test]
-#[available_gas(5000000)]
-fn test_simplex3_5() {
-    let error = Option::Some(429497);
+        assert_precise(r, -3401772481, '-9.99... out of bounds', error); // -0.79204
+    }
 
-    // [-0.005, 12.578, -2.87]
-    let r = simplex3::noise(
-        Vec3Trait::new(
-            FixedTrait::new(21474836, true),
-            FixedTrait::new(54022098649, false),
-            FixedTrait::new(12326556140, true)
-        )
-    );
+    #[test]
+    #[available_gas(5000000)]
+    fn test_simplex3_5() {
+        let error = Option::Some(429497);
 
-    assert_precise(r, -1718502314, '-0.005... out of bounds', error); // -0.40012
-}
+        // [-0.005, 12.578, -2.87]
+        let r = simplex3::noise(
+            Vec3Trait::new(
+                FixedTrait::new(21474836, true),
+                FixedTrait::new(54022098649, false),
+                FixedTrait::new(12326556140, true)
+            )
+        );
 
-#[test]
-#[available_gas(15000000)]
-fn test_simplex3_octaves_1() {
-    let error = Option::Some(429497);
+        assert_precise(r, -1718502314, '-0.005... out of bounds', error); // -0.40012
+    }
 
-    // [0.0, 0.0, 0.0]
-    let r = simplex3::noise_octaves(
-        Vec3Trait::splat(FixedTrait::ZERO()), 2, FixedTrait::new(HALF, false)
-    );
+    #[test]
+    #[available_gas(15000000)]
+    fn test_simplex3_octaves_1() {
+        let error = Option::Some(429497);
 
-    assert_precise(r, -1872176244, '... out of bounds', error); // -0.4359
-}
+        // [0.0, 0.0, 0.0]
+        let r = simplex3::noise_octaves(
+            Vec3Trait::splat(FixedTrait::ZERO()), 2, FixedTrait::new(HALF, false)
+        );
 
-#[test]
-#[available_gas(20000000)]
-fn test_simplex3_octaves_2() {
-    let error = Option::Some(429497);
+        assert_precise(r, -1872176244, '... out of bounds', error); // -0.4359
+    }
 
-    // [0.5, -1.23, 1.63]
-    let r = simplex3::noise_octaves(
-        Vec3Trait::new(
-            FixedTrait::new(2147483648, false),
-            FixedTrait::new(5282809774, true),
-            FixedTrait::new(7000796692, false)
-        ),
-        3,
-        FixedTrait::new(HALF, false)
-    );
+    #[test]
+    #[available_gas(20000000)]
+    fn test_simplex3_octaves_2() {
+        let error = Option::Some(429497);
 
-    assert_precise(r, 1409608267, '... out of bounds', error); // 0.3282
-}
+        // [0.5, -1.23, 1.63]
+        let r = simplex3::noise_octaves(
+            Vec3Trait::new(
+                FixedTrait::new(2147483648, false),
+                FixedTrait::new(5282809774, true),
+                FixedTrait::new(7000796692, false)
+            ),
+            3,
+            FixedTrait::new(HALF, false)
+        );
 
-#[test]
-#[available_gas(25000000)]
-fn test_simplex3_octaves_3() {
-    let error = Option::Some(429497);
+        assert_precise(r, 1409608267, '... out of bounds', error); // 0.3282
+    }
 
-    // [-1.94, -1.25, -1.63]
-    let r = simplex3::noise_octaves(
-        Vec3Trait::new(
-            FixedTrait::new(8332236554, true),
-            FixedTrait::new(5368709120, true),
-            FixedTrait::new(7000796692, true)
-        ),
-        4,
-        FixedTrait::new(HALF, false)
-    );
+    #[test]
+    #[available_gas(25000000)]
+    fn test_simplex3_octaves_3() {
+        let error = Option::Some(429497);
 
-    assert_precise(r, 581538572, '... out of bounds', error); // 0.1354
-}
+        // [-1.94, -1.25, -1.63]
+        let r = simplex3::noise_octaves(
+            Vec3Trait::new(
+                FixedTrait::new(8332236554, true),
+                FixedTrait::new(5368709120, true),
+                FixedTrait::new(7000796692, true)
+            ),
+            4,
+            FixedTrait::new(HALF, false)
+        );
 
-#[test]
-#[available_gas(30000000)]
-fn test_simplex3_octaves_4() {
-    let error = Option::Some(429497);
+        assert_precise(r, 581538572, '... out of bounds', error); // 0.1354
+    }
 
-    // [-9.99, 8.25, 6.98]
-    let r = simplex3::noise_octaves(
-        Vec3Trait::new(
-            FixedTrait::new(42906723287, true),
-            FixedTrait::new(35433480192, false),
-            FixedTrait::new(29978871726, false)
-        ),
-        5,
-        FixedTrait::new(HALF, false)
-    );
+    #[test]
+    #[available_gas(30000000)]
+    fn test_simplex3_octaves_4() {
+        let error = Option::Some(429497);
 
-    assert_precise(r, -1579688971, '... out of bounds', error); // -0.3678
-}
+        // [-9.99, 8.25, 6.98]
+        let r = simplex3::noise_octaves(
+            Vec3Trait::new(
+                FixedTrait::new(42906723287, true),
+                FixedTrait::new(35433480192, false),
+                FixedTrait::new(29978871726, false)
+            ),
+            5,
+            FixedTrait::new(HALF, false)
+        );
 
-#[test]
-#[available_gas(35000000)] // 225k steps
-fn test_simplex3_octaves_5() {
-    let error = Option::Some(429497);
+        assert_precise(r, -1579688971, '... out of bounds', error); // -0.3678
+    }
 
-    // [-0.005, 12.578, -2.87]
-    let r = simplex3::noise_octaves(
-        Vec3Trait::new(
-            FixedTrait::new(21474836, true),
-            FixedTrait::new(54022098649, false),
-            FixedTrait::new(12326556140, true)
-        ),
-        6,
-        FixedTrait::new(HALF, false)
-    );
+    #[test]
+    #[available_gas(35000000)] // 225k steps
+    fn test_simplex3_octaves_5() {
+        let error = Option::Some(429497);
 
-    assert_precise(r, -782543041, '... out of bounds', error); // -0.1822
+        // [-0.005, 12.578, -2.87]
+        let r = simplex3::noise_octaves(
+            Vec3Trait::new(
+                FixedTrait::new(21474836, true),
+                FixedTrait::new(54022098649, false),
+                FixedTrait::new(12326556140, true)
+            ),
+            6,
+            FixedTrait::new(HALF, false)
+        );
+
+        assert_precise(r, -782543041, '... out of bounds', error); // -0.1822
+    }
 }

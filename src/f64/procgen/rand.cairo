@@ -18,7 +18,9 @@ fn fixed_between(seed: felt252, low: Fixed, high: Fixed) -> Fixed {
 }
 
 fn u64_between(seed: felt252, low: u64, high: u64) -> u64 {
-    let fixed = fixed_between(seed, FixedTrait::new_unscaled(low, false), FixedTrait::new_unscaled(high, false));
+    let fixed = fixed_between(
+        seed, FixedTrait::new_unscaled(low, false), FixedTrait::new_unscaled(high, false)
+    );
     return fixed.mag / ONE;
 }
 
@@ -47,102 +49,139 @@ fn _fixed_normal_between_loop(
 
 // Tests --------------------------------------------------------------------------------------------------------------
 
-use cubit::f64::procgen::rand;
-use cubit::f64::test::helpers::assert_precise;
-use cubit::f64::types::fixed::FixedPrint;
+#[cfg(test)]
+mod tests {
+    use cubit::f64::procgen::rand;
+    use cubit::f64::test::helpers::assert_precise;
+    use cubit::f64::types::fixed::FixedPrint;
 
-#[test]
-#[available_gas(200000000)]
-fn test_u64_between() {
-    let mut seed = rand::derive(43235208298734, 7010232376584);
-    let mut iter = 1000;
-    let mut min = 10;
-    let mut max = 1;
+    use super::FixedTrait;
 
-    loop {
-        if iter == 0 { break; }
-        seed = rand::derive(seed, iter);
-        let r = rand::u64_between(seed, 1, 11);
-        assert(r >= 1 && r <= 10, 'invalid range');
+    #[test]
+    #[available_gas(200000000)]
+    fn test_u64_between() {
+        let mut seed = rand::derive(43235208298734, 7010232376584);
+        let mut iter = 1000;
+        let mut min = 10;
+        let mut max = 1;
 
-        if r < min { min = r; }
-        if r > max { max = r; }
+        loop {
+            if iter == 0 {
+                break;
+            }
+            seed = rand::derive(seed, iter);
+            let r = rand::u64_between(seed, 1, 11);
+            assert(r >= 1 && r <= 10, 'invalid range');
 
-        iter -= 1;
-    };
+            if r < min {
+                min = r;
+            }
+            if r > max {
+                max = r;
+            }
 
-    assert(min == 1, 'min should be 1');
-    assert(max == 10, 'max should be 10');
-}
+            iter -= 1;
+        };
 
-#[test]
-#[available_gas(200000000)]
-fn test_fixed_between() {
-    let mut seed = rand::derive(432352089298734, 701022376584);
-    let mut iter = 1000;
-    let mut min = FixedTrait::new_unscaled(10, false);
-    let mut max = FixedTrait::ZERO();
+        assert(min == 1, 'min should be 1');
+        assert(max == 10, 'max should be 10');
+    }
 
-    loop {
-        if iter == 0 { break; }
-        seed = rand::derive(seed, iter);
-        let r = rand::fixed_between(seed, FixedTrait::ZERO(), FixedTrait::new_unscaled(10, false));
-        assert(r >= FixedTrait::ZERO() && r < FixedTrait::new_unscaled(10, false), 'invalid range');
+    #[test]
+    #[available_gas(200000000)]
+    fn test_fixed_between() {
+        let mut seed = rand::derive(432352089298734, 701022376584);
+        let mut iter = 1000;
+        let mut min = FixedTrait::new_unscaled(10, false);
+        let mut max = FixedTrait::ZERO();
 
-        if r < min { min = r; }
-        if r > max { max = r; }
+        loop {
+            if iter == 0 {
+                break;
+            }
+            seed = rand::derive(seed, iter);
+            let r = rand::fixed_between(
+                seed, FixedTrait::ZERO(), FixedTrait::new_unscaled(10, false)
+            );
+            assert(
+                r >= FixedTrait::ZERO() && r < FixedTrait::new_unscaled(10, false), 'invalid range'
+            );
 
-        iter -= 1;
-    };
+            if r < min {
+                min = r;
+            }
+            if r > max {
+                max = r;
+            }
 
-    assert(min < FixedTrait::ONE(), 'min should be less than 1');
-    assert(max > FixedTrait::new_unscaled(9, false), 'max should be more than 9');
-}
+            iter -= 1;
+        };
 
-#[test]
-#[available_gas(1000000000)]
-fn test_u64_normal_between() {
-    let mut seed = rand::derive(43235208298734, 7010232376584);
-    let mut iter = 1000;
-    let mut min = 10;
-    let mut max = 1;
+        assert(min < FixedTrait::ONE(), 'min should be less than 1');
+        assert(max > FixedTrait::new_unscaled(9, false), 'max should be more than 9');
+    }
 
-    loop {
-        if iter == 0 { break; }
-        seed = rand::derive(seed, iter);
-        let r = rand::u64_normal_between(seed, 0, 11);
-        assert(r >= 0 && r <= 10, 'invalid range');
+    #[test]
+    #[available_gas(1000000000)]
+    fn test_u64_normal_between() {
+        let mut seed = rand::derive(43235208298734, 7010232376584);
+        let mut iter = 1000;
+        let mut min = 10;
+        let mut max = 1;
 
-        if r < min { min = r; }
-        if r > max { max = r; }
+        loop {
+            if iter == 0 {
+                break;
+            }
+            seed = rand::derive(seed, iter);
+            let r = rand::u64_normal_between(seed, 0, 11);
+            assert(r >= 0 && r <= 10, 'invalid range');
 
-        iter -= 1;
-    };
+            if r < min {
+                min = r;
+            }
+            if r > max {
+                max = r;
+            }
 
-    assert(min <= 2, 'min should be at most 2');
-    assert(max >= 8, 'max should be at least 8');
-}
+            iter -= 1;
+        };
 
-#[test]
-#[available_gas(1000000000)]
-fn test_fixed_normal_between() {
-    let mut seed = rand::derive(432352089298734, 701022376584);
-    let mut iter = 1000;
-    let mut min = FixedTrait::new_unscaled(10, false);
-    let mut max = FixedTrait::ZERO();
+        assert(min <= 2, 'min should be at most 2');
+        assert(max >= 8, 'max should be at least 8');
+    }
 
-    loop {
-        if iter == 0 { break; }
-        seed = rand::derive(seed, iter);
-        let r = rand::fixed_normal_between(seed, FixedTrait::ZERO(), FixedTrait::new_unscaled(10, false));
-        assert(r >= FixedTrait::ZERO() && r < FixedTrait::new_unscaled(10, false), 'invalid range');
+    #[test]
+    #[available_gas(1000000000)]
+    fn test_fixed_normal_between() {
+        let mut seed = rand::derive(432352089298734, 701022376584);
+        let mut iter = 1000;
+        let mut min = FixedTrait::new_unscaled(10, false);
+        let mut max = FixedTrait::ZERO();
 
-        if r < min { min = r; }
-        if r > max { max = r; }
+        loop {
+            if iter == 0 {
+                break;
+            }
+            seed = rand::derive(seed, iter);
+            let r = rand::fixed_normal_between(
+                seed, FixedTrait::ZERO(), FixedTrait::new_unscaled(10, false)
+            );
+            assert(
+                r >= FixedTrait::ZERO() && r < FixedTrait::new_unscaled(10, false), 'invalid range'
+            );
 
-        iter -= 1;
-    };
+            if r < min {
+                min = r;
+            }
+            if r > max {
+                max = r;
+            }
 
-    assert(min < FixedTrait::new_unscaled(2, false), 'min should be less than 2');
-    assert(max > FixedTrait::new_unscaled(8, false), 'max should be greater than 8');
+            iter -= 1;
+        };
+
+        assert(min < FixedTrait::new_unscaled(2, false), 'min should be less than 2');
+        assert(max > FixedTrait::new_unscaled(8, false), 'max should be greater than 8');
+    }
 }
