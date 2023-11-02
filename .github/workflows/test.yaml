@@ -18,7 +18,7 @@ jobs:
       - name: Setup Cairo toolchain
         uses: software-mansion/setup-scarb@v1
         with:
-            scarb-version: "0.7.0"
+            scarb-version: "2.3.0"
 
       - name: Run tests
         run: scarb test

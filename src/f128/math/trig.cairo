@@ -207,241 +207,255 @@ fn _sin_loop(a: Fixed, i: u128, acc: Fixed) -> Fixed {
 
 // Tests --------------------------------------------------------------------------------------------------------------
 
-use traits::Into;
+#[cfg(test)]
+mod tests {
+    use traits::Into;
 
-use cubit::f128::test::helpers::{assert_precise, assert_relative};
-use cubit::f128::types::fixed::{ONE, FixedInto, FixedPartialEq, FixedPrint};
+    use cubit::f128::test::helpers::{assert_precise, assert_relative};
+    use cubit::f128::types::fixed::{ONE, FixedInto, FixedPartialEq, FixedPrint};
 
-#[test]
-#[available_gas(3000000)]
-fn test_acos() {
-    let a = FixedTrait::ONE();
-    assert(acos(a).into() == 0, 'invalid one');
+    use super::{
+        FixedTrait, ONE_u128, acos, atan_fast, atan, asin, sin, HALF_PI_u128, cos, PI_u128,
+        cos_fast, sin_fast, tan
+    };
 
-    let a = FixedTrait::new(ONE_u128 / 2, false);
-    assert(acos(a).into() == 19317385211018935530, 'invalid half'); // 1.0471975506263043
+    #[test]
+    #[available_gas(3000000)]
+    fn test_acos() {
+        let a = FixedTrait::ONE();
+        assert(acos(a).into() == 0, 'invalid one');
 
-    let a = FixedTrait::ZERO();
-    assert(acos(a).into() == 28976077832308491370, 'invalid zero'); // PI / 2
+        let a = FixedTrait::new(ONE_u128 / 2, false);
+        assert(acos(a).into() == 19317385211018935530, 'invalid half'); // 1.0471975506263043
 
-    let a = FixedTrait::new(ONE_u128 / 2, true);
-    assert(acos(a).into() == 38634770453598047209, 'invalid neg half'); // 2.094395102963489
+        let a = FixedTrait::ZERO();
+        assert(acos(a).into() == 28976077832308491370, 'invalid zero'); // PI / 2
 
-    let a = FixedTrait::new(ONE_u128, true);
-    assert(acos(a).into() == 57952155664616982739, 'invalid neg one'); // PI
-}
+        let a = FixedTrait::new(ONE_u128 / 2, true);
+        assert(acos(a).into() == 38634770453598047209, 'invalid neg half'); // 2.094395102963489
 
-#[test]
-#[should_panic]
-#[available_gas(1000000)]
-fn test_acos_fail() {
-    let a = FixedTrait::new(2 * ONE_u128, true);
-    acos(a);
-}
+        let a = FixedTrait::new(ONE_u128, true);
+        assert(acos(a).into() == 57952155664616982739, 'invalid neg one'); // PI
+    }
 
-#[test]
-#[available_gas(1400000)]
-fn test_atan_fast() {
-    let error = Option::Some(184467440737095);
+    #[test]
+    #[should_panic]
+    #[available_gas(1000000)]
+    fn test_acos_fail() {
+        let a = FixedTrait::new(2 * ONE_u128, true);
+        acos(a);
+    }
 
-    let a = FixedTrait::new(2 * ONE_u128, false);
-    assert_relative(atan_fast(a), 20423289048683266000, 'invalid two', error);
+    #[test]
+    #[available_gas(1400000)]
+    fn test_atan_fast() {
+        let error = Option::Some(184467440737095);
 
-    let a = FixedTrait::ONE();
-    assert_relative(atan_fast(a), 14488038916154245000, 'invalid one', error);
+        let a = FixedTrait::new(2 * ONE_u128, false);
+        assert_relative(atan_fast(a), 20423289048683266000, 'invalid two', error);
 
-    let a = FixedTrait::new(ONE_u128 / 2, false);
-    assert_relative(atan_fast(a), 8552788783625223000, 'invalid half', error);
+        let a = FixedTrait::ONE();
+        assert_relative(atan_fast(a), 14488038916154245000, 'invalid one', error);
 
-    let a = FixedTrait::ZERO();
-    assert(atan_fast(a).into() == 0, 'invalid zero');
+        let a = FixedTrait::new(ONE_u128 / 2, false);
+        assert_relative(atan_fast(a), 8552788783625223000, 'invalid half', error);
 
-    let a = FixedTrait::new(ONE_u128 / 2, true);
-    assert_relative(atan_fast(a), -8552788783625223000, 'invalid neg half', error);
+        let a = FixedTrait::ZERO();
+        assert(atan_fast(a).into() == 0, 'invalid zero');
 
-    let a = FixedTrait::new(ONE_u128, true);
-    assert_relative(atan_fast(a), -14488038916154245000, 'invalid neg one', error);
+        let a = FixedTrait::new(ONE_u128 / 2, true);
+        assert_relative(atan_fast(a), -8552788783625223000, 'invalid neg half', error);
 
-    let a = FixedTrait::new(2 * ONE_u128, true);
-    assert_relative(atan_fast(a), -20423289048683266000, 'invalid neg two', error);
-}
+        let a = FixedTrait::new(ONE_u128, true);
+        assert_relative(atan_fast(a), -14488038916154245000, 'invalid neg one', error);
 
-#[test]
-#[available_gas(2600000)]
-fn test_atan() {
-    let a = FixedTrait::new(2 * ONE_u128, false);
-    assert_relative(atan(a), 20423289048683266000, 'invalid two', Option::None(()));
+        let a = FixedTrait::new(2 * ONE_u128, true);
+        assert_relative(atan_fast(a), -20423289048683266000, 'invalid neg two', error);
+    }
 
-    let a = FixedTrait::ONE();
-    assert_relative(atan(a), 14488038916154245000, 'invalid one', Option::None(()));
+    #[test]
+    #[available_gas(2600000)]
+    fn test_atan() {
+        let a = FixedTrait::new(2 * ONE_u128, false);
+        assert_relative(atan(a), 20423289048683266000, 'invalid two', Option::None(()));
 
-    let a = FixedTrait::new(ONE_u128 / 2, false);
-    assert_relative(atan(a), 8552788783625223000, 'invalid half', Option::None(()));
+        let a = FixedTrait::ONE();
+        assert_relative(atan(a), 14488038916154245000, 'invalid one', Option::None(()));
 
-    let a = FixedTrait::ZERO();
-    assert(atan(a).into() == 0, 'invalid zero');
+        let a = FixedTrait::new(ONE_u128 / 2, false);
+        assert_relative(atan(a), 8552788783625223000, 'invalid half', Option::None(()));
 
-    let a = FixedTrait::new(ONE_u128 / 2, true);
-    assert_relative(atan(a), -8552788783625223000, 'invalid neg half', Option::None(()));
+        let a = FixedTrait::ZERO();
+        assert(atan(a).into() == 0, 'invalid zero');
 
-    let a = FixedTrait::new(ONE_u128, true);
-    assert_relative(atan(a), -14488038916154245000, 'invalid neg one', Option::None(()));
+        let a = FixedTrait::new(ONE_u128 / 2, true);
+        assert_relative(atan(a), -8552788783625223000, 'invalid neg half', Option::None(()));
 
-    let a = FixedTrait::new(2 * ONE_u128, true);
-    assert_relative(atan(a), -20423289048683266000, 'invalid neg two', Option::None(()));
-}
+        let a = FixedTrait::new(ONE_u128, true);
+        assert_relative(atan(a), -14488038916154245000, 'invalid neg one', Option::None(()));
 
-#[test]
-#[available_gas(3000000)]
-fn test_asin() {
-    let a = FixedTrait::ONE();
-    assert(asin(a).into() == 28976077832308491370, 'invalid one'); // PI / 2
+        let a = FixedTrait::new(2 * ONE_u128, true);
+        assert_relative(atan(a), -20423289048683266000, 'invalid neg two', Option::None(()));
+    }
 
-    let a = FixedTrait::new(ONE_u128 / 2, false);
-    assert(asin(a).into() == 9658692617570005102, 'invalid half');
+    #[test]
+    #[available_gas(3000000)]
+    fn test_asin() {
+        let a = FixedTrait::ONE();
+        assert(asin(a).into() == 28976077832308491370, 'invalid one'); // PI / 2
 
-    let a = FixedTrait::ZERO();
-    assert(asin(a).into() == 0, 'invalid zero');
+        let a = FixedTrait::new(ONE_u128 / 2, false);
+        assert(asin(a).into() == 9658692617570005102, 'invalid half');
 
-    let a = FixedTrait::new(ONE_u128 / 2, true);
-    assert(asin(a).into() == -9658692617570005102, 'invalid neg half');
+        let a = FixedTrait::ZERO();
+        assert(asin(a).into() == 0, 'invalid zero');
 
-    let a = FixedTrait::new(ONE_u128, true);
-    assert(asin(a).into() == -28976077832308491370, 'invalid neg one'); // -PI / 2
-}
+        let a = FixedTrait::new(ONE_u128 / 2, true);
+        assert(asin(a).into() == -9658692617570005102, 'invalid neg half');
 
-#[test]
-#[should_panic]
-#[available_gas(1000000)]
-fn test_asin_fail() {
-    let a = FixedTrait::new(2 * ONE_u128, false);
-    asin(a);
-}
+        let a = FixedTrait::new(ONE_u128, true);
+        assert(asin(a).into() == -28976077832308491370, 'invalid neg one'); // -PI / 2
+    }
 
-#[test]
-#[available_gas(6000000)]
-fn test_cos() {
-    let a = FixedTrait::new(HALF_PI_u128, false);
-    assert(cos(a).into() == 0, 'invalid half pi');
+    #[test]
+    #[should_panic]
+    #[available_gas(1000000)]
+    fn test_asin_fail() {
+        let a = FixedTrait::new(2 * ONE_u128, false);
+        asin(a);
+    }
 
-    let a = FixedTrait::new(HALF_PI_u128 / 2, false);
-    assert_precise(
-        cos(a), 13043817825332783000, 'invalid quarter pi', Option::None(())
-    ); // 0.7071067811865475
+    #[test]
+    #[available_gas(6000000)]
+    fn test_cos() {
+        let a = FixedTrait::new(HALF_PI_u128, false);
+        assert(cos(a).into() == 0, 'invalid half pi');
 
-    let a = FixedTrait::new(PI_u128, false);
-    assert_precise(cos(a), -18446744073709552000, 'invalid pi', Option::None(()));
+        let a = FixedTrait::new(HALF_PI_u128 / 2, false);
+        assert_precise(
+            cos(a), 13043817825332783000, 'invalid quarter pi', Option::None(())
+        ); // 0.7071067811865475
 
-    let a = FixedTrait::new(HALF_PI_u128, true);
-    assert(cos(a).into() == -1, 'invalid neg half pi'); // -0.000...
+        let a = FixedTrait::new(PI_u128, false);
+        assert_precise(cos(a), -18446744073709552000, 'invalid pi', Option::None(()));
 
-    let a = FixedTrait::new_unscaled(17, false);
-    assert_precise(
-        cos(a), -5075867675505434000, 'invalid 17', Option::None(())
-    ); // -0.2751631780463348
+        let a = FixedTrait::new(HALF_PI_u128, true);
+        assert(cos(a).into() == -1, 'invalid neg half pi'); // -0.000...
 
-    let a = FixedTrait::new_unscaled(17, true);
-    assert_precise(
-        cos(a), -5075867675505434000, 'invalid -17', Option::None(())
-    ); // -0.2751631780463348
-}
+        let a = FixedTrait::new_unscaled(17, false);
+        assert_precise(
+            cos(a), -5075867675505434000, 'invalid 17', Option::None(())
+        ); // -0.2751631780463348
 
-#[test]
-#[available_gas(6000000)]
-fn test_cos_fast() {
-    let error = Option::Some(184467440737095);
+        let a = FixedTrait::new_unscaled(17, true);
+        assert_precise(
+            cos(a), -5075867675505434000, 'invalid -17', Option::None(())
+        ); // -0.2751631780463348
+    }
 
-    let a = FixedTrait::new(HALF_PI_u128, false);
-    assert(cos_fast(a).into() == 0, 'invalid half pi');
+    #[test]
+    #[available_gas(6000000)]
+    fn test_cos_fast() {
+        let error = Option::Some(184467440737095);
 
-    let a = FixedTrait::new(HALF_PI_u128 / 2, false);
-    assert_precise(
-        cos_fast(a), 13043817825332783000, 'invalid quarter pi', error
-    ); // 0.7071067811865475
+        let a = FixedTrait::new(HALF_PI_u128, false);
+        assert(cos_fast(a).into() == 0, 'invalid half pi');
 
-    let a = FixedTrait::new(PI_u128, false);
-    assert_precise(cos_fast(a), -18446744073709552000, 'invalid pi', error);
+        let a = FixedTrait::new(HALF_PI_u128 / 2, false);
+        assert_precise(
+            cos_fast(a), 13043817825332783000, 'invalid quarter pi', error
+        ); // 0.7071067811865475
 
-    let a = FixedTrait::new(HALF_PI_u128, true);
-    assert(cos_fast(a).into() == 0, 'invalid neg half pi');
+        let a = FixedTrait::new(PI_u128, false);
+        assert_precise(cos_fast(a), -18446744073709552000, 'invalid pi', error);
 
-    let a = FixedTrait::new_unscaled(17, false);
-    assert_precise(cos_fast(a), -5075867675505434000, 'invalid 17', error); // -0.2751631780463348
+        let a = FixedTrait::new(HALF_PI_u128, true);
+        assert(cos_fast(a).into() == 0, 'invalid neg half pi');
 
-    let a = FixedTrait::new(22091482235073817558142, true);
-    assert_precise(cos_fast(a), -14852585959099408000, 'invalid theta', error);
-}
+        let a = FixedTrait::new_unscaled(17, false);
+        assert_precise(
+            cos_fast(a), -5075867675505434000, 'invalid 17', error
+        ); // -0.2751631780463348
 
-#[test]
-#[available_gas(6000000)]
-fn test_sin() {
-    let a = FixedTrait::new(HALF_PI_u128, false);
-    assert_precise(sin(a), ONE, 'invalid half pi', Option::None(()));
+        let a = FixedTrait::new(22091482235073817558142, true);
+        assert_precise(cos_fast(a), -14852585959099408000, 'invalid theta', error);
+    }
 
-    let a = FixedTrait::new(HALF_PI_u128 / 2, false);
-    assert_precise(
-        sin(a), 13043817825332781000, 'invalid quarter pi', Option::None(())
-    ); // 0.7071067811865475
+    #[test]
+    #[available_gas(6000000)]
+    fn test_sin() {
+        let a = FixedTrait::new(HALF_PI_u128, false);
+        assert_precise(sin(a), ONE, 'invalid half pi', Option::None(()));
 
-    let a = FixedTrait::new(PI_u128, false);
-    assert(sin(a).into() == 0, 'invalid pi');
+        let a = FixedTrait::new(HALF_PI_u128 / 2, false);
+        assert_precise(
+            sin(a), 13043817825332781000, 'invalid quarter pi', Option::None(())
+        ); // 0.7071067811865475
 
-    let a = FixedTrait::new(HALF_PI_u128, true);
-    assert_precise(sin(a), -ONE, 'invalid neg half pi', Option::None(())); // 0.9999999999939766
+        let a = FixedTrait::new(PI_u128, false);
+        assert(sin(a).into() == 0, 'invalid pi');
 
-    let a = FixedTrait::new_unscaled(17, false);
-    assert_precise(
-        sin(a), -17734653485808441000, 'invalid 17', Option::None(())
-    ); // -0.9613974918793389
+        let a = FixedTrait::new(HALF_PI_u128, true);
+        assert_precise(sin(a), -ONE, 'invalid neg half pi', Option::None(())); // 0.9999999999939766
 
-    let a = FixedTrait::new_unscaled(17, true);
-    assert_precise(
-        sin(a), 17734653485808441000, 'invalid -17', Option::None(())
-    ); // 0.9613974918793389
-}
+        let a = FixedTrait::new_unscaled(17, false);
+        assert_precise(
+            sin(a), -17734653485808441000, 'invalid 17', Option::None(())
+        ); // -0.9613974918793389
 
-#[test]
-#[available_gas(1000000)]
-fn test_sin_fast() {
-    let error = Option::Some(184467440737095);
+        let a = FixedTrait::new_unscaled(17, true);
+        assert_precise(
+            sin(a), 17734653485808441000, 'invalid -17', Option::None(())
+        ); // 0.9613974918793389
+    }
 
-    let a = FixedTrait::new(HALF_PI_u128, false);
-    assert_precise(sin_fast(a), ONE, 'invalid half pi', error);
+    #[test]
+    #[available_gas(1000000)]
+    fn test_sin_fast() {
+        let error = Option::Some(184467440737095);
 
-    let a = FixedTrait::new(HALF_PI_u128 / 2, false);
-    assert_precise(
-        sin_fast(a), 13043817825332781000, 'invalid quarter pi', error
-    ); // 0.7071067811865475
+        let a = FixedTrait::new(HALF_PI_u128, false);
+        assert_precise(sin_fast(a), ONE, 'invalid half pi', error);
 
-    let a = FixedTrait::new(PI_u128, false);
-    assert(sin_fast(a).into() == 0, 'invalid pi');
+        let a = FixedTrait::new(HALF_PI_u128 / 2, false);
+        assert_precise(
+            sin_fast(a), 13043817825332781000, 'invalid quarter pi', error
+        ); // 0.7071067811865475
 
-    let a = FixedTrait::new(HALF_PI_u128, true);
-    assert_precise(sin_fast(a), -ONE, 'invalid neg half pi', error); // 0.9999999999939766
+        let a = FixedTrait::new(PI_u128, false);
+        assert(sin_fast(a).into() == 0, 'invalid pi');
 
-    let a = FixedTrait::new_unscaled(17, false);
-    assert_precise(sin_fast(a), -17734653485808441000, 'invalid 17', error); // -0.9613974918793389
+        let a = FixedTrait::new(HALF_PI_u128, true);
+        assert_precise(sin_fast(a), -ONE, 'invalid neg half pi', error); // 0.9999999999939766
 
-    let a = FixedTrait::new_unscaled(17, true);
-    assert_precise(sin_fast(a), 17734653485808441000, 'invalid -17', error); // 0.9613974918793389
-}
+        let a = FixedTrait::new_unscaled(17, false);
+        assert_precise(
+            sin_fast(a), -17734653485808441000, 'invalid 17', error
+        ); // -0.9613974918793389
 
-#[test]
-#[available_gas(8000000)]
-fn test_tan() {
-    let a = FixedTrait::new(HALF_PI_u128 / 2, false);
-    assert(tan(a).into() == ONE, 'invalid quarter pi');
+        let a = FixedTrait::new_unscaled(17, true);
+        assert_precise(
+            sin_fast(a), 17734653485808441000, 'invalid -17', error
+        ); // 0.9613974918793389
+    }
 
-    let a = FixedTrait::new(PI_u128, false);
-    assert(tan(a).into() == 0, 'invalid pi');
+    #[test]
+    #[available_gas(8000000)]
+    fn test_tan() {
+        let a = FixedTrait::new(HALF_PI_u128 / 2, false);
+        assert(tan(a).into() == ONE, 'invalid quarter pi');
 
-    let a = FixedTrait::new_unscaled(17, false);
-    assert_precise(
-        tan(a), 64451367727204090000, 'invalid 17', Option::None(())
-    ); // 3.493917677159002
+        let a = FixedTrait::new(PI_u128, false);
+        assert(tan(a).into() == 0, 'invalid pi');
 
-    let a = FixedTrait::new_unscaled(17, true);
-    assert_precise(
-        tan(a), -64451367727204090000, 'invalid -17', Option::None(())
-    ); // -3.493917677159002
+        let a = FixedTrait::new_unscaled(17, false);
+        assert_precise(
+            tan(a), 64451367727204090000, 'invalid 17', Option::None(())
+        ); // 3.493917677159002
+
+        let a = FixedTrait::new_unscaled(17, true);
+        assert_precise(
+            tan(a), -64451367727204090000, 'invalid -17', Option::None(())
+        ); // -3.493917677159002
+    }
 }

@@ -305,409 +305,415 @@ fn _split_unsigned(a: Fixed) -> (u128, u128) {
 
 // Tests --------------------------------------------------------------------------------------------------------------
 
-use cubit::f128::test::helpers::assert_precise;
-use cubit::f128::types::fixed::{
-    ONE, HALF, FixedPartialEq, FixedPartialOrd, FixedAddEq, FixedSub, FixedSubEq, FixedMulEq
-};
+#[cfg(test)]
+mod tests {
+    use cubit::f128::test::helpers::assert_precise;
+    use cubit::f128::types::fixed::{
+        ONE, HALF, FixedPartialEq, FixedPartialOrd, FixedAddEq, FixedSub, FixedSubEq, FixedMulEq
+    };
 
-use cubit::f128::math::trig::HALF_PI_u128;
-use cubit::f128::math::trig::PI_u128;
+    use cubit::f128::math::trig::HALF_PI_u128;
+    use cubit::f128::math::trig::PI_u128;
 
-#[test]
-fn test_into() {
-    let a = FixedTrait::from_unscaled_felt(5);
-    assert(a.into() == 5 * ONE, 'invalid result');
+    use super::{FixedTrait, ONE_u128, lut, exp2_int};
+
+    #[test]
+    fn test_into() {
+        let a = FixedTrait::from_unscaled_felt(5);
+        assert(a.into() == 5 * ONE, 'invalid result');
+    }
+
+    #[test]
+    fn test_try_into_u128() {
+        // Positive unscaled
+        let a = FixedTrait::new_unscaled(5, false);
+        assert(a.try_into().unwrap() == 5_u128, 'invalid result');
+
+        // Positive scaled
+        let b = FixedTrait::new(5 * ONE_u128, false);
+        assert(b.try_into().unwrap() == 5_u128, 'invalid result');
+
+        let c = FixedTrait::new(PI_u128, false);
+        assert(c.try_into().unwrap() == 3_u128, 'invalid result');
+
+        // Zero
+        let d = FixedTrait::new_unscaled(0, false);
+        assert(d.try_into().unwrap() == 0_u128, 'invalid result');
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_negative_try_into_u128() {
+        let a = FixedTrait::new_unscaled(1, true);
+        let a: u128 = a.try_into().unwrap();
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_overflow_large() {
+        let too_large = 0x100000000000000000000000000000000;
+        FixedTrait::from_felt(too_large);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_overflow_small() {
+        let too_small = -0x100000000000000000000000000000000;
+        FixedTrait::from_felt(too_small);
+    }
+
+    #[test]
+    #[available_gas(1000000)]
+    fn test_acos() {
+        let a = FixedTrait::ONE();
+        assert(a.acos().into() == 0, 'invalid one');
+    }
+
+    #[test]
+    #[available_gas(1000000)]
+    fn test_asin() {
+        let a = FixedTrait::ONE();
+        assert(a.asin().into() == 28976077832308491370, 'invalid one'); // PI / 2
+    }
+
+    #[test]
+    #[available_gas(2000000)]
+    fn test_atan() {
+        let a = FixedTrait::new(2 * ONE_u128, false);
+
+        // use `DEFAULT_PRECISION`
+        assert_precise(a.atan(), 20423289048683266000, 'invalid two', Option::None(()));
+
+        // use `custom_precision`
+        assert_precise(
+            a.atan(), 20423289048683266000, 'invalid two', Option::Some(184467440737)
+        ); // 1e-8
+    }
+
+    #[test]
+    fn test_ceil() {
+        let a = FixedTrait::from_felt(53495557813757699680); // 2.9
+        assert(a.ceil().into() == 3 * ONE, 'invalid pos decimal');
+    }
+
+    #[test]
+    fn test_floor() {
+        let a = FixedTrait::from_felt(53495557813757699680); // 2.9
+        assert(a.floor().into() == 2 * ONE, 'invalid pos decimal');
+    }
+
+    #[test]
+    fn test_round() {
+        let a = FixedTrait::from_felt(53495557813757699680); // 2.9
+        assert(a.round().into() == 3 * ONE, 'invalid pos decimal');
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_sqrt_fail() {
+        let a = FixedTrait::from_unscaled_felt(-25);
+        a.sqrt();
+    }
+
+    #[test]
+    fn test_sqrt() {
+        let a = FixedTrait::from_unscaled_felt(0);
+        assert(a.sqrt().into() == 0, 'invalid zero root');
+    }
+
+    #[test]
+    #[available_gas(100000)]
+    fn test_msb() {
+        let a = FixedTrait::new_unscaled(4503599627370495, false);
+        let (msb, div) = lut::msb(a.mag / ONE_u128);
+        assert(msb == 51, 'invalid msb');
+        assert(div == 2251799813685248, 'invalid msb ceil');
+    }
+
+    #[test]
+    #[available_gas(600000)] // 260k
+    fn test_pow() {
+        let a = FixedTrait::new_unscaled(3, false);
+        let b = FixedTrait::new_unscaled(4, false);
+        assert(a.pow(b).into() == 81 * ONE, 'invalid pos base power');
+    }
+
+    #[test]
+    #[available_gas(900000)] // 550k
+    fn test_pow_frac() {
+        let a = FixedTrait::new_unscaled(3, false);
+        let b = FixedTrait::new(9223372036854775808, false); // 0.5
+        assert_precise(
+            a.pow(b), 31950697969885030000, 'invalid pos base power', Option::None(())
+        ); // 1.7320508075688772
+    }
+
+    #[test]
+    #[available_gas(1000000)] // 267k
+    fn test_exp() {
+        let a = FixedTrait::new_unscaled(2, false);
+        assert(a.exp().into() == 136304026800730572984, 'invalid exp of 2'); // 7.389056098793725
+    }
+
+    #[test]
+    #[available_gas(400000)]
+    fn test_exp2() {
+        let a = FixedTrait::new_unscaled(24, false);
+        assert(a.exp2().into() == 309485009821345068724781056, 'invalid exp2 of 2');
+    }
+
+    #[test]
+    #[available_gas(20000)]
+    fn test_exp2_int() {
+        assert(exp2_int(24).into() == 309485009821345068724781056, 'invalid exp2 of 2');
+    }
+
+    #[test]
+    #[available_gas(1000000)]
+    fn test_ln() {
+        let a = FixedTrait::from_unscaled_felt(1);
+        assert(a.ln().into() == 0, 'invalid ln of 1');
+    }
+
+    #[test]
+    #[available_gas(1000000)]
+    fn test_log2() {
+        let a = FixedTrait::from_unscaled_felt(32);
+        assert_precise(a.log2(), 5 * ONE, 'invalid log2 32', Option::None(()));
+    }
+
+    #[test]
+    #[available_gas(1000000)]
+    fn test_log10() {
+        let a = FixedTrait::from_unscaled_felt(100);
+        assert_precise(a.log10(), 2 * ONE, 'invalid log10', Option::None(()));
+    }
+
+    #[test]
+    fn test_eq() {
+        let a = FixedTrait::from_unscaled_felt(42);
+        let b = FixedTrait::from_unscaled_felt(42);
+        let c = a == b;
+        assert(c == true, 'invalid result');
+    }
+
+    #[test]
+    fn test_ne() {
+        let a = FixedTrait::from_unscaled_felt(42);
+        let b = FixedTrait::from_unscaled_felt(42);
+        let c = a != b;
+        assert(c == false, 'invalid result');
+    }
+
+    #[test]
+    fn test_add() {
+        let a = FixedTrait::from_unscaled_felt(1);
+        let b = FixedTrait::from_unscaled_felt(2);
+        assert(a + b == FixedTrait::from_unscaled_felt(3), 'invalid result');
+    }
+
+    #[test]
+    fn test_add_eq() {
+        let mut a = FixedTrait::from_unscaled_felt(1);
+        let b = FixedTrait::from_unscaled_felt(2);
+        a += b;
+        assert(a.into() == 3 * ONE, 'invalid result');
+    }
+
+    #[test]
+    fn test_sub() {
+        let a = FixedTrait::from_unscaled_felt(5);
+        let b = FixedTrait::from_unscaled_felt(2);
+        let c = a - b;
+        assert(c.into() == 3 * ONE, 'false result invalid');
+    }
+
+    #[test]
+    fn test_sub_eq() {
+        let mut a = FixedTrait::from_unscaled_felt(5);
+        let b = FixedTrait::from_unscaled_felt(2);
+        a -= b;
+        assert(a.into() == 3 * ONE, 'invalid result');
+    }
+
+    #[test]
+    #[available_gas(100000)] // 22k
+    fn test_mul_pos() {
+        let a = FixedTrait::new(53495557813757699680, false); // 2.9
+        let b = FixedTrait::new(53495557813757699680, false); // 2.9
+        let c = a * b;
+        assert(c.into() == 155137117659897329053, 'invalid result');
+    }
+
+    #[test]
+    fn test_mul_neg() {
+        let a = FixedTrait::from_unscaled_felt(5);
+        let b = FixedTrait::from_unscaled_felt(-2);
+        let c = a * b;
+        assert(c.into() == -10 * ONE, 'true result invalid');
+    }
+
+    #[test]
+    fn test_mul_eq() {
+        let mut a = FixedTrait::from_unscaled_felt(5);
+        let b = FixedTrait::from_unscaled_felt(-2);
+        a *= b;
+        assert(a.into() == -10 * ONE, 'invalid result');
+    }
+
+    #[test]
+    fn test_div() {
+        let a = FixedTrait::from_unscaled_felt(10);
+        let b = FixedTrait::from_felt(53495557813757699680); // 2.9
+        let c = a / b;
+        assert(c.into() == 63609462323136384890, 'invalid pos decimal'); // 3.4482758620689653
+    }
+
+    #[test]
+    fn test_le() {
+        let a = FixedTrait::from_unscaled_felt(1);
+        let b = FixedTrait::from_unscaled_felt(0);
+        let c = FixedTrait::from_unscaled_felt(-1);
+
+        assert(a <= a, 'a <= a');
+        assert(a <= b == false, 'a <= b');
+        assert(a <= c == false, 'a <= c');
+
+        assert(b <= a, 'b <= a');
+        assert(b <= b, 'b <= b');
+        assert(b <= c == false, 'b <= c');
+
+        assert(c <= a, 'c <= a');
+        assert(c <= b, 'c <= b');
+        assert(c <= c, 'c <= c');
+    }
+
+    #[test]
+    fn test_lt() {
+        let a = FixedTrait::from_unscaled_felt(1);
+        let b = FixedTrait::from_unscaled_felt(0);
+        let c = FixedTrait::from_unscaled_felt(-1);
+
+        assert(a < a == false, 'a < a');
+        assert(a < b == false, 'a < b');
+        assert(a < c == false, 'a < c');
+
+        assert(b < a, 'b < a');
+        assert(b < b == false, 'b < b');
+        assert(b < c == false, 'b < c');
+
+        assert(c < a, 'c < a');
+        assert(c < b, 'c < b');
+        assert(c < c == false, 'c < c');
+    }
+
+    #[test]
+    fn test_ge() {
+        let a = FixedTrait::from_unscaled_felt(1);
+        let b = FixedTrait::from_unscaled_felt(0);
+        let c = FixedTrait::from_unscaled_felt(-1);
+
+        assert(a >= a, 'a >= a');
+        assert(a >= b, 'a >= b');
+        assert(a >= c, 'a >= c');
+
+        assert(b >= a == false, 'b >= a');
+        assert(b >= b, 'b >= b');
+        assert(b >= c, 'b >= c');
+
+        assert(c >= a == false, 'c >= a');
+        assert(c >= b == false, 'c >= b');
+        assert(c >= c, 'c >= c');
+    }
+
+    #[test]
+    fn test_gt() {
+        let a = FixedTrait::from_unscaled_felt(1);
+        let b = FixedTrait::from_unscaled_felt(0);
+        let c = FixedTrait::from_unscaled_felt(-1);
+
+        assert(a > a == false, 'a > a');
+        assert(a > b, 'a > b');
+        assert(a > c, 'a > c');
+
+        assert(b > a == false, 'b > a');
+        assert(b > b == false, 'b > b');
+        assert(b > c, 'b > c');
+
+        assert(c > a == false, 'c > a');
+        assert(c > b == false, 'c > b');
+        assert(c > c == false, 'c > c');
+    }
+
+    #[test]
+    #[available_gas(1000000)]
+    fn test_cos() {
+        let a = FixedTrait::new(HALF_PI_u128, false);
+        assert(a.cos().into() == 0, 'invalid half pi');
+    }
+
+    #[test]
+    #[available_gas(1000000)]
+    fn test_sin() {
+        let a = FixedTrait::new(HALF_PI_u128, false);
+        assert_precise(a.sin(), ONE, 'invalid half pi', Option::None(()));
+    }
+
+    #[test]
+    #[available_gas(2000000)]
+    fn test_tan() {
+        let a = FixedTrait::new(HALF_PI_u128 / 2, false);
+        assert(a.tan().into() == ONE, 'invalid quarter pi');
+    }
+
+    #[test]
+    #[available_gas(1000000)]
+    fn test_cosh() {
+        let a = FixedTrait::new_unscaled(2, false);
+        assert_precise(
+            a.cosh(), 69400261068632590000, 'invalid two', Option::None(())
+        ); // 3.762195691016423
+    }
+
+    #[test]
+    #[available_gas(1000000)]
+    fn test_sinh() {
+        let a = FixedTrait::new_unscaled(2, false);
+        assert_precise(
+            a.sinh(), 66903765734623805000, 'invalid two', Option::None(())
+        ); // 3.6268604077773023
+    }
+
+    #[test]
+    #[available_gas(1000000)]
+    fn test_tanh() {
+        let a = FixedTrait::new_unscaled(2, false);
+        assert_precise(
+            a.tanh(), 17783170049656136000, 'invalid two', Option::None(())
+        ); // 0.9640275800745076
+    }
+
+    #[test]
+    #[available_gas(1000000)]
+    fn test_acosh() {
+        let a = FixedTrait::new(69400261067392811864, false); // 3.762195691016423
+        assert_precise(a.acosh(), 2 * ONE, 'invalid two', Option::None(()));
+    }
+
+    #[test]
+    #[available_gas(1000000)]
+    fn test_asinh() {
+        let a = FixedTrait::new(66903765733337761105, false); // 3.6268604077773023
+        assert_precise(a.asinh(), 2 * ONE, 'invalid two', Option::None(()));
+    }
+
+    #[test]
+    #[available_gas(1000000)]
+    fn test_atanh() {
+        let a = FixedTrait::new(16602069666338597000, false); // 0.9
+        assert_precise(
+            a.atanh(), 27157656144668970000, 'invalid 0.9', Option::None(())
+        ); // 1.4722194895832204
+    }
 }
 
-#[test]
-fn test_try_into_u128() {
-    // Positive unscaled
-    let a = FixedTrait::new_unscaled(5, false);
-    assert(a.try_into().unwrap() == 5_u128, 'invalid result');
-
-    // Positive scaled
-    let b = FixedTrait::new(5 * ONE_u128, false);
-    assert(b.try_into().unwrap() == 5_u128, 'invalid result');
-
-    let c = FixedTrait::new(PI_u128, false);
-    assert(c.try_into().unwrap() == 3_u128, 'invalid result');
-
-    // Zero
-    let d = FixedTrait::new_unscaled(0, false);
-    assert(d.try_into().unwrap() == 0_u128, 'invalid result');
-}
-
-#[test]
-#[should_panic]
-fn test_negative_try_into_u128() {
-    let a = FixedTrait::new_unscaled(1, true);
-    let a: u128 = a.try_into().unwrap();
-}
-
-#[test]
-#[should_panic]
-fn test_overflow_large() {
-    let too_large = 0x100000000000000000000000000000000;
-    FixedTrait::from_felt(too_large);
-}
-
-#[test]
-#[should_panic]
-fn test_overflow_small() {
-    let too_small = -0x100000000000000000000000000000000;
-    FixedTrait::from_felt(too_small);
-}
-
-#[test]
-#[available_gas(1000000)]
-fn test_acos() {
-    let a = FixedTrait::ONE();
-    assert(a.acos().into() == 0, 'invalid one');
-}
-
-#[test]
-#[available_gas(1000000)]
-fn test_asin() {
-    let a = FixedTrait::ONE();
-    assert(a.asin().into() == 28976077832308491370, 'invalid one'); // PI / 2
-}
-
-#[test]
-#[available_gas(2000000)]
-fn test_atan() {
-    let a = FixedTrait::new(2 * ONE_u128, false);
-
-    // use `DEFAULT_PRECISION`
-    assert_precise(a.atan(), 20423289048683266000, 'invalid two', Option::None(()));
-
-    // use `custom_precision`
-    assert_precise(
-        a.atan(), 20423289048683266000, 'invalid two', Option::Some(184467440737)
-    ); // 1e-8
-}
-
-#[test]
-fn test_ceil() {
-    let a = FixedTrait::from_felt(53495557813757699680); // 2.9
-    assert(a.ceil().into() == 3 * ONE, 'invalid pos decimal');
-}
-
-#[test]
-fn test_floor() {
-    let a = FixedTrait::from_felt(53495557813757699680); // 2.9
-    assert(a.floor().into() == 2 * ONE, 'invalid pos decimal');
-}
-
-#[test]
-fn test_round() {
-    let a = FixedTrait::from_felt(53495557813757699680); // 2.9
-    assert(a.round().into() == 3 * ONE, 'invalid pos decimal');
-}
-
-#[test]
-#[should_panic]
-fn test_sqrt_fail() {
-    let a = FixedTrait::from_unscaled_felt(-25);
-    a.sqrt();
-}
-
-#[test]
-fn test_sqrt() {
-    let a = FixedTrait::from_unscaled_felt(0);
-    assert(a.sqrt().into() == 0, 'invalid zero root');
-}
-
-#[test]
-#[available_gas(100000)]
-fn test_msb() {
-    let a = FixedTrait::new_unscaled(4503599627370495, false);
-    let (msb, div) = lut::msb(a.mag / ONE_u128);
-    assert(msb == 51, 'invalid msb');
-    assert(div == 2251799813685248, 'invalid msb ceil');
-}
-
-#[test]
-#[available_gas(600000)] // 260k
-fn test_pow() {
-    let a = FixedTrait::new_unscaled(3, false);
-    let b = FixedTrait::new_unscaled(4, false);
-    assert(a.pow(b).into() == 81 * ONE, 'invalid pos base power');
-}
-
-#[test]
-#[available_gas(900000)] // 550k
-fn test_pow_frac() {
-    let a = FixedTrait::new_unscaled(3, false);
-    let b = FixedTrait::new(9223372036854775808, false); // 0.5
-    assert_precise(
-        a.pow(b), 31950697969885030000, 'invalid pos base power', Option::None(())
-    ); // 1.7320508075688772
-}
-
-#[test]
-#[available_gas(1000000)] // 267k
-fn test_exp() {
-    let a = FixedTrait::new_unscaled(2, false);
-    assert(a.exp().into() == 136304026800730572984, 'invalid exp of 2'); // 7.389056098793725
-}
-
-#[test]
-#[available_gas(400000)]
-fn test_exp2() {
-    let a = FixedTrait::new_unscaled(24, false);
-    assert(a.exp2().into() == 309485009821345068724781056, 'invalid exp2 of 2');
-}
-
-#[test]
-#[available_gas(20000)]
-fn test_exp2_int() {
-    assert(exp2_int(24).into() == 309485009821345068724781056, 'invalid exp2 of 2');
-}
-
-#[test]
-#[available_gas(1000000)]
-fn test_ln() {
-    let a = FixedTrait::from_unscaled_felt(1);
-    assert(a.ln().into() == 0, 'invalid ln of 1');
-}
-
-#[test]
-#[available_gas(1000000)]
-fn test_log2() {
-    let a = FixedTrait::from_unscaled_felt(32);
-    assert_precise(a.log2(), 5 * ONE, 'invalid log2 32', Option::None(()));
-}
-
-#[test]
-#[available_gas(1000000)]
-fn test_log10() {
-    let a = FixedTrait::from_unscaled_felt(100);
-    assert_precise(a.log10(), 2 * ONE, 'invalid log10', Option::None(()));
-}
-
-#[test]
-fn test_eq() {
-    let a = FixedTrait::from_unscaled_felt(42);
-    let b = FixedTrait::from_unscaled_felt(42);
-    let c = a == b;
-    assert(c == true, 'invalid result');
-}
-
-#[test]
-fn test_ne() {
-    let a = FixedTrait::from_unscaled_felt(42);
-    let b = FixedTrait::from_unscaled_felt(42);
-    let c = a != b;
-    assert(c == false, 'invalid result');
-}
-
-#[test]
-fn test_add() {
-    let a = FixedTrait::from_unscaled_felt(1);
-    let b = FixedTrait::from_unscaled_felt(2);
-    assert(a + b == FixedTrait::from_unscaled_felt(3), 'invalid result');
-}
-
-#[test]
-fn test_add_eq() {
-    let mut a = FixedTrait::from_unscaled_felt(1);
-    let b = FixedTrait::from_unscaled_felt(2);
-    a += b;
-    assert(a.into() == 3 * ONE, 'invalid result');
-}
-
-#[test]
-fn test_sub() {
-    let a = FixedTrait::from_unscaled_felt(5);
-    let b = FixedTrait::from_unscaled_felt(2);
-    let c = a - b;
-    assert(c.into() == 3 * ONE, 'false result invalid');
-}
-
-#[test]
-fn test_sub_eq() {
-    let mut a = FixedTrait::from_unscaled_felt(5);
-    let b = FixedTrait::from_unscaled_felt(2);
-    a -= b;
-    assert(a.into() == 3 * ONE, 'invalid result');
-}
-
-#[test]
-#[available_gas(100000)] // 22k
-fn test_mul_pos() {
-    let a = FixedTrait::new(53495557813757699680, false); // 2.9
-    let b = FixedTrait::new(53495557813757699680, false); // 2.9
-    let c = a * b;
-    assert(c.into() == 155137117659897329053, 'invalid result');
-}
-
-#[test]
-fn test_mul_neg() {
-    let a = FixedTrait::from_unscaled_felt(5);
-    let b = FixedTrait::from_unscaled_felt(-2);
-    let c = a * b;
-    assert(c.into() == -10 * ONE, 'true result invalid');
-}
-
-#[test]
-fn test_mul_eq() {
-    let mut a = FixedTrait::from_unscaled_felt(5);
-    let b = FixedTrait::from_unscaled_felt(-2);
-    a *= b;
-    assert(a.into() == -10 * ONE, 'invalid result');
-}
-
-#[test]
-fn test_div() {
-    let a = FixedTrait::from_unscaled_felt(10);
-    let b = FixedTrait::from_felt(53495557813757699680); // 2.9
-    let c = a / b;
-    assert(c.into() == 63609462323136384890, 'invalid pos decimal'); // 3.4482758620689653
-}
-
-#[test]
-fn test_le() {
-    let a = FixedTrait::from_unscaled_felt(1);
-    let b = FixedTrait::from_unscaled_felt(0);
-    let c = FixedTrait::from_unscaled_felt(-1);
-
-    assert(a <= a, 'a <= a');
-    assert(a <= b == false, 'a <= b');
-    assert(a <= c == false, 'a <= c');
-
-    assert(b <= a, 'b <= a');
-    assert(b <= b, 'b <= b');
-    assert(b <= c == false, 'b <= c');
-
-    assert(c <= a, 'c <= a');
-    assert(c <= b, 'c <= b');
-    assert(c <= c, 'c <= c');
-}
-
-#[test]
-fn test_lt() {
-    let a = FixedTrait::from_unscaled_felt(1);
-    let b = FixedTrait::from_unscaled_felt(0);
-    let c = FixedTrait::from_unscaled_felt(-1);
-
-    assert(a < a == false, 'a < a');
-    assert(a < b == false, 'a < b');
-    assert(a < c == false, 'a < c');
-
-    assert(b < a, 'b < a');
-    assert(b < b == false, 'b < b');
-    assert(b < c == false, 'b < c');
-
-    assert(c < a, 'c < a');
-    assert(c < b, 'c < b');
-    assert(c < c == false, 'c < c');
-}
-
-#[test]
-fn test_ge() {
-    let a = FixedTrait::from_unscaled_felt(1);
-    let b = FixedTrait::from_unscaled_felt(0);
-    let c = FixedTrait::from_unscaled_felt(-1);
-
-    assert(a >= a, 'a >= a');
-    assert(a >= b, 'a >= b');
-    assert(a >= c, 'a >= c');
-
-    assert(b >= a == false, 'b >= a');
-    assert(b >= b, 'b >= b');
-    assert(b >= c, 'b >= c');
-
-    assert(c >= a == false, 'c >= a');
-    assert(c >= b == false, 'c >= b');
-    assert(c >= c, 'c >= c');
-}
-
-#[test]
-fn test_gt() {
-    let a = FixedTrait::from_unscaled_felt(1);
-    let b = FixedTrait::from_unscaled_felt(0);
-    let c = FixedTrait::from_unscaled_felt(-1);
-
-    assert(a > a == false, 'a > a');
-    assert(a > b, 'a > b');
-    assert(a > c, 'a > c');
-
-    assert(b > a == false, 'b > a');
-    assert(b > b == false, 'b > b');
-    assert(b > c, 'b > c');
-
-    assert(c > a == false, 'c > a');
-    assert(c > b == false, 'c > b');
-    assert(c > c == false, 'c > c');
-}
-
-#[test]
-#[available_gas(1000000)]
-fn test_cos() {
-    let a = FixedTrait::new(HALF_PI_u128, false);
-    assert(a.cos().into() == 0, 'invalid half pi');
-}
-
-#[test]
-#[available_gas(1000000)]
-fn test_sin() {
-    let a = FixedTrait::new(HALF_PI_u128, false);
-    assert_precise(a.sin(), ONE, 'invalid half pi', Option::None(()));
-}
-
-#[test]
-#[available_gas(2000000)]
-fn test_tan() {
-    let a = FixedTrait::new(HALF_PI_u128 / 2, false);
-    assert(a.tan().into() == ONE, 'invalid quarter pi');
-}
-
-#[test]
-#[available_gas(1000000)]
-fn test_cosh() {
-    let a = FixedTrait::new_unscaled(2, false);
-    assert_precise(
-        a.cosh(), 69400261068632590000, 'invalid two', Option::None(())
-    ); // 3.762195691016423
-}
-
-#[test]
-#[available_gas(1000000)]
-fn test_sinh() {
-    let a = FixedTrait::new_unscaled(2, false);
-    assert_precise(
-        a.sinh(), 66903765734623805000, 'invalid two', Option::None(())
-    ); // 3.6268604077773023
-}
-
-#[test]
-#[available_gas(1000000)]
-fn test_tanh() {
-    let a = FixedTrait::new_unscaled(2, false);
-    assert_precise(
-        a.tanh(), 17783170049656136000, 'invalid two', Option::None(())
-    ); // 0.9640275800745076
-}
-
-#[test]
-#[available_gas(1000000)]
-fn test_acosh() {
-    let a = FixedTrait::new(69400261067392811864, false); // 3.762195691016423
-    assert_precise(a.acosh(), 2 * ONE, 'invalid two', Option::None(()));
-}
-
-#[test]
-#[available_gas(1000000)]
-fn test_asinh() {
-    let a = FixedTrait::new(66903765733337761105, false); // 3.6268604077773023
-    assert_precise(a.asinh(), 2 * ONE, 'invalid two', Option::None(()));
-}
-
-#[test]
-#[available_gas(1000000)]
-fn test_atanh() {
-    let a = FixedTrait::new(16602069666338597000, false); // 0.9
-    assert_precise(
-        a.atanh(), 27157656144668970000, 'invalid 0.9', Option::None(())
-    ); // 1.4722194895832204
-}
