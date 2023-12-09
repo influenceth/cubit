@@ -1,7 +1,7 @@
-use option::OptionTrait;
-use result::{ResultTrait, ResultTraitImpl};
-use traits::{Into, TryInto};
-use integer::{u64_safe_divmod, u64_as_non_zero, u64_wide_mul};
+use core::option::OptionTrait;
+use core::result::{ResultTrait, ResultTraitImpl};
+use core::traits::{Into, TryInto};
+use core::integer::{u64_safe_divmod, u64_as_non_zero, u64_wide_mul};
 
 use cubit::f64::math::lut;
 use cubit::f64::types::fixed::{HALF, ONE, Fixed, FixedIntoFelt252, FixedTrait};
@@ -43,7 +43,7 @@ fn ceil(a: Fixed) -> Fixed {
 }
 
 fn div(a: Fixed, b: Fixed) -> Fixed {
-    let a_u128 = integer::u64_wide_mul(a.mag, ONE);
+    let a_u128 = core::integer::u64_wide_mul(a.mag, ONE);
     let res_u128 = a_u128 / b.mag.into();
 
     // Re-apply sign
@@ -65,7 +65,7 @@ fn exp2(a: Fixed) -> Fixed {
         return FixedTrait::ONE();
     }
 
-    let (int_part, frac_part) = integer::u64_safe_divmod(a.mag, u64_as_non_zero(ONE));
+    let (int_part, frac_part) = core::integer::u64_safe_divmod(a.mag, u64_as_non_zero(ONE));
     let int_res = FixedTrait::new_unscaled(lut::exp2(int_part), false);
     let mut res_u = int_res;
 
@@ -94,7 +94,7 @@ fn exp2_int(exp: u64) -> Fixed {
 }
 
 fn floor(a: Fixed) -> Fixed {
-    let (div, rem) = integer::u64_safe_divmod(a.mag, u64_as_non_zero(ONE));
+    let (div, rem) = core::integer::u64_safe_divmod(a.mag, u64_as_non_zero(ONE));
 
     if rem == 0 {
         return a;
@@ -182,7 +182,7 @@ fn lt(a: Fixed, b: Fixed) -> bool {
 }
 
 fn mul(a: Fixed, b: Fixed) -> Fixed {
-    let prod_u128 = integer::u64_wide_mul(a.mag, b.mag);
+    let prod_u128 = core::integer::u64_wide_mul(a.mag, b.mag);
 
     // Re-apply sign
     return FixedTrait::new((prod_u128 / ONE.into()).try_into().unwrap(), a.sign ^ b.sign);
@@ -206,7 +206,7 @@ fn neg(a: Fixed) -> Fixed {
 // self is a Fixed point value
 // b is a Fixed point value
 fn pow(a: Fixed, b: Fixed) -> Fixed {
-    let (div, rem) = integer::u64_safe_divmod(b.mag, u64_as_non_zero(ONE));
+    let (div, rem) = core::integer::u64_safe_divmod(b.mag, u64_as_non_zero(ONE));
 
     // use the more performant integer pow when y is an int
     if (rem == 0) {
@@ -231,14 +231,14 @@ fn pow_int(a: Fixed, b: u64, sign: bool) -> Fixed {
     }
 
     let mut y = FixedTrait::ONE();
-    let two = integer::u64_as_non_zero(2);
+    let two = core::integer::u64_as_non_zero(2);
 
     loop {
         if n <= 1 {
             break;
         }
 
-        let (div, rem) = integer::u64_safe_divmod(n, two);
+        let (div, rem) = core::integer::u64_safe_divmod(n, two);
 
         if rem == 1 {
             y = x * y;
@@ -256,7 +256,7 @@ fn rem(a: Fixed, b: Fixed) -> Fixed {
 }
 
 fn round(a: Fixed) -> Fixed {
-    let (div, rem) = integer::u64_safe_divmod(a.mag, u64_as_non_zero(ONE));
+    let (div, rem) = core::integer::u64_safe_divmod(a.mag, u64_as_non_zero(ONE));
 
     if (HALF <= rem) {
         return FixedTrait::new_unscaled(div + 1, a.sign);
@@ -269,7 +269,7 @@ fn round(a: Fixed) -> Fixed {
 // x must be positive
 fn sqrt(a: Fixed) -> Fixed {
     assert(a.sign == false, 'must be positive');
-    let root = integer::u128_sqrt(a.mag.into() * ONE.into());
+    let root = core::integer::u128_sqrt(a.mag.into() * ONE.into());
     return FixedTrait::new(root.into(), false);
 }
 

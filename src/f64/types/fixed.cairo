@@ -1,14 +1,14 @@
-use debug::PrintTrait;
+use core::debug::PrintTrait;
 
-use integer::{U128DivRem, u128_as_non_zero};
-use option::OptionTrait;
-use result::{ResultTrait, ResultTraitImpl};
-use traits::{TryInto, Into};
+use core::integer::{U128DivRem, u128_as_non_zero};
+use core::option::OptionTrait;
+use core::result::{ResultTrait, ResultTraitImpl};
+use core::traits::{TryInto, Into};
 
 use starknet::storage_access::StorePacking;
 
 use cubit::utils;
-use cubit::f64::math::{core, hyp, trig};
+use cubit::f64::math::{ops, hyp, trig};
 use cubit::f128::{Fixed as Fixed128, FixedTrait as FixedTrait128, ONE_u128};
 
 // CONSTANTS
@@ -91,7 +91,7 @@ impl FixedImpl of FixedTrait {
     }
 
     fn from_felt(val: felt252) -> Fixed {
-        let mag = integer::u64_try_from_felt252(utils::felt_abs(val)).unwrap();
+        let mag = core::integer::u64_try_from_felt252(utils::felt_abs(val)).unwrap();
         return FixedTrait::new(mag, utils::felt_sign(val));
     }
 
@@ -100,7 +100,7 @@ impl FixedImpl of FixedTrait {
     }
 
     fn abs(self: Fixed) -> Fixed {
-        return core::abs(self);
+        return ops::abs(self);
     }
 
     fn acos(self: Fixed) -> Fixed {
@@ -140,7 +140,7 @@ impl FixedImpl of FixedTrait {
     }
 
     fn ceil(self: Fixed) -> Fixed {
-        return core::ceil(self);
+        return ops::ceil(self);
     }
 
     fn cos(self: Fixed) -> Fixed {
@@ -156,46 +156,46 @@ impl FixedImpl of FixedTrait {
     }
 
     fn floor(self: Fixed) -> Fixed {
-        return core::floor(self);
+        return ops::floor(self);
     }
 
     // Calculates the natural exponent of x: e^x
     fn exp(self: Fixed) -> Fixed {
-        return core::exp(self);
+        return ops::exp(self);
     }
 
     // Calculates the binary exponent of x: 2^x
     fn exp2(self: Fixed) -> Fixed {
-        return core::exp2(self);
+        return ops::exp2(self);
     }
 
     // Calculates the natural logarithm of x: ln(x)
     // self must be greater than zero
     fn ln(self: Fixed) -> Fixed {
-        return core::ln(self);
+        return ops::ln(self);
     }
 
     // Calculates the binary logarithm of x: log2(x)
     // self must be greather than zero
     fn log2(self: Fixed) -> Fixed {
-        return core::log2(self);
+        return ops::log2(self);
     }
 
     // Calculates the base 10 log of x: log10(x)
     // self must be greater than zero
     fn log10(self: Fixed) -> Fixed {
-        return core::log10(self);
+        return ops::log10(self);
     }
 
     // Calclates the value of x^y and checks for overflow before returning
     // self is a fixed point value
     // b is a fixed point value
     fn pow(self: Fixed, b: Fixed) -> Fixed {
-        return core::pow(self, b);
+        return ops::pow(self, b);
     }
 
     fn round(self: Fixed) -> Fixed {
-        return core::round(self);
+        return ops::round(self);
     }
 
     fn sin(self: Fixed) -> Fixed {
@@ -213,7 +213,7 @@ impl FixedImpl of FixedTrait {
     // Calculates the square root of a fixed point value
     // x must be positive
     fn sqrt(self: Fixed) -> Fixed {
-        return core::sqrt(self);
+        return ops::sqrt(self);
     }
 
     fn tan(self: Fixed) -> Fixed {
@@ -313,18 +313,18 @@ impl FixedTryIntoU8 of TryInto<Fixed, u8> {
 impl FixedPartialEq of PartialEq<Fixed> {
     #[inline(always)]
     fn eq(lhs: @Fixed, rhs: @Fixed) -> bool {
-        return core::eq(lhs, rhs);
+        return ops::eq(lhs, rhs);
     }
 
     #[inline(always)]
     fn ne(lhs: @Fixed, rhs: @Fixed) -> bool {
-        return core::ne(lhs, rhs);
+        return ops::ne(lhs, rhs);
     }
 }
 
 impl FixedAdd of Add<Fixed> {
     fn add(lhs: Fixed, rhs: Fixed) -> Fixed {
-        return core::add(lhs, rhs);
+        return ops::add(lhs, rhs);
     }
 }
 
@@ -337,7 +337,7 @@ impl FixedAddEq of AddEq<Fixed> {
 
 impl FixedSub of Sub<Fixed> {
     fn sub(lhs: Fixed, rhs: Fixed) -> Fixed {
-        return core::sub(lhs, rhs);
+        return ops::sub(lhs, rhs);
     }
 }
 
@@ -350,7 +350,7 @@ impl FixedSubEq of SubEq<Fixed> {
 
 impl FixedMul of Mul<Fixed> {
     fn mul(lhs: Fixed, rhs: Fixed) -> Fixed {
-        return core::mul(lhs, rhs);
+        return ops::mul(lhs, rhs);
     }
 }
 
@@ -363,7 +363,7 @@ impl FixedMulEq of MulEq<Fixed> {
 
 impl FixedDiv of Div<Fixed> {
     fn div(lhs: Fixed, rhs: Fixed) -> Fixed {
-        return core::div(lhs, rhs);
+        return ops::div(lhs, rhs);
     }
 }
 
@@ -377,36 +377,36 @@ impl FixedDivEq of DivEq<Fixed> {
 impl FixedPartialOrd of PartialOrd<Fixed> {
     #[inline(always)]
     fn ge(lhs: Fixed, rhs: Fixed) -> bool {
-        return core::ge(lhs, rhs);
+        return ops::ge(lhs, rhs);
     }
 
     #[inline(always)]
     fn gt(lhs: Fixed, rhs: Fixed) -> bool {
-        return core::gt(lhs, rhs);
+        return ops::gt(lhs, rhs);
     }
 
     #[inline(always)]
     fn le(lhs: Fixed, rhs: Fixed) -> bool {
-        return core::le(lhs, rhs);
+        return ops::le(lhs, rhs);
     }
 
     #[inline(always)]
     fn lt(lhs: Fixed, rhs: Fixed) -> bool {
-        return core::lt(lhs, rhs);
+        return ops::lt(lhs, rhs);
     }
 }
 
 impl FixedNeg of Neg<Fixed> {
     #[inline(always)]
     fn neg(a: Fixed) -> Fixed {
-        return core::neg(a);
+        return ops::neg(a);
     }
 }
 
 impl FixedRem of Rem<Fixed> {
     #[inline(always)]
     fn rem(lhs: Fixed, rhs: Fixed) -> Fixed {
-        return core::rem(lhs, rhs);
+        return ops::rem(lhs, rhs);
     }
 }
 

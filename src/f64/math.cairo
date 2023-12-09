@@ -1,5 +1,5 @@
 mod comp;
-mod core;
+mod ops;
 mod hyp;
 mod lut;
 mod trig;

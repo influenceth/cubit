@@ -1,5 +1,5 @@
-use debug::PrintTrait;
-use traits::Into;
+use core::debug::PrintTrait;
+use core::traits::Into;
 
 use cubit::f128::types::fixed::{Fixed, FixedTrait, FixedSub, FixedPartialEq, FixedPrint};
 

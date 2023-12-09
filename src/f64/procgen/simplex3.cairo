@@ -80,7 +80,7 @@ fn noise(v: Vec3) -> Fixed {
     let h = Vec4Trait::splat(one) - x.abs() - y.abs();
 
     // Revoke AP tracking until handled by compiler
-    internal::revoke_ap_tracking();
+    core::internal::revoke_ap_tracking();
 
     let b0 = Vec4Trait::new(x.x, x.y, y.x, y.y);
     let b1 = Vec4Trait::new(x.z, x.w, y.z, y.w);

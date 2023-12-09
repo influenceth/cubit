@@ -1,6 +1,6 @@
-use debug::PrintTrait;
-use integer::{u128_safe_divmod, u128_as_non_zero};
-use option::OptionTrait;
+use core::debug::PrintTrait;
+use core::integer::{u128_safe_divmod, u128_as_non_zero};
+use core::option::OptionTrait;
 
 use cubit::f128::math::lut;
 use cubit::f128::types::fixed::{
@@ -209,7 +209,7 @@ fn _sin_loop(a: Fixed, i: u128, acc: Fixed) -> Fixed {
 
 #[cfg(test)]
 mod tests {
-    use traits::Into;
+    use core::traits::Into;
 
     use cubit::f128::test::helpers::{assert_precise, assert_relative};
     use cubit::f128::types::fixed::{ONE, FixedInto, FixedPartialEq, FixedPrint};

@@ -1,4 +1,4 @@
-use debug::PrintTrait;
+use core::debug::PrintTrait;
 
 use cubit::f64::types::fixed::{Fixed, FixedTrait, FixedPrint};
 
