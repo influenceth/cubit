@@ -1,8 +1,9 @@
-use debug::PrintTrait;
-use option::OptionTrait;
-use result::{ResultTrait, ResultTraitImpl};
-use traits::{Into, TryInto};
-use integer::{u256_safe_div_rem, u256_as_non_zero, upcast};
+use core::debug::PrintTrait;
+use core::option::OptionTrait;
+use core::result::{ResultTrait, ResultTraitImpl};
+use core::traits::{Into, TryInto};
+use core::integer;
+use core::integer::{u256_safe_div_rem, u256_as_non_zero, upcast};
 
 use cubit::f128::math::lut;
 use cubit::f128::types::fixed::{
@@ -315,7 +316,7 @@ mod tests {
     use cubit::f128::math::trig::HALF_PI_u128;
     use cubit::f128::math::trig::PI_u128;
 
-    use super::{FixedTrait, ONE_u128, lut, exp2_int};
+    use super::{FixedTrait, ONE_u128, lut, exp2_int, integer};
 
     #[test]
     fn test_into() {

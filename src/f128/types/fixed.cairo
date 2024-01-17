@@ -1,14 +1,14 @@
-use debug::PrintTrait;
-use integer::{U256DivRem, u256_safe_divmod, u256_as_non_zero, u256_from_felt252};
+use core::debug::PrintTrait;
+use core::integer::{U256DivRem, u256_safe_divmod, u256_as_non_zero, u256_from_felt252};
 
-use option::OptionTrait;
-use result::{ResultTrait, ResultTraitImpl};
-use traits::{TryInto, Into};
+use core::option::OptionTrait;
+use core::result::{ResultTrait, ResultTraitImpl};
+use core::traits::{TryInto, Into};
 
 use starknet::storage_access::StorePacking;
 
 use cubit::utils;
-use cubit::f128::math::{core, hyp, trig};
+use cubit::f128::math::{ops, hyp, trig};
 use cubit::f64::{Fixed as Fixed64, FixedTrait as FixedTrait64, ONE as ONE_u64};
 
 // CONSTANTS
@@ -96,7 +96,7 @@ impl FixedImpl of FixedTrait {
     }
 
     fn from_felt(val: felt252) -> Fixed {
-        let mag = integer::u128_try_from_felt252(utils::felt_abs(val)).unwrap();
+        let mag = core::integer::u128_try_from_felt252(utils::felt_abs(val)).unwrap();
         return FixedTrait::new(mag, utils::felt_sign(val));
     }
 
@@ -105,7 +105,7 @@ impl FixedImpl of FixedTrait {
     }
 
     fn abs(self: Fixed) -> Fixed {
-        return core::abs(self);
+        return ops::abs(self);
     }
 
     fn acos(self: Fixed) -> Fixed {
@@ -145,7 +145,7 @@ impl FixedImpl of FixedTrait {
     }
 
     fn ceil(self: Fixed) -> Fixed {
-        return core::ceil(self);
+        return ops::ceil(self);
     }
 
     fn cos(self: Fixed) -> Fixed {
@@ -161,46 +161,46 @@ impl FixedImpl of FixedTrait {
     }
 
     fn floor(self: Fixed) -> Fixed {
-        return core::floor(self);
+        return ops::floor(self);
     }
 
     // Calculates the natural exponent of x: e^x
     fn exp(self: Fixed) -> Fixed {
-        return core::exp(self);
+        return ops::exp(self);
     }
 
     // Calculates the binary exponent of x: 2^x
     fn exp2(self: Fixed) -> Fixed {
-        return core::exp2(self);
+        return ops::exp2(self);
     }
 
     // Calculates the natural logarithm of x: ln(x)
     // self must be greater than zero
     fn ln(self: Fixed) -> Fixed {
-        return core::ln(self);
+        return ops::ln(self);
     }
 
     // Calculates the binary logarithm of x: log2(x)
     // self must be greather than zero
     fn log2(self: Fixed) -> Fixed {
-        return core::log2(self);
+        return ops::log2(self);
     }
 
     // Calculates the base 10 log of x: log10(x)
     // self must be greater than zero
     fn log10(self: Fixed) -> Fixed {
-        return core::log10(self);
+        return ops::log10(self);
     }
 
     // Calclates the value of x^y and checks for overflow before returning
     // self is a fixed point value
     // b is a fixed point value
     fn pow(self: Fixed, b: Fixed) -> Fixed {
-        return core::pow(self, b);
+        return ops::pow(self, b);
     }
 
     fn round(self: Fixed) -> Fixed {
-        return core::round(self);
+        return ops::round(self);
     }
 
     fn sin(self: Fixed) -> Fixed {
@@ -218,7 +218,7 @@ impl FixedImpl of FixedTrait {
     // Calculates the square root of a fixed point value
     // x must be positive
     fn sqrt(self: Fixed) -> Fixed {
-        return core::sqrt(self);
+        return ops::sqrt(self);
     }
 
     fn tan(self: Fixed) -> Fixed {
@@ -325,18 +325,18 @@ impl FixedTryIntoU8 of TryInto<Fixed, u8> {
 impl FixedPartialEq of PartialEq<Fixed> {
     #[inline(always)]
     fn eq(lhs: @Fixed, rhs: @Fixed) -> bool {
-        return core::eq(lhs, rhs);
+        return ops::eq(lhs, rhs);
     }
 
     #[inline(always)]
     fn ne(lhs: @Fixed, rhs: @Fixed) -> bool {
-        return core::ne(lhs, rhs);
+        return ops::ne(lhs, rhs);
     }
 }
 
 impl FixedAdd of Add<Fixed> {
     fn add(lhs: Fixed, rhs: Fixed) -> Fixed {
-        return core::add(lhs, rhs);
+        return ops::add(lhs, rhs);
     }
 }
 
@@ -349,7 +349,7 @@ impl FixedAddEq of AddEq<Fixed> {
 
 impl FixedSub of Sub<Fixed> {
     fn sub(lhs: Fixed, rhs: Fixed) -> Fixed {
-        return core::sub(lhs, rhs);
+        return ops::sub(lhs, rhs);
     }
 }
 
@@ -362,7 +362,7 @@ impl FixedSubEq of SubEq<Fixed> {
 
 impl FixedMul of Mul<Fixed> {
     fn mul(lhs: Fixed, rhs: Fixed) -> Fixed {
-        return core::mul(lhs, rhs);
+        return ops::mul(lhs, rhs);
     }
 }
 
@@ -375,7 +375,7 @@ impl FixedMulEq of MulEq<Fixed> {
 
 impl FixedDiv of Div<Fixed> {
     fn div(lhs: Fixed, rhs: Fixed) -> Fixed {
-        return core::div(lhs, rhs);
+        return ops::div(lhs, rhs);
     }
 }
 
@@ -389,36 +389,36 @@ impl FixedDivEq of DivEq<Fixed> {
 impl FixedPartialOrd of PartialOrd<Fixed> {
     #[inline(always)]
     fn ge(lhs: Fixed, rhs: Fixed) -> bool {
-        return core::ge(lhs, rhs);
+        return ops::ge(lhs, rhs);
     }
 
     #[inline(always)]
     fn gt(lhs: Fixed, rhs: Fixed) -> bool {
-        return core::gt(lhs, rhs);
+        return ops::gt(lhs, rhs);
     }
 
     #[inline(always)]
     fn le(lhs: Fixed, rhs: Fixed) -> bool {
-        return core::le(lhs, rhs);
+        return ops::le(lhs, rhs);
     }
 
     #[inline(always)]
     fn lt(lhs: Fixed, rhs: Fixed) -> bool {
-        return core::lt(lhs, rhs);
+        return ops::lt(lhs, rhs);
     }
 }
 
 impl FixedNeg of Neg<Fixed> {
     #[inline(always)]
     fn neg(a: Fixed) -> Fixed {
-        return core::neg(a);
+        return ops::neg(a);
     }
 }
 
 impl FixedRem of Rem<Fixed> {
     #[inline(always)]
     fn rem(lhs: Fixed, rhs: Fixed) -> Fixed {
-        return core::rem(lhs, rhs);
+        return ops::rem(lhs, rhs);
     }
 }
 
@@ -445,108 +445,108 @@ impl PackFixed of StorePacking<Fixed, felt252> {
 mod tests {
     use cubit::f128::test::helpers::assert_precise;
 
-    use super::{FixedTrait, core, ONE, HALF, Fixed64, ONE_u128, PackFixed, ONE_u64};
+    use super::{FixedTrait, ops, ONE, HALF, Fixed64, ONE_u128, PackFixed, ONE_u64};
 
     #[test]
     #[available_gas(10000000)]
     fn test_ceil() {
         let a = FixedTrait::from_felt(53495557813757699680); // 2.9
-        assert(core::ceil(a).into() == 3 * ONE, 'invalid pos decimal');
+        assert(ops::ceil(a).into() == 3 * ONE, 'invalid pos decimal');
 
         let a = FixedTrait::from_felt(-53495557813757699680); // -2.9
-        assert(core::ceil(a).into() == -2 * ONE, 'invalid neg decimal');
+        assert(ops::ceil(a).into() == -2 * ONE, 'invalid neg decimal');
 
         let a = FixedTrait::from_unscaled_felt(4);
-        assert(core::ceil(a).into() == 4 * ONE, 'invalid pos integer');
+        assert(ops::ceil(a).into() == 4 * ONE, 'invalid pos integer');
 
         let a = FixedTrait::from_unscaled_felt(-4);
-        assert(core::ceil(a).into() == -4 * ONE, 'invalid neg integer');
+        assert(ops::ceil(a).into() == -4 * ONE, 'invalid neg integer');
 
         let a = FixedTrait::from_unscaled_felt(0);
-        assert(core::ceil(a).into() == 0, 'invalid zero');
+        assert(ops::ceil(a).into() == 0, 'invalid zero');
 
         let a = FixedTrait::from_felt(HALF);
-        assert(core::ceil(a).into() == 1 * ONE, 'invalid pos half');
+        assert(ops::ceil(a).into() == 1 * ONE, 'invalid pos half');
 
         let a = FixedTrait::from_felt(-1 * HALF);
-        assert(core::ceil(a).into() == 0, 'invalid neg half');
+        assert(ops::ceil(a).into() == 0, 'invalid neg half');
     }
 
     #[test]
     #[available_gas(10000000)]
     fn test_floor() {
         let a = FixedTrait::from_felt(53495557813757699680); // 2.9
-        assert(core::floor(a).into() == 2 * ONE, 'invalid pos decimal');
+        assert(ops::floor(a).into() == 2 * ONE, 'invalid pos decimal');
 
         let a = FixedTrait::from_felt(-53495557813757699680); // -2.9
-        assert(core::floor(a).into() == -3 * ONE, 'invalid neg decimal');
+        assert(ops::floor(a).into() == -3 * ONE, 'invalid neg decimal');
 
         let a = FixedTrait::from_unscaled_felt(4);
-        assert(core::floor(a).into() == 4 * ONE, 'invalid pos integer');
+        assert(ops::floor(a).into() == 4 * ONE, 'invalid pos integer');
 
         let a = FixedTrait::from_unscaled_felt(-4);
-        assert(core::floor(a).into() == -4 * ONE, 'invalid neg integer');
+        assert(ops::floor(a).into() == -4 * ONE, 'invalid neg integer');
 
         let a = FixedTrait::from_unscaled_felt(0);
-        assert(core::floor(a).into() == 0, 'invalid zero');
+        assert(ops::floor(a).into() == 0, 'invalid zero');
 
         let a = FixedTrait::from_felt(HALF);
-        assert(core::floor(a).into() == 0, 'invalid pos half');
+        assert(ops::floor(a).into() == 0, 'invalid pos half');
 
         let a = FixedTrait::from_felt(-1 * HALF);
-        assert(core::floor(a).into() == -1 * ONE, 'invalid neg half');
+        assert(ops::floor(a).into() == -1 * ONE, 'invalid neg half');
     }
 
     #[test]
     #[available_gas(10000000)]
     fn test_round() {
         let a = FixedTrait::from_felt(53495557813757699680); // 2.9
-        assert(core::round(a).into() == 3 * ONE, 'invalid pos decimal');
+        assert(ops::round(a).into() == 3 * ONE, 'invalid pos decimal');
 
         let a = FixedTrait::from_felt(-53495557813757699680); // -2.9
-        assert(core::round(a).into() == -3 * ONE, 'invalid neg decimal');
+        assert(ops::round(a).into() == -3 * ONE, 'invalid neg decimal');
 
         let a = FixedTrait::from_unscaled_felt(4);
-        assert(core::round(a).into() == 4 * ONE, 'invalid pos integer');
+        assert(ops::round(a).into() == 4 * ONE, 'invalid pos integer');
 
         let a = FixedTrait::from_unscaled_felt(-4);
-        assert(core::round(a).into() == -4 * ONE, 'invalid neg integer');
+        assert(ops::round(a).into() == -4 * ONE, 'invalid neg integer');
 
         let a = FixedTrait::from_unscaled_felt(0);
-        assert(core::round(a).into() == 0, 'invalid zero');
+        assert(ops::round(a).into() == 0, 'invalid zero');
 
         let a = FixedTrait::from_felt(HALF);
-        assert(core::round(a).into() == 1 * ONE, 'invalid pos half');
+        assert(ops::round(a).into() == 1 * ONE, 'invalid pos half');
 
         let a = FixedTrait::from_felt(-1 * HALF);
-        assert(core::round(a).into() == -1 * ONE, 'invalid neg half');
+        assert(ops::round(a).into() == -1 * ONE, 'invalid neg half');
     }
 
     #[test]
     #[should_panic]
     fn test_sqrt_fail() {
         let a = FixedTrait::from_unscaled_felt(-25);
-        core::sqrt(a);
+        ops::sqrt(a);
     }
 
     #[test]
     #[available_gas(10000000)]
     fn test_sqrt() {
         let a = FixedTrait::from_unscaled_felt(0);
-        assert(core::sqrt(a).into() == 0, 'invalid zero root');
+        assert(ops::sqrt(a).into() == 0, 'invalid zero root');
 
         let a = FixedTrait::from_unscaled_felt(1);
-        assert(core::sqrt(a).into() == ONE, 'invalid one root');
+        assert(ops::sqrt(a).into() == ONE, 'invalid one root');
 
         let a = FixedTrait::from_unscaled_felt(25);
-        assert_precise(core::sqrt(a), 5 * ONE, 'invalid 25 root', Option::None(())); // 5
+        assert_precise(ops::sqrt(a), 5 * ONE, 'invalid 25 root', Option::None(())); // 5
 
         let a = FixedTrait::from_unscaled_felt(81);
-        assert_precise(core::sqrt(a), 9 * ONE, 'invalid 81 root', Option::None(())); // 9
+        assert_precise(ops::sqrt(a), 9 * ONE, 'invalid 81 root', Option::None(())); // 9
 
         let a = FixedTrait::from_felt(1152921504606846976); // 0.0625
         assert_precise(
-            core::sqrt(a), 4611686018427387904, 'invalid decimal root', Option::None(())
+            ops::sqrt(a), 4611686018427387904, 'invalid decimal root', Option::None(())
         ); // 0.25
     }
 
@@ -555,32 +555,32 @@ mod tests {
     fn test_pow_int() {
         let a = FixedTrait::from_unscaled_felt(3);
         let b = FixedTrait::from_unscaled_felt(4);
-        assert(core::pow(a, b).into() == 81 * ONE, 'invalid pos base power');
+        assert(ops::pow(a, b).into() == 81 * ONE, 'invalid pos base power');
 
         let a = FixedTrait::from_unscaled_felt(50);
         let b = FixedTrait::from_unscaled_felt(5);
-        assert(core::pow(a, b).into() == 312500000 * ONE, 'invalid big power');
+        assert(ops::pow(a, b).into() == 312500000 * ONE, 'invalid big power');
 
         let a = FixedTrait::from_unscaled_felt(-3);
         let b = FixedTrait::from_unscaled_felt(2);
-        assert(core::pow(a, b).into() == 9 * ONE, 'invalid neg base');
+        assert(ops::pow(a, b).into() == 9 * ONE, 'invalid neg base');
 
         let a = FixedTrait::from_unscaled_felt(3);
         let b = FixedTrait::from_unscaled_felt(-2);
         assert_precise(
-            core::pow(a, b), 2049638230412172401, 'invalid neg power', Option::None(())
+            ops::pow(a, b), 2049638230412172401, 'invalid neg power', Option::None(())
         ); // 0.1111111111111111
 
         let a = FixedTrait::from_unscaled_felt(-3);
         let b = FixedTrait::from_unscaled_felt(-2);
         assert_precise(
-            core::pow(a, b), 2049638230412172401, 'invalid neg base power', Option::None(())
+            ops::pow(a, b), 2049638230412172401, 'invalid neg base power', Option::None(())
         );
 
         let a = FixedTrait::from_felt(9223372036854775808);
         let b = FixedTrait::from_unscaled_felt(2);
         assert_precise(
-            core::pow(a, b), 4611686018427387904, 'invalid frac base power', Option::None(())
+            ops::pow(a, b), 4611686018427387904, 'invalid frac base power', Option::None(())
         );
     }
 
@@ -590,13 +590,13 @@ mod tests {
         let a = FixedTrait::from_unscaled_felt(3);
         let b = FixedTrait::from_felt(9223372036854775808); // 0.5
         assert_precise(
-            core::pow(a, b), 31950697969885030000, 'invalid pos base power', Option::None(())
+            ops::pow(a, b), 31950697969885030000, 'invalid pos base power', Option::None(())
         ); // 1.7320508075688772
 
         let a = FixedTrait::from_felt(2277250555899444146995); // 123.45
         let b = FixedTrait::from_felt(-27670116110564327424); // -1.5
         assert_precise(
-            core::pow(a, b), 13448785939318150, 'invalid pos base power', Option::None(())
+            ops::pow(a, b), 13448785939318150, 'invalid pos base power', Option::None(())
         ); // 0.0007290601466350622
     }
 
@@ -605,15 +605,15 @@ mod tests {
     fn test_exp() {
         let a = FixedTrait::new_unscaled(2_u128, false);
         assert_precise(
-            core::exp(a), 136304026803256380000, 'invalid exp of 2', Option::None(())
+            ops::exp(a), 136304026803256380000, 'invalid exp of 2', Option::None(())
         ); // 7.3890560989306495
 
         let a = FixedTrait::new_unscaled(0_u128, false);
-        assert(core::exp(a).into() == ONE, 'invalid exp of 0');
+        assert(ops::exp(a).into() == ONE, 'invalid exp of 0');
 
         let a = FixedTrait::new_unscaled(2_u128, true);
         assert_precise(
-            core::exp(a), 2496495334008789000, 'invalid exp of -2', Option::None(())
+            ops::exp(a), 2496495334008789000, 'invalid exp of -2', Option::None(())
         ); // 0.1353352832366127
     }
 
@@ -622,23 +622,23 @@ mod tests {
     fn test_exp2() {
         let a = FixedTrait::new(27670116110564327424_u128, false); // 1.5
         assert_precise(
-            core::exp2(a), 52175271301331124000, 'invalid exp2 of 1.5', Option::None(())
+            ops::exp2(a), 52175271301331124000, 'invalid exp2 of 1.5', Option::None(())
         ); // 2.82842712474619
 
         let a = FixedTrait::new_unscaled(2_u128, false);
-        assert(core::exp2(a).into() == 4 * ONE, 'invalid exp2 of 2'); // 4
+        assert(ops::exp2(a).into() == 4 * ONE, 'invalid exp2 of 2'); // 4
 
         let a = FixedTrait::new_unscaled(0_u128, false);
-        assert(core::exp2(a).into() == ONE, 'invalid exp2 of 0');
+        assert(ops::exp2(a).into() == ONE, 'invalid exp2 of 0');
 
         let a = FixedTrait::new_unscaled(2_u128, true);
         assert_precise(
-            core::exp2(a), 4611686018427387904, 'invalid exp2 of -2', Option::None(())
+            ops::exp2(a), 4611686018427387904, 'invalid exp2 of -2', Option::None(())
         ); // 0.25
 
         let a = FixedTrait::new(27670116110564327424_u128, true); // -1.5
         assert_precise(
-            core::exp2(a), 6521908912666391000, 'invalid exp2 of -1.5', Option::None(())
+            ops::exp2(a), 6521908912666391000, 'invalid exp2 of -1.5', Option::None(())
         ); // 0.35355339059327373
     }
 
@@ -646,14 +646,14 @@ mod tests {
     #[available_gas(1200000)]
     fn test_ln() {
         let a = FixedTrait::from_unscaled_felt(1);
-        assert(core::ln(a).into() == 0, 'invalid ln of 1');
+        assert(ops::ln(a).into() == 0, 'invalid ln of 1');
 
         let a = FixedTrait::from_felt(50143449209799256683); // e
-        assert_precise(core::ln(a), ONE, 'invalid ln of e', Option::None(()));
+        assert_precise(ops::ln(a), ONE, 'invalid ln of e', Option::None(()));
 
         let a = FixedTrait::from_felt(9223372036854775808); // 0.5
         assert_precise(
-            core::ln(a), -12786308645202655000, 'invalid ln of 0.5', Option::None(())
+            ops::ln(a), -12786308645202655000, 'invalid ln of 0.5', Option::None(())
         ); // -0.6931471805599453
     }
 
@@ -661,16 +661,16 @@ mod tests {
     #[available_gas(1000000)]
     fn test_log2() {
         let a = FixedTrait::from_unscaled_felt(32);
-        assert_precise(core::log2(a), 5 * ONE, 'invalid log2 32', Option::None(()));
+        assert_precise(ops::log2(a), 5 * ONE, 'invalid log2 32', Option::None(()));
 
         let a = FixedTrait::from_unscaled_felt(1234);
         assert_precise(
-            core::log2(a), 189431951710772170000, 'invalid log2 1234', Option::None(())
+            ops::log2(a), 189431951710772170000, 'invalid log2 1234', Option::None(())
         ); // 10.269126679149418
 
         let a = FixedTrait::from_felt(1035286617648801165344); // 56.123
         assert_precise(
-            core::log2(a), 107185179502756360000, 'invalid log2 56.123', Option::None(())
+            ops::log2(a), 107185179502756360000, 'invalid log2 56.123', Option::None(())
         ); // 5.8105202237568605
     }
 
@@ -678,10 +678,10 @@ mod tests {
     #[available_gas(1000000)]
     fn test_log10() {
         let a = FixedTrait::from_unscaled_felt(100);
-        assert_precise(core::log10(a), 2 * ONE, 'invalid log10', Option::None(()));
+        assert_precise(ops::log10(a), 2 * ONE, 'invalid log10', Option::None(()));
 
         let a = FixedTrait::from_unscaled_felt(1);
-        assert(core::log10(a).into() == 0, 'invalid log10');
+        assert(ops::log10(a).into() == 0, 'invalid log10');
     }
 
     #[test]
@@ -689,12 +689,12 @@ mod tests {
     fn test_eq() {
         let a = FixedTrait::from_unscaled_felt(42);
         let b = FixedTrait::from_unscaled_felt(42);
-        let c = core::eq(@a, @b);
+        let c = ops::eq(@a, @b);
         assert(c == true, 'invalid result');
 
         let a = FixedTrait::from_unscaled_felt(42);
         let b = FixedTrait::from_unscaled_felt(-42);
-        let c = core::eq(@a, @b);
+        let c = ops::eq(@a, @b);
         assert(c == false, 'invalid result');
     }
 
@@ -703,12 +703,12 @@ mod tests {
     fn test_ne() {
         let a = FixedTrait::from_unscaled_felt(42);
         let b = FixedTrait::from_unscaled_felt(42);
-        let c = core::ne(@a, @b);
+        let c = ops::ne(@a, @b);
         assert(c == false, 'invalid result');
 
         let a = FixedTrait::from_unscaled_felt(42);
         let b = FixedTrait::from_unscaled_felt(-42);
-        let c = core::ne(@a, @b);
+        let c = ops::ne(@a, @b);
         assert(c == true, 'invalid result');
     }
 
@@ -717,7 +717,7 @@ mod tests {
     fn test_add() {
         let a = FixedTrait::from_unscaled_felt(1);
         let b = FixedTrait::from_unscaled_felt(2);
-        assert(core::add(a, b) == FixedTrait::from_unscaled_felt(3), 'invalid result');
+        assert(ops::add(a, b) == FixedTrait::from_unscaled_felt(3), 'invalid result');
     }
 
     #[test]
@@ -725,10 +725,10 @@ mod tests {
     fn test_sub() {
         let a = FixedTrait::from_unscaled_felt(5);
         let b = FixedTrait::from_unscaled_felt(2);
-        let c = core::sub(a, b);
+        let c = ops::sub(a, b);
         assert(c.into() == 3 * ONE, 'false result invalid');
 
-        let c = core::sub(b, a);
+        let c = ops::sub(b, a);
         assert(c.into() == -3 * ONE, 'true result invalid');
     }
 
@@ -737,27 +737,27 @@ mod tests {
     fn test_mul_pos() {
         let a = FixedTrait::from_unscaled_felt(5);
         let b = FixedTrait::from_unscaled_felt(2);
-        let c = core::mul(a, b);
+        let c = ops::mul(a, b);
         assert(c.into() == 10 * ONE, 'invalid result');
 
         let a = FixedTrait::from_unscaled_felt(9);
         let b = FixedTrait::from_unscaled_felt(9);
-        let c = core::mul(a, b);
+        let c = ops::mul(a, b);
         assert(c.into() == 81 * ONE, 'invalid result');
 
         let a = FixedTrait::from_unscaled_felt(4294967295);
         let b = FixedTrait::from_unscaled_felt(4294967295);
-        let c = core::mul(a, b);
+        let c = ops::mul(a, b);
         assert(c.into() == 18446744065119617025 * ONE, 'invalid huge mul');
 
         let a = FixedTrait::from_felt(23058430092136939520); // 1.25
         let b = FixedTrait::from_felt(42427511369531968716); // 2.3
-        let c = core::mul(a, b);
+        let c = ops::mul(a, b);
         assert(c.into() == 53034389211914960895, 'invalid result'); // 2.875
 
         let a = FixedTrait::from_unscaled_felt(0);
         let b = FixedTrait::from_felt(42427511369531968716); // 2.3
-        let c = core::mul(a, b);
+        let c = ops::mul(a, b);
         assert(c.into() == 0, 'invalid result');
     }
 
@@ -766,12 +766,12 @@ mod tests {
     fn test_mul_neg() {
         let a = FixedTrait::from_unscaled_felt(5);
         let b = FixedTrait::from_unscaled_felt(-2);
-        let c = core::mul(a, b);
+        let c = ops::mul(a, b);
         assert(c.into() == -10 * ONE, 'true result invalid');
 
         let a = FixedTrait::from_unscaled_felt(-5);
         let b = FixedTrait::from_unscaled_felt(-2);
-        let c = core::mul(a, b);
+        let c = ops::mul(a, b);
         assert(c.into() == 10 * ONE, 'false result invalid');
     }
 
@@ -780,36 +780,36 @@ mod tests {
     fn test_div() {
         let a = FixedTrait::from_unscaled_felt(10);
         let b = FixedTrait::from_felt(53495557813757699680); // 2.9
-        let c = core::div(a, b);
+        let c = ops::div(a, b);
         assert_precise(
             c, 63609462323136390000, 'invalid pos decimal', Option::None(())
         ); // 3.4482758620689657
 
         let a = FixedTrait::from_unscaled_felt(10);
         let b = FixedTrait::from_unscaled_felt(5);
-        let c = core::div(a, b);
+        let c = ops::div(a, b);
         assert(c.into() == 2 * ONE, 'invalid pos integer'); // 2
 
         let a = FixedTrait::from_unscaled_felt(-2);
         let b = FixedTrait::from_unscaled_felt(5);
-        let c = core::div(a, b);
+        let c = ops::div(a, b);
         assert(c.into() == -7378697629483820646, 'invalid neg decimal'); // 0.4
 
         let a = FixedTrait::from_unscaled_felt(-1000);
         let b = FixedTrait::from_unscaled_felt(12500);
-        let c = core::div(a, b);
+        let c = ops::div(a, b);
         assert(c.into() == -1475739525896764129, 'invalid neg decimal'); // 0.08
 
         let a = FixedTrait::from_unscaled_felt(-10);
         let b = FixedTrait::from_unscaled_felt(123456789);
-        let c = core::div(a, b);
+        let c = ops::div(a, b);
         assert_precise(
             c, -1494186283568, 'invalid neg decimal', Option::None(())
         ); // 8.100000073706917e-8
 
         let a = FixedTrait::from_unscaled_felt(123456789);
         let b = FixedTrait::from_unscaled_felt(-10);
-        let c = core::div(a, b);
+        let c = ops::div(a, b);
         assert_precise(
             c, -227737579084496056114112102, 'invalid neg decimal', Option::None(())
         ); // -12345678.9
@@ -822,17 +822,17 @@ mod tests {
         let b = FixedTrait::from_unscaled_felt(0);
         let c = FixedTrait::from_unscaled_felt(-1);
 
-        assert(core::le(a, a), 'a <= a');
-        assert(core::le(a, b) == false, 'a <= b');
-        assert(core::le(a, c) == false, 'a <= c');
+        assert(ops::le(a, a), 'a <= a');
+        assert(ops::le(a, b) == false, 'a <= b');
+        assert(ops::le(a, c) == false, 'a <= c');
 
-        assert(core::le(b, a), 'b <= a');
-        assert(core::le(b, b), 'b <= b');
-        assert(core::le(b, c) == false, 'b <= c');
+        assert(ops::le(b, a), 'b <= a');
+        assert(ops::le(b, b), 'b <= b');
+        assert(ops::le(b, c) == false, 'b <= c');
 
-        assert(core::le(c, a), 'c <= a');
-        assert(core::le(c, b), 'c <= b');
-        assert(core::le(c, c), 'c <= c');
+        assert(ops::le(c, a), 'c <= a');
+        assert(ops::le(c, b), 'c <= b');
+        assert(ops::le(c, c), 'c <= c');
     }
 
     #[test]
@@ -842,17 +842,17 @@ mod tests {
         let b = FixedTrait::from_unscaled_felt(0);
         let c = FixedTrait::from_unscaled_felt(-1);
 
-        assert(core::lt(a, a) == false, 'a < a');
-        assert(core::lt(a, b) == false, 'a < b');
-        assert(core::lt(a, c) == false, 'a < c');
+        assert(ops::lt(a, a) == false, 'a < a');
+        assert(ops::lt(a, b) == false, 'a < b');
+        assert(ops::lt(a, c) == false, 'a < c');
 
-        assert(core::lt(b, a), 'b < a');
-        assert(core::lt(b, b) == false, 'b < b');
-        assert(core::lt(b, c) == false, 'b < c');
+        assert(ops::lt(b, a), 'b < a');
+        assert(ops::lt(b, b) == false, 'b < b');
+        assert(ops::lt(b, c) == false, 'b < c');
 
-        assert(core::lt(c, a), 'c < a');
-        assert(core::lt(c, b), 'c < b');
-        assert(core::lt(c, c) == false, 'c < c');
+        assert(ops::lt(c, a), 'c < a');
+        assert(ops::lt(c, b), 'c < b');
+        assert(ops::lt(c, c) == false, 'c < c');
     }
 
     #[test]
@@ -862,17 +862,17 @@ mod tests {
         let b = FixedTrait::from_unscaled_felt(0);
         let c = FixedTrait::from_unscaled_felt(-1);
 
-        assert(core::ge(a, a), 'a >= a');
-        assert(core::ge(a, b), 'a >= b');
-        assert(core::ge(a, c), 'a >= c');
+        assert(ops::ge(a, a), 'a >= a');
+        assert(ops::ge(a, b), 'a >= b');
+        assert(ops::ge(a, c), 'a >= c');
 
-        assert(core::ge(b, a) == false, 'b >= a');
-        assert(core::ge(b, b), 'b >= b');
-        assert(core::ge(b, c), 'b >= c');
+        assert(ops::ge(b, a) == false, 'b >= a');
+        assert(ops::ge(b, b), 'b >= b');
+        assert(ops::ge(b, c), 'b >= c');
 
-        assert(core::ge(c, a) == false, 'c >= a');
-        assert(core::ge(c, b) == false, 'c >= b');
-        assert(core::ge(c, c), 'c >= c');
+        assert(ops::ge(c, a) == false, 'c >= a');
+        assert(ops::ge(c, b) == false, 'c >= b');
+        assert(ops::ge(c, c), 'c >= c');
     }
 
     #[test]
@@ -882,17 +882,17 @@ mod tests {
         let b = FixedTrait::from_unscaled_felt(0);
         let c = FixedTrait::from_unscaled_felt(-1);
 
-        assert(core::gt(a, a) == false, 'a > a');
-        assert(core::gt(a, b), 'a > b');
-        assert(core::gt(a, c), 'a > c');
+        assert(ops::gt(a, a) == false, 'a > a');
+        assert(ops::gt(a, b), 'a > b');
+        assert(ops::gt(a, c), 'a > c');
 
-        assert(core::gt(b, a) == false, 'b > a');
-        assert(core::gt(b, b) == false, 'b > b');
-        assert(core::gt(b, c), 'b > c');
+        assert(ops::gt(b, a) == false, 'b > a');
+        assert(ops::gt(b, b) == false, 'b > b');
+        assert(ops::gt(b, c), 'b > c');
 
-        assert(core::gt(c, a) == false, 'c > a');
-        assert(core::gt(c, b) == false, 'c > b');
-        assert(core::gt(c, c) == false, 'c > c');
+        assert(ops::gt(c, a) == false, 'c > a');
+        assert(ops::gt(c, b) == false, 'c > b');
+        assert(ops::gt(c, c) == false, 'c > c');
     }
 
     #[test]
@@ -900,11 +900,11 @@ mod tests {
     fn test_rem() {
         let a = FixedTrait::new_unscaled(10_u128, false);
         let b = FixedTrait::new_unscaled(3_u128, false);
-        assert(core::rem(a, b).into() == 1 * ONE, 'invalid remainder');
+        assert(ops::rem(a, b).into() == 1 * ONE, 'invalid remainder');
 
         let a = FixedTrait::new_unscaled(10_u128, false);
         let b = FixedTrait::new_unscaled(3_u128, true);
-        assert(core::rem(a, b) == FixedTrait::new(2_u128 * ONE_u128, true), 'invalid remainder');
+        assert(ops::rem(a, b) == FixedTrait::new(2_u128 * ONE_u128, true), 'invalid remainder');
     }
 
     #[test]

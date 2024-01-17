@@ -48,8 +48,8 @@ fn atanh(a: Fixed) -> Fixed {
 
 #[cfg(test)]
 mod tests {
-    use option::OptionTrait;
-    use traits::Into;
+    use core::option::OptionTrait;
+    use core::traits::Into;
 
     use cubit::f128::test::helpers::assert_precise;
     use cubit::f128::types::fixed::{FixedInto, FixedPartialEq, ONE};

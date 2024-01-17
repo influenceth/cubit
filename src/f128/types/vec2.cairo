@@ -1,4 +1,4 @@
-use debug::PrintTrait;
+use core::debug::PrintTrait;
 
 use cubit::f128::types::fixed::{Fixed, FixedTrait, FixedPrint};
 

@@ -1,12 +1,12 @@
-use array::ArrayTrait;
-use integer::{u64_safe_divmod, u64_as_non_zero, u256_from_felt252};
-use option::OptionTrait;
-use traits::{Into, TryInto};
+use core::array::ArrayTrait;
+use core::integer::{u64_safe_divmod, u64_as_non_zero, u256_from_felt252};
+use core::option::OptionTrait;
+use core::traits::{Into, TryInto};
 
 use cubit::f64::types::fixed::{Fixed, FixedTrait, ONE};
 
 fn derive(seed: felt252, entropy: felt252) -> felt252 {
-    return hash::LegacyHash::hash(seed, entropy);
+    return core::hash::LegacyHash::hash(seed, entropy);
 }
 
 // Returns a psuedo-random value between two values based on a seed. The returned

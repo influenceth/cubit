@@ -1,6 +1,6 @@
-use debug::PrintTrait;
-use integer::{u64_safe_divmod, u64_as_non_zero};
-use option::OptionTrait;
+use core::debug::PrintTrait;
+use core::integer::{u64_safe_divmod, u64_as_non_zero};
+use core::option::OptionTrait;
 
 use cubit::f64::math::lut;
 use cubit::f64::types::fixed::{Fixed, FixedTrait, FixedAdd, FixedSub, FixedMul, FixedDiv, ONE};
@@ -203,7 +203,7 @@ fn _sin_loop(a: Fixed, i: u64, acc: Fixed) -> Fixed {
 
 #[cfg(test)]
 mod tests {
-    use traits::Into;
+    use core::traits::Into;
 
     use cubit::f64::test::helpers::{assert_precise, assert_relative};
     use cubit::f64::types::fixed::{FixedPartialEq, FixedPrint};

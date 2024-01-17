@@ -1,4 +1,5 @@
 use cubit::f64::types::fixed::{Fixed, FixedTrait, HALF, ONE, TWO};
+use core::debug::PrintTrait;
 
 // Calculates hyperbolic cosine of a (fixed point)
 fn cosh(a: Fixed) -> Fixed {
@@ -25,8 +26,6 @@ fn acosh(a: Fixed) -> Fixed {
     return (a + root).ln();
 }
 
-use debug::PrintTrait;
-
 // Calculates inverse hyperbolic sine of a (fixed point)
 fn asinh(a: Fixed) -> Fixed {
     let root = (a * a + FixedTrait::ONE()).sqrt();
@@ -44,8 +43,8 @@ fn atanh(a: Fixed) -> Fixed {
 
 #[cfg(test)]
 mod tests {
-    use option::OptionTrait;
-    use traits::Into;
+    use core::option::OptionTrait;
+    use core::traits::Into;
 
     use cubit::f64::test::helpers::assert_precise;
 
