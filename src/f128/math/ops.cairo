@@ -226,7 +226,7 @@ fn neg(a: Fixed) -> Fixed {
 // self is a fixed point value
 // b is a fixed point value
 fn pow(a: Fixed, b: Fixed) -> Fixed {
-    let (div_u128, rem_u128) = _split_unsigned(b);
+    let (_div_u128, rem_u128) = _split_unsigned(b);
 
     // use the more performant integer pow when y is an int
     if (rem_u128 == 0) {
@@ -346,7 +346,7 @@ mod tests {
     #[should_panic]
     fn test_negative_try_into_u128() {
         let a = FixedTrait::new_unscaled(1, true);
-        let a: u128 = a.try_into().unwrap();
+        let _a: u128 = a.try_into().unwrap();
     }
 
     #[test]
