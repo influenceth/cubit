@@ -1039,7 +1039,7 @@ mod tests {
     #[should_panic]
     fn test_try_into_fail() {
         let mut a = FixedTrait::new_unscaled(42, true);
-        let b: u128 = a.try_into().unwrap();
+        let _b: u128 = a.try_into().unwrap();
     }
 
     #[test]
@@ -1053,7 +1053,7 @@ mod tests {
     #[should_panic]
     fn test_try_into_f64_fail() {
         let a = FixedTrait::new_unscaled(ONE_u64.into(), true);
-        let b: Fixed64 = a.try_into().unwrap();
+        let _b: Fixed64 = a.try_into().unwrap();
     }
 
     #[available_gas(10000000)]
