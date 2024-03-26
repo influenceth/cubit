@@ -16,6 +16,7 @@ use cubit::f128::{Fixed as Fixed128, FixedTrait as FixedTrait128, ONE_u128};
 const TWO: u64 = 8589934592; // 2 ** 33
 const ONE: u64 = 4294967296; // 2 ** 32
 const HALF: u64 = 2147483648; // 2 ** 31
+const MAX_u64: u128 = 18_446_744_073_709_551_615; //2**64 - 1
 
 // STRUCTS
 
@@ -310,6 +311,106 @@ impl FixedTryIntoU8 of TryInto<Fixed, u8> {
     }
 }
 
+impl U8IntoFixed of Into<u8, Fixed> {
+    fn into(self: u8) -> Fixed {
+        FixedTrait::new_unscaled(self.into(), false)
+    }
+}
+
+impl U16IntoFixed of Into<u16, Fixed> {
+    fn into(self: u16) -> Fixed {
+        FixedTrait::new_unscaled(self.into(), false)
+    }
+}
+
+impl U32IntoFixed of Into<u32, Fixed> {
+    fn into(self: u32) -> Fixed {
+        FixedTrait::new_unscaled(self.into(), false)
+    }
+}
+
+impl U64IntoFixed of Into<u64, Fixed> {
+    fn into(self: u64) -> Fixed {
+        FixedTrait::new_unscaled(self.into(), false)
+    }
+}
+
+impl U128TryIntoFixed of TryInto<u128, Fixed> {
+    fn try_into(self: u128) -> Option<Fixed> {
+        if self > 18_446_744_073_709_551_615 {
+            return Option::None(());
+        } else {
+            return Option::Some(FixedTrait::new_unscaled(self.try_into().unwrap(), false));
+        }
+    }
+}
+
+impl U256TryIntoFixed of TryInto<u256, Fixed> {
+    fn try_into(self: u256) -> Option<Fixed> {
+        if self.high > 0 {
+            return Option::None(());
+        } else {
+            return Option::Some(FixedTrait::new_unscaled(self.try_into().unwrap(), false));
+        }
+    }
+}
+
+impl I8IntoFixed of Into<i8, Fixed> {
+    fn into(self: i8) -> Fixed {
+        if 0 <= self {
+            return FixedTrait::new_unscaled(self.try_into().unwrap(), false);
+        } else {
+            return FixedTrait::new_unscaled((-self).try_into().unwrap(), true);
+        }
+    }
+}
+
+impl I16IntoFixed of Into<i16, Fixed> {
+    fn into(self: i16) -> Fixed {
+        if 0 <= self {
+            return FixedTrait::new_unscaled(self.try_into().unwrap(), false);
+        } else {
+            return FixedTrait::new_unscaled((-self).try_into().unwrap(), true);
+        }
+    }
+}
+
+impl I32IntoFixed of Into<i32, Fixed> {
+    fn into(self: i32) -> Fixed {
+        if 0 <= self {
+            return FixedTrait::new_unscaled(self.try_into().unwrap(), false);
+        } else {
+            return FixedTrait::new_unscaled((-self).try_into().unwrap(), true);
+        }
+    }
+}
+
+impl I64IntoFixed of Into<i64, Fixed> {
+    fn into(self: i64) -> Fixed {
+        if 0 <= self {
+            return FixedTrait::new_unscaled(self.try_into().unwrap(), false);
+        } else {
+            return FixedTrait::new_unscaled((-self).try_into().unwrap(), true);
+        }
+    }
+}
+
+impl I128TryIntoFixed of TryInto<i128, Fixed> {
+    fn try_into(self: i128) -> Option<Fixed> {
+        let sign = self < 0;
+        let value: u128 = if sign {
+            (-self).try_into().unwrap()
+        } else {
+            self.try_into().unwrap()
+        };
+        if value > MAX_u64 {
+            return Option::None(());
+        } else {
+            return Option::Some(FixedTrait::new_unscaled(value.try_into().unwrap(), sign));
+        }
+    }
+}
+
 impl FixedPartialEq of PartialEq<Fixed> {
     #[inline(always)]
     fn eq(lhs: @Fixed, rhs: @Fixed) -> bool {
@@ -436,5 +537,33 @@ mod tests {
         let a = FixedTrait::new_unscaled(42, true);
         let b: Fixed128 = a.into();
         assert(b.mag == 42 * ONE_u128, 'invalid conversion');
+    }
+
+    fn test_reverse_try() {
+        let a = FixedTrait::new_unscaled(42, false);
+        let b = FixedTrait::new_unscaled(42, true);
+        assert(42_u64.into() == a, 'invalid conversion from u64');
+        assert(42_u32.into() == a, 'invalid conversion from u32');
+        assert(42_u16.into() == a, 'invalid conversion from u16');
+        assert(42_u8.into() == a, 'invalid conversion from u8');
+
+        assert(42_i64.into() == a, 'invalid conversion from i64');
+        assert(42_i32.into() == a, 'invalid conversion from i32');
+        assert(42_i16.into() == a, 'invalid conversion from i16');
+        assert(42_i8.into() == a, 'invalid conversion from i8');
+
+        assert((-42_i64).into() == b, 'invalid conversion from - i64');
+        assert((-42_i32).into() == b, 'invalid conversion from - i32');
+        assert((-42_i16).into() == b, 'invalid conversion from - i16');
+        assert((-42_i8).into() == b, 'invalid conversion from - i8');
+    }
+
+    fn test_reverse_try_into() {
+        let mut a = FixedTrait::new_unscaled(42, false);
+        let b = FixedTrait::new_unscaled(42, true);
+        assert(a == 42_u256.try_into().unwrap(), 'conversion from invalid u256');
+        assert(42_u128.try_into().unwrap() == a, 'invalid conversion from u128');
+        assert(42_i128.try_into().unwrap() == a, 'invalid conversion from i128');
+        assert((-42_i128).try_into().unwrap() == b, 'invalid conversion from - i128');
     }
 }
