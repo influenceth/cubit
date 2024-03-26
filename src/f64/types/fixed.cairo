@@ -76,11 +76,11 @@ trait FixedTrait {
 
 impl FixedImpl of FixedTrait {
     fn ZERO() -> Fixed {
-        return Fixed { mag: 0, sign: false };
+        return core::num::traits::Zero::zero();
     }
 
     fn ONE() -> Fixed {
-        return Fixed { mag: ONE, sign: false };
+        return core::num::traits::One::one();
     }
 
     fn new(mag: u64, sign: bool) -> Fixed {
@@ -527,6 +527,34 @@ impl PackFixed of StorePacking<Fixed, felt252> {
     }
 }
 
+impl FixedZero of core::num::traits::Zero<Fixed> {
+    fn zero() -> Fixed {
+        Fixed { mag: 0, sign: false }
+    }
+    #[inline(always)]
+    fn is_zero(self: @Fixed) -> bool {
+        *self.mag == 0
+    }
+    #[inline(always)]
+    fn is_non_zero(self: @Fixed) -> bool {
+        !self.is_zero()
+    }
+}
+
+// One trait implementations
+impl FixedOne of core::num::traits::One<Fixed> {
+    fn one() -> Fixed {
+        Fixed { mag: ONE, sign: false }
+    }
+    #[inline(always)]
+    fn is_one(self: @Fixed) -> bool {
+        *self == FixedOne::one()
+    }
+    #[inline(always)]
+    fn is_non_one(self: @Fixed) -> bool {
+        !self.is_one()
+    }
+}
 
 #[cfg(test)]
 mod tests {
