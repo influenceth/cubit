@@ -447,6 +447,28 @@ mod tests {
     }
 
     #[test]
+    #[available_gas(9_000_000_000)]
+    fn test_compare_sin() {
+        let error = Option::Some(42950); // 1e-5
+        let pi = FixedTrait::new(PI, false);
+
+        let MAX: u64 = 256 * 4;
+        let mut n: u64 = 0;
+        loop {
+            if n == MAX {
+                break;
+            }
+            let a = FixedTrait::new(n * 26353589 * 256 / MAX + 1, false);
+            let sin1 = sin_fast(a);
+            let sin2 = sin(a);
+
+            assert_precise(sin1, sin2.mag.into(), 'invalid sin', error);
+
+            n += 1;
+        }
+    }
+
+    #[test]
     #[available_gas(8000000)]
     fn test_tan() {
         let a = FixedTrait::new(HALF_PI / 2, false);
