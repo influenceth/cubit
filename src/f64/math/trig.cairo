@@ -163,7 +163,7 @@ fn sin_fast(a: Fixed) -> Fixed {
     }
 
     let (start, low, high) = lut::sin(partial_rem);
-    let partial_step = FixedTrait::new(partial_rem - start, false)
+    let partial_step = (FixedTrait::new(partial_rem, false) - FixedTrait::new(start, false))
         / FixedTrait::new(26353589, false);
     let res = partial_step * (FixedTrait::new(high, false) - FixedTrait::new(low, false))
         + FixedTrait::new(low, false);
