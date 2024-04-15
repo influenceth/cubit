@@ -169,7 +169,7 @@ fn sin_fast(a: Fixed) -> Fixed {
     }
 
     let (start, low, high) = lut::sin(partial_rem);
-    let partial_step = FixedTrait::new(partial_rem - start, false)
+    let partial_step = (FixedTrait::new(partial_rem, false) - FixedTrait::new(start, false))
         / FixedTrait::new(113187804032455040, false);
     let res = partial_step * (FixedTrait::new(high, false) - FixedTrait::new(low, false))
         + FixedTrait::new(low, false);
@@ -437,6 +437,27 @@ mod tests {
         assert_precise(
             sin_fast(a), 17734653485808441000, 'invalid -17', error
         ); // 0.9613974918793389
+    }
+
+    #[test]
+    #[available_gas(90_000_000_000)]
+    fn test_compare_sin() {
+        let error = Option::Some(184467440737095);
+
+        let MAX: u128 = 256 * 4;
+        let mut n: u128 = 0;
+        loop {
+            if n == MAX {
+                break;
+            }
+            let a = FixedTrait::new(n * 113187804032455040 * 256 / MAX + 1, false);
+            let sin1 = sin_fast(a);
+            let sin2 = sin(a);
+
+            assert_precise(sin1, sin2.mag.into(), 'invalid sin', error);
+
+            n += 1;
+        }
     }
 
     #[test]
