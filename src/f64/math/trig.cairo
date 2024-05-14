@@ -450,7 +450,6 @@ mod tests {
     #[available_gas(9_000_000_000)]
     fn test_compare_sin() {
         let error = Option::Some(42950); // 1e-5
-        let pi = FixedTrait::new(PI, false);
 
         let MAX: u64 = 256 * 4;
         let mut n: u64 = 0;
