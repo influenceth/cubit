@@ -39,7 +39,7 @@ fn atanh(a: Fixed) -> Fixed {
     return ln_arg.ln() / FixedTrait::new(TWO, false);
 }
 
-// Tests --------------------------------------------------------------------------------------------------------------
+// Tests
 
 #[cfg(test)]
 mod tests {
