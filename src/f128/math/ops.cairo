@@ -304,7 +304,7 @@ fn _split_unsigned(a: Fixed) -> (u128, u128) {
     return integer::u128_safe_divmod(a.mag, integer::u128_as_non_zero(ONE_u128));
 }
 
-// Tests --------------------------------------------------------------------------------------------------------------
+// Tests
 
 #[cfg(test)]
 mod tests {

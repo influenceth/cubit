@@ -145,7 +145,7 @@ fn noise_octaves(v: Vec3, mut octaves: u64, persistence: Fixed) -> Fixed {
 
 // TODO: get noise at percentile
 
-// Tests --------------------------------------------------------------------------------------------------------------
+// Tests
 
 #[cfg(test)]
 mod tests {

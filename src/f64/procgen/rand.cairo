@@ -47,7 +47,7 @@ fn _fixed_normal_between_loop(
     return _fixed_normal_between_loop(seed, low, high, acc + sample, iter - 1);
 }
 
-// Tests --------------------------------------------------------------------------------------------------------------
+// Tests
 
 #[cfg(test)]
 mod tests {

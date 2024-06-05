@@ -44,7 +44,7 @@ fn atanh(a: Fixed) -> Fixed {
     return ln_arg.ln() / FixedTrait::new_unscaled(2_u128, false);
 }
 
-// Tests --------------------------------------------------------------------------------------------------------------
+// Tests
 
 #[cfg(test)]
 mod tests {

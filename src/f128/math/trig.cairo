@@ -205,7 +205,7 @@ fn _sin_loop(a: Fixed, i: u128, acc: Fixed) -> Fixed {
     return _sin_loop(a, i - 1, new_acc);
 }
 
-// Tests --------------------------------------------------------------------------------------------------------------
+// Tests
 
 #[cfg(test)]
 mod tests {
