@@ -1,7 +1,8 @@
 use core::option::OptionTrait;
 use core::result::{ResultTrait, ResultTraitImpl};
 use core::traits::{Into, TryInto};
-use core::integer::{u64_safe_divmod, u64_as_non_zero, u64_wide_mul};
+use core::integer::{u64_safe_divmod, u64_as_non_zero};
+use core::num::traits::{Sqrt, WideMul};
 
 use cubit::f64::math::lut;
 use cubit::f64::types::fixed::{HALF, ONE, Fixed, FixedIntoFelt252, FixedTrait};
@@ -43,7 +44,7 @@ fn ceil(a: Fixed) -> Fixed {
 }
 
 fn div(a: Fixed, b: Fixed) -> Fixed {
-    let a_u128 = core::integer::u64_wide_mul(a.mag, ONE);
+    let a_u128 = a.mag.wide_mul(ONE);
     let res_u128 = a_u128 / b.mag.into();
 
     // Re-apply sign
@@ -182,7 +183,7 @@ fn lt(a: Fixed, b: Fixed) -> bool {
 }
 
 fn mul(a: Fixed, b: Fixed) -> Fixed {
-    let prod_u128 = core::integer::u64_wide_mul(a.mag, b.mag);
+    let prod_u128 = a.mag.wide_mul(b.mag);
 
     // Re-apply sign
     return FixedTrait::new((prod_u128 / ONE.into()).try_into().unwrap(), a.sign ^ b.sign);
@@ -269,7 +270,7 @@ fn round(a: Fixed) -> Fixed {
 // x must be positive
 fn sqrt(a: Fixed) -> Fixed {
     assert(a.sign == false, 'must be positive');
-    let root = core::integer::u128_sqrt(a.mag.into() * ONE.into());
+    let root = (a.mag * ONE).sqrt();
     return FixedTrait::new(root.into(), false);
 }
 

@@ -4,6 +4,7 @@ use core::result::{ResultTrait, ResultTraitImpl};
 use core::traits::{Into, TryInto};
 use core::integer;
 use core::integer::{u256_safe_div_rem, u256_as_non_zero, upcast};
+use core::num::traits::{Sqrt, WideMul};
 
 use cubit::f128::math::lut;
 use cubit::f128::types::fixed::{
@@ -204,7 +205,7 @@ struct f64 {
 }
 
 fn mul_64(a: f64, b: f64) -> f64 {
-    let prod_u128 = integer::u64_wide_mul(a.mag, b.mag);
+    let prod_u128 = a.mag.wide_mul(b.mag);
     return f64 { mag: (prod_u128 / 4294967296).try_into().unwrap(), sign: a.sign ^ b.sign };
 }
 
@@ -289,8 +290,8 @@ fn round(a: Fixed) -> Fixed {
 // x must be positive
 fn sqrt(a: Fixed) -> Fixed {
     assert(a.sign == false, 'must be positive');
-    let root = integer::u128_sqrt(a.mag);
-    let scale_root = integer::u128_sqrt(ONE_u128);
+    let root = a.mag.sqrt();
+    let scale_root = ONE_u128.sqrt();
     let res_u128 = upcast(root) * ONE_u128 / upcast(scale_root);
     return FixedTrait::new(res_u128, false);
 }

@@ -4,6 +4,7 @@ use core::integer::{U256DivRem, u256_safe_divmod, u256_as_non_zero, u256_from_fe
 use core::option::OptionTrait;
 use core::result::{ResultTrait, ResultTraitImpl};
 use core::traits::{TryInto, Into};
+use core::num::traits::WideMul;
 
 use starknet::storage_access::StorePacking;
 
@@ -92,16 +93,16 @@ impl FixedImpl of FixedTrait {
     }
 
     fn new_unscaled(mag: u128, sign: bool) -> Fixed {
-        return FixedTrait::new(mag * ONE_u128, sign);
+        return Self::new(mag * ONE_u128, sign);
     }
 
     fn from_felt(val: felt252) -> Fixed {
         let mag = core::integer::u128_try_from_felt252(utils::felt_abs(val)).unwrap();
-        return FixedTrait::new(mag, utils::felt_sign(val));
+        return Self::new(mag, utils::felt_sign(val));
     }
 
     fn from_unscaled_felt(val: felt252) -> Fixed {
-        return FixedTrait::from_felt(val * ONE);
+        return Self::from_felt(val * ONE);
     }
 
     fn abs(self: Fixed) -> Fixed {
@@ -551,7 +552,7 @@ impl FixedOne of core::num::traits::One<Fixed> {
     }
     #[inline(always)]
     fn is_one(self: @Fixed) -> bool {
-        *self == FixedOne::one()
+        *self == Self::one()
     }
     #[inline(always)]
     fn is_non_one(self: @Fixed) -> bool {
