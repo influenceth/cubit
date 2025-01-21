@@ -16,6 +16,8 @@ use cubit::f64::{Fixed as Fixed64, FixedTrait as FixedTrait64, ONE as ONE_u64};
 const PRIME: felt252 = 3618502788666131213697322783095070105623107215331596699973092056135872020480;
 const ONE: felt252 = 18446744073709551616; // 2 ** 64
 const ONE_u128: u128 = 18446744073709551616_u128; // 2 ** 64
+const ONE_u256: u256 = 18446744073709551616_u256; // 2 ** 64
+const SQRT_ONE_u128: u128 = 4294967296; // 2 ** 32
 const HALF: felt252 = 9223372036854775808; // 2 ** 63
 const HALF_u128: u128 = 9223372036854775808_u128; // 2 ** 63
 const MAX_u128: u128 = 340282366920938463463374607431768211455_u128; // 2 ** 128 - 1
@@ -92,16 +94,16 @@ impl FixedImpl of FixedTrait {
     }
 
     fn new_unscaled(mag: u128, sign: bool) -> Fixed {
-        return FixedTrait::new(mag * ONE_u128, sign);
+        return Self::new(mag * ONE_u128, sign);
     }
 
     fn from_felt(val: felt252) -> Fixed {
         let mag = core::integer::u128_try_from_felt252(utils::felt_abs(val)).unwrap();
-        return FixedTrait::new(mag, utils::felt_sign(val));
+        return Self::new(mag, utils::felt_sign(val));
     }
 
     fn from_unscaled_felt(val: felt252) -> Fixed {
-        return FixedTrait::from_felt(val * ONE);
+        return Self::from_felt(val * ONE);
     }
 
     fn abs(self: Fixed) -> Fixed {
@@ -430,10 +432,10 @@ impl FixedAdd of Add<Fixed> {
     }
 }
 
-impl FixedAddEq of AddEq<Fixed> {
+impl FixedAddAssign of core::ops::AddAssign<Fixed, Fixed> {
     #[inline(always)]
-    fn add_eq(ref self: Fixed, other: Fixed) {
-        self = Add::add(self, other);
+    fn add_assign(ref self: Fixed, rhs: Fixed) {
+        self = Add::add(self, rhs);
     }
 }
 
@@ -443,10 +445,10 @@ impl FixedSub of Sub<Fixed> {
     }
 }
 
-impl FixedSubEq of SubEq<Fixed> {
+impl FixedSubAssign of core::ops::SubAssign<Fixed, Fixed> {
     #[inline(always)]
-    fn sub_eq(ref self: Fixed, other: Fixed) {
-        self = Sub::sub(self, other);
+    fn sub_assign(ref self: Fixed, rhs: Fixed) {
+        self = Sub::sub(self, rhs);
     }
 }
 
@@ -456,10 +458,10 @@ impl FixedMul of Mul<Fixed> {
     }
 }
 
-impl FixedMulEq of MulEq<Fixed> {
+impl FixedMulAssign of core::ops::MulAssign<Fixed, Fixed> {
     #[inline(always)]
-    fn mul_eq(ref self: Fixed, other: Fixed) {
-        self = Mul::mul(self, other);
+    fn mul_assign(ref self: Fixed, rhs: Fixed) {
+        self = Mul::mul(self, rhs);
     }
 }
 
@@ -469,10 +471,10 @@ impl FixedDiv of Div<Fixed> {
     }
 }
 
-impl FixedDivEq of DivEq<Fixed> {
+impl FixedDivAssign of core::ops::DivAssign<Fixed, Fixed> {
     #[inline(always)]
-    fn div_eq(ref self: Fixed, other: Fixed) {
-        self = Div::div(self, other);
+    fn div_assign(ref self: Fixed, rhs: Fixed) {
+        self = Div::div(self, rhs);
     }
 }
 
@@ -551,7 +553,7 @@ impl FixedOne of core::num::traits::One<Fixed> {
     }
     #[inline(always)]
     fn is_one(self: @Fixed) -> bool {
-        *self == FixedOne::one()
+        *self == Self::one()
     }
     #[inline(always)]
     fn is_non_one(self: @Fixed) -> bool {
@@ -560,7 +562,8 @@ impl FixedOne of core::num::traits::One<Fixed> {
 }
 
 
-// Tests --------------------------------------------------------------------------------------------------------------
+// Tests
+// --------------------------------------------------------------------------------------------------------------
 
 #[cfg(test)]
 mod tests {
@@ -812,12 +815,12 @@ mod tests {
         let a = FixedTrait::from_unscaled_felt(42);
         let b = FixedTrait::from_unscaled_felt(42);
         let c = ops::eq(@a, @b);
-        assert(c == true, 'invalid result');
+        assert(c, 'invalid result');
 
         let a = FixedTrait::from_unscaled_felt(42);
         let b = FixedTrait::from_unscaled_felt(-42);
         let c = ops::eq(@a, @b);
-        assert(c == false, 'invalid result');
+        assert(!c, 'invalid result');
     }
 
     #[test]
@@ -826,12 +829,12 @@ mod tests {
         let a = FixedTrait::from_unscaled_felt(42);
         let b = FixedTrait::from_unscaled_felt(42);
         let c = ops::ne(@a, @b);
-        assert(c == false, 'invalid result');
+        assert(!c, 'invalid result');
 
         let a = FixedTrait::from_unscaled_felt(42);
         let b = FixedTrait::from_unscaled_felt(-42);
         let c = ops::ne(@a, @b);
-        assert(c == true, 'invalid result');
+        assert(c, 'invalid result');
     }
 
     #[test]
@@ -945,12 +948,12 @@ mod tests {
         let c = FixedTrait::from_unscaled_felt(-1);
 
         assert(ops::le(a, a), 'a <= a');
-        assert(ops::le(a, b) == false, 'a <= b');
-        assert(ops::le(a, c) == false, 'a <= c');
+        assert(!ops::le(a, b), 'a <= b');
+        assert(!ops::le(a, c), 'a <= c');
 
         assert(ops::le(b, a), 'b <= a');
         assert(ops::le(b, b), 'b <= b');
-        assert(ops::le(b, c) == false, 'b <= c');
+        assert(!ops::le(b, c), 'b <= c');
 
         assert(ops::le(c, a), 'c <= a');
         assert(ops::le(c, b), 'c <= b');
@@ -964,17 +967,17 @@ mod tests {
         let b = FixedTrait::from_unscaled_felt(0);
         let c = FixedTrait::from_unscaled_felt(-1);
 
-        assert(ops::lt(a, a) == false, 'a < a');
-        assert(ops::lt(a, b) == false, 'a < b');
-        assert(ops::lt(a, c) == false, 'a < c');
+        assert(!ops::lt(a, a), 'a < a');
+        assert(!ops::lt(a, b), 'a < b');
+        assert(!ops::lt(a, c), 'a < c');
 
         assert(ops::lt(b, a), 'b < a');
-        assert(ops::lt(b, b) == false, 'b < b');
-        assert(ops::lt(b, c) == false, 'b < c');
+        assert(!ops::lt(b, b), 'b < b');
+        assert(!ops::lt(b, c), 'b < c');
 
         assert(ops::lt(c, a), 'c < a');
         assert(ops::lt(c, b), 'c < b');
-        assert(ops::lt(c, c) == false, 'c < c');
+        assert(!ops::lt(c, c), 'c < c');
     }
 
     #[test]
@@ -988,12 +991,12 @@ mod tests {
         assert(ops::ge(a, b), 'a >= b');
         assert(ops::ge(a, c), 'a >= c');
 
-        assert(ops::ge(b, a) == false, 'b >= a');
+        assert(!ops::ge(b, a), 'b >= a');
         assert(ops::ge(b, b), 'b >= b');
         assert(ops::ge(b, c), 'b >= c');
 
-        assert(ops::ge(c, a) == false, 'c >= a');
-        assert(ops::ge(c, b) == false, 'c >= b');
+        assert(!ops::ge(c, a), 'c >= a');
+        assert(!ops::ge(c, b), 'c >= b');
         assert(ops::ge(c, c), 'c >= c');
     }
 
@@ -1004,17 +1007,17 @@ mod tests {
         let b = FixedTrait::from_unscaled_felt(0);
         let c = FixedTrait::from_unscaled_felt(-1);
 
-        assert(ops::gt(a, a) == false, 'a > a');
+        assert(!ops::gt(a, a), 'a > a');
         assert(ops::gt(a, b), 'a > b');
         assert(ops::gt(a, c), 'a > c');
 
-        assert(ops::gt(b, a) == false, 'b > a');
-        assert(ops::gt(b, b) == false, 'b > b');
+        assert(!ops::gt(b, a), 'b > a');
+        assert(!ops::gt(b, b), 'b > b');
         assert(ops::gt(b, c), 'b > c');
 
-        assert(ops::gt(c, a) == false, 'c > a');
-        assert(ops::gt(c, b) == false, 'c > b');
-        assert(ops::gt(c, c) == false, 'c > c');
+        assert(!ops::gt(c, a), 'c > a');
+        assert(!ops::gt(c, b), 'c > b');
+        assert(!ops::gt(c, c), 'c > c');
     }
 
     #[test]

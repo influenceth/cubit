@@ -93,11 +93,11 @@ impl FixedImpl of FixedTrait {
 
     fn from_felt(val: felt252) -> Fixed {
         let mag = core::integer::u64_try_from_felt252(utils::felt_abs(val)).unwrap();
-        return FixedTrait::new(mag, utils::felt_sign(val));
+        return Self::new(mag, utils::felt_sign(val));
     }
 
     fn from_unscaled_felt(val: felt252) -> Fixed {
-        return FixedTrait::from_felt(val * ONE.into());
+        return Self::from_felt(val * ONE.into());
     }
 
     fn abs(self: Fixed) -> Fixed {
@@ -429,10 +429,10 @@ impl FixedAdd of Add<Fixed> {
     }
 }
 
-impl FixedAddEq of AddEq<Fixed> {
+impl FixedAddAssign of core::ops::AddAssign<Fixed, Fixed> {
     #[inline(always)]
-    fn add_eq(ref self: Fixed, other: Fixed) {
-        self = Add::add(self, other);
+    fn add_assign(ref self: Fixed, rhs: Fixed) {
+        self = Add::add(self, rhs);
     }
 }
 
@@ -442,10 +442,10 @@ impl FixedSub of Sub<Fixed> {
     }
 }
 
-impl FixedSubEq of SubEq<Fixed> {
+impl FixedSubAssign of core::ops::SubAssign<Fixed, Fixed> {
     #[inline(always)]
-    fn sub_eq(ref self: Fixed, other: Fixed) {
-        self = Sub::sub(self, other);
+    fn sub_assign(ref self: Fixed, rhs: Fixed) {
+        self = Sub::sub(self, rhs);
     }
 }
 
@@ -455,10 +455,10 @@ impl FixedMul of Mul<Fixed> {
     }
 }
 
-impl FixedMulEq of MulEq<Fixed> {
+impl FixedMulAssign of core::ops::MulAssign<Fixed, Fixed> {
     #[inline(always)]
-    fn mul_eq(ref self: Fixed, other: Fixed) {
-        self = Mul::mul(self, other);
+    fn mul_assign(ref self: Fixed, rhs: Fixed) {
+        self = Mul::mul(self, rhs);
     }
 }
 
@@ -468,10 +468,10 @@ impl FixedDiv of Div<Fixed> {
     }
 }
 
-impl FixedDivEq of DivEq<Fixed> {
+impl FixedDivAssign of core::ops::DivAssign<Fixed, Fixed> {
     #[inline(always)]
-    fn div_eq(ref self: Fixed, other: Fixed) {
-        self = Div::div(self, other);
+    fn div_assign(ref self: Fixed, rhs: Fixed) {
+        self = Div::div(self, rhs);
     }
 }
 
@@ -548,7 +548,7 @@ impl FixedOne of core::num::traits::One<Fixed> {
     }
     #[inline(always)]
     fn is_one(self: @Fixed) -> bool {
-        *self == FixedOne::one()
+        *self == Self::one()
     }
     #[inline(always)]
     fn is_non_one(self: @Fixed) -> bool {
