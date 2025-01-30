@@ -4,7 +4,7 @@ use core::option::OptionTrait;
 
 use cubit::f128::math::lut;
 use cubit::f128::types::fixed::{
-    Fixed, FixedTrait, FixedAdd, FixedSub, FixedMul, FixedDiv, ONE_u128
+    Fixed, FixedTrait, FixedAdd, FixedSub, FixedMul, FixedDiv, ONE_u128,
 };
 
 // CONSTANTS
@@ -205,7 +205,8 @@ fn _sin_loop(a: Fixed, i: u128, acc: Fixed) -> Fixed {
     return _sin_loop(a, i - 1, new_acc);
 }
 
-// Tests --------------------------------------------------------------------------------------------------------------
+// Tests
+// --------------------------------------------------------------------------------------------------------------
 
 #[cfg(test)]
 mod tests {
@@ -216,7 +217,7 @@ mod tests {
 
     use super::{
         FixedTrait, ONE_u128, acos, atan_fast, atan, asin, sin, HALF_PI_u128, cos, PI_u128,
-        cos_fast, sin_fast, tan
+        cos_fast, sin_fast, tan,
     };
 
     #[test]
@@ -333,7 +334,7 @@ mod tests {
 
         let a = FixedTrait::new(HALF_PI_u128 / 2, false);
         assert_precise(
-            cos(a), 13043817825332783000, 'invalid quarter pi', Option::None(())
+            cos(a), 13043817825332783000, 'invalid quarter pi', Option::None(()),
         ); // 0.7071067811865475
 
         let a = FixedTrait::new(PI_u128, false);
@@ -344,12 +345,12 @@ mod tests {
 
         let a = FixedTrait::new_unscaled(17, false);
         assert_precise(
-            cos(a), -5075867675505434000, 'invalid 17', Option::None(())
+            cos(a), -5075867675505434000, 'invalid 17', Option::None(()),
         ); // -0.2751631780463348
 
         let a = FixedTrait::new_unscaled(17, true);
         assert_precise(
-            cos(a), -5075867675505434000, 'invalid -17', Option::None(())
+            cos(a), -5075867675505434000, 'invalid -17', Option::None(()),
         ); // -0.2751631780463348
     }
 
@@ -363,7 +364,7 @@ mod tests {
 
         let a = FixedTrait::new(HALF_PI_u128 / 2, false);
         assert_precise(
-            cos_fast(a), 13043817825332783000, 'invalid quarter pi', error
+            cos_fast(a), 13043817825332783000, 'invalid quarter pi', error,
         ); // 0.7071067811865475
 
         let a = FixedTrait::new(PI_u128, false);
@@ -374,7 +375,7 @@ mod tests {
 
         let a = FixedTrait::new_unscaled(17, false);
         assert_precise(
-            cos_fast(a), -5075867675505434000, 'invalid 17', error
+            cos_fast(a), -5075867675505434000, 'invalid 17', error,
         ); // -0.2751631780463348
 
         let a = FixedTrait::new(22091482235073817558142, true);
@@ -389,7 +390,7 @@ mod tests {
 
         let a = FixedTrait::new(HALF_PI_u128 / 2, false);
         assert_precise(
-            sin(a), 13043817825332781000, 'invalid quarter pi', Option::None(())
+            sin(a), 13043817825332781000, 'invalid quarter pi', Option::None(()),
         ); // 0.7071067811865475
 
         let a = FixedTrait::new(PI_u128, false);
@@ -400,12 +401,12 @@ mod tests {
 
         let a = FixedTrait::new_unscaled(17, false);
         assert_precise(
-            sin(a), -17734653485808441000, 'invalid 17', Option::None(())
+            sin(a), -17734653485808441000, 'invalid 17', Option::None(()),
         ); // -0.9613974918793389
 
         let a = FixedTrait::new_unscaled(17, true);
         assert_precise(
-            sin(a), 17734653485808441000, 'invalid -17', Option::None(())
+            sin(a), 17734653485808441000, 'invalid -17', Option::None(()),
         ); // 0.9613974918793389
     }
 
@@ -419,7 +420,7 @@ mod tests {
 
         let a = FixedTrait::new(HALF_PI_u128 / 2, false);
         assert_precise(
-            sin_fast(a), 13043817825332781000, 'invalid quarter pi', error
+            sin_fast(a), 13043817825332781000, 'invalid quarter pi', error,
         ); // 0.7071067811865475
 
         let a = FixedTrait::new(PI_u128, false);
@@ -430,12 +431,12 @@ mod tests {
 
         let a = FixedTrait::new_unscaled(17, false);
         assert_precise(
-            sin_fast(a), -17734653485808441000, 'invalid 17', error
+            sin_fast(a), -17734653485808441000, 'invalid 17', error,
         ); // -0.9613974918793389
 
         let a = FixedTrait::new_unscaled(17, true);
         assert_precise(
-            sin_fast(a), 17734653485808441000, 'invalid -17', error
+            sin_fast(a), 17734653485808441000, 'invalid -17', error,
         ); // 0.9613974918793389
     }
 
@@ -471,12 +472,12 @@ mod tests {
 
         let a = FixedTrait::new_unscaled(17, false);
         assert_precise(
-            tan(a), 64451367727204090000, 'invalid 17', Option::None(())
+            tan(a), 64451367727204090000, 'invalid 17', Option::None(()),
         ); // 3.493917677159002
 
         let a = FixedTrait::new_unscaled(17, true);
         assert_precise(
-            tan(a), -64451367727204090000, 'invalid -17', Option::None(())
+            tan(a), -64451367727204090000, 'invalid -17', Option::None(()),
         ); // -3.493917677159002
     }
 }

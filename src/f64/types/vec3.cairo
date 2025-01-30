@@ -6,7 +6,7 @@ use cubit::f64::types::fixed::{Fixed, FixedTrait, FixedPrint};
 struct Vec3 {
     x: Fixed,
     y: Fixed,
-    z: Fixed
+    z: Fixed,
 }
 
 trait Vec3Trait {
@@ -133,7 +133,7 @@ fn add(a: Vec3, b: Vec3) -> Vec3 {
 
 fn cross(a: Vec3, b: Vec3) -> Vec3 {
     return Vec3 {
-        x: (a.y * b.z) - (a.z * b.y), y: (a.z * b.x) - (a.x * b.z), z: (a.x * b.y) - (a.y * b.x)
+        x: (a.y * b.z) - (a.z * b.y), y: (a.z * b.x) - (a.x * b.z), z: (a.x * b.y) - (a.y * b.x),
     };
 }
 
@@ -165,7 +165,8 @@ fn sub(a: Vec3, b: Vec3) -> Vec3 {
     return Vec3 { x: a.x - b.x, y: a.y - b.y, z: a.z - b.z };
 }
 
-// Tests --------------------------------------------------------------------------------------------------------------
+// Tests
+// --------------------------------------------------------------------------------------------------------------
 
 #[cfg(test)]
 mod tests {
@@ -176,10 +177,10 @@ mod tests {
     #[test]
     fn test_add() {
         let a = Vec3Trait::new(
-            FixedTrait::new(1, false), FixedTrait::new(2, false), FixedTrait::new(3, false)
+            FixedTrait::new(1, false), FixedTrait::new(2, false), FixedTrait::new(3, false),
         );
         let b = Vec3Trait::new(
-            FixedTrait::new(4, false), FixedTrait::new(5, false), FixedTrait::new(6, false)
+            FixedTrait::new(4, false), FixedTrait::new(5, false), FixedTrait::new(6, false),
         );
         let c = a + b;
         assert(c.x == FixedTrait::new(5, false), 'invalid add');
@@ -192,12 +193,12 @@ mod tests {
         let a = Vec3Trait::new(
             FixedTrait::new_unscaled(1, false),
             FixedTrait::new_unscaled(2, false),
-            FixedTrait::new_unscaled(3, false)
+            FixedTrait::new_unscaled(3, false),
         );
         let b = Vec3Trait::new(
             FixedTrait::new_unscaled(4, false),
             FixedTrait::new_unscaled(5, false),
-            FixedTrait::new_unscaled(6, false)
+            FixedTrait::new_unscaled(6, false),
         );
         let c = a * b;
         assert(c.x == FixedTrait::new_unscaled(4, false), 'invalid mul');
@@ -208,10 +209,10 @@ mod tests {
     #[test]
     fn test_div() {
         let a = Vec3Trait::new(
-            FixedTrait::new(4, false), FixedTrait::new(10, false), FixedTrait::new(6, false)
+            FixedTrait::new(4, false), FixedTrait::new(10, false), FixedTrait::new(6, false),
         );
         let b = Vec3Trait::new(
-            FixedTrait::new(1, false), FixedTrait::new(5, false), FixedTrait::new(3, false)
+            FixedTrait::new(1, false), FixedTrait::new(5, false), FixedTrait::new(3, false),
         );
         let c = a / b;
         assert(c.x == FixedTrait::new_unscaled(4, false), 'invalid div');
@@ -224,12 +225,12 @@ mod tests {
         let a = Vec3Trait::new(
             FixedTrait::new_unscaled(4, false),
             FixedTrait::new_unscaled(10, false),
-            FixedTrait::new_unscaled(6, false)
+            FixedTrait::new_unscaled(6, false),
         );
         let b = Vec3Trait::new(
             FixedTrait::new_unscaled(1, false),
             FixedTrait::new_unscaled(5, false),
-            FixedTrait::new_unscaled(3, false)
+            FixedTrait::new_unscaled(3, false),
         );
         let c = a.dot(b);
         assert(c == FixedTrait::new_unscaled(72, false), 'invalid dot');
@@ -238,10 +239,10 @@ mod tests {
     #[test]
     fn test_sub() {
         let a = Vec3Trait::new(
-            FixedTrait::new(4, false), FixedTrait::new(10, false), FixedTrait::new(6, false)
+            FixedTrait::new(4, false), FixedTrait::new(10, false), FixedTrait::new(6, false),
         );
         let b = Vec3Trait::new(
-            FixedTrait::new(1, false), FixedTrait::new(5, false), FixedTrait::new(3, false)
+            FixedTrait::new(1, false), FixedTrait::new(5, false), FixedTrait::new(3, false),
         );
         let c = a - b;
         assert(c.x == FixedTrait::new(3, false), 'invalid sub');
@@ -254,12 +255,12 @@ mod tests {
         let a = Vec3Trait::new(
             FixedTrait::new_unscaled(1, false),
             FixedTrait::new_unscaled(2, false),
-            FixedTrait::new_unscaled(3, false)
+            FixedTrait::new_unscaled(3, false),
         );
         let b = Vec3Trait::new(
             FixedTrait::new_unscaled(4, false),
             FixedTrait::new_unscaled(5, false),
-            FixedTrait::new_unscaled(6, false)
+            FixedTrait::new_unscaled(6, false),
         );
         let c = a.cross(b);
         assert(c.x == FixedTrait::new_unscaled(3, true), 'invalid cross1');
@@ -272,7 +273,7 @@ mod tests {
         let a = Vec3Trait::new(
             FixedTrait::new_unscaled(1, false),
             FixedTrait::new_unscaled(2, false),
-            FixedTrait::new_unscaled(3, false)
+            FixedTrait::new_unscaled(3, false),
         );
         let b = a.norm();
         assert_precise(b, 16070296109, 'invalid norm', Option::None(())); // sqrt(14)
@@ -283,7 +284,7 @@ mod tests {
         let a = Vec3Trait::new(
             FixedTrait::new_unscaled(1, false),
             FixedTrait::new_unscaled(2, true),
-            FixedTrait::new_unscaled(3, true)
+            FixedTrait::new_unscaled(3, true),
         );
         let b = a.abs();
         assert(b.x == FixedTrait::new_unscaled(1, false), 'invalid abs');
@@ -296,7 +297,7 @@ mod tests {
         let a = Vec3Trait::new(
             FixedTrait::new(6442450944, false), // 1.5
             FixedTrait::new(13743895347, true), // -3.2
-            FixedTrait::new(0, false)
+            FixedTrait::new(0, false),
         );
 
         let b = a.floor();

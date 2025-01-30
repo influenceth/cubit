@@ -26,7 +26,7 @@ const MAX_u128: u128 = 340282366920938463463374607431768211455_u128; // 2 ** 128
 #[derive(Copy, Drop, Serde)]
 struct Fixed {
     mag: u128,
-    sign: bool
+    sign: bool,
 }
 
 // TRAITS
@@ -522,7 +522,7 @@ impl PackFixed of StorePacking<Fixed, felt252> {
 
     fn unpack(value: felt252) -> Fixed {
         let (q, r) = U256DivRem::div_rem(
-            value.into(), u256_as_non_zero(0x100000000000000000000000000000000)
+            value.into(), u256_as_non_zero(0x100000000000000000000000000000000),
         );
         let mag: u128 = r.try_into().unwrap();
         let sign: bool = q.into() == 1;
@@ -561,7 +561,8 @@ impl FixedOne of core::num::traits::One<Fixed> {
 }
 
 
-// Tests --------------------------------------------------------------------------------------------------------------
+// Tests
+// --------------------------------------------------------------------------------------------------------------
 
 #[cfg(test)]
 mod tests {
@@ -669,7 +670,7 @@ mod tests {
 
         let a = FixedTrait::from_felt(1152921504606846976); // 0.0625
         assert_precise(
-            ops::sqrt(a), 4611686018427387904, 'invalid decimal root', Option::None(())
+            ops::sqrt(a), 4611686018427387904, 'invalid decimal root', Option::None(()),
         ); // 0.25
     }
 
@@ -691,19 +692,19 @@ mod tests {
         let a = FixedTrait::from_unscaled_felt(3);
         let b = FixedTrait::from_unscaled_felt(-2);
         assert_precise(
-            ops::pow(a, b), 2049638230412172401, 'invalid neg power', Option::None(())
+            ops::pow(a, b), 2049638230412172401, 'invalid neg power', Option::None(()),
         ); // 0.1111111111111111
 
         let a = FixedTrait::from_unscaled_felt(-3);
         let b = FixedTrait::from_unscaled_felt(-2);
         assert_precise(
-            ops::pow(a, b), 2049638230412172401, 'invalid neg base power', Option::None(())
+            ops::pow(a, b), 2049638230412172401, 'invalid neg base power', Option::None(()),
         );
 
         let a = FixedTrait::from_felt(9223372036854775808);
         let b = FixedTrait::from_unscaled_felt(2);
         assert_precise(
-            ops::pow(a, b), 4611686018427387904, 'invalid frac base power', Option::None(())
+            ops::pow(a, b), 4611686018427387904, 'invalid frac base power', Option::None(()),
         );
     }
 
@@ -713,13 +714,13 @@ mod tests {
         let a = FixedTrait::from_unscaled_felt(3);
         let b = FixedTrait::from_felt(9223372036854775808); // 0.5
         assert_precise(
-            ops::pow(a, b), 31950697969885030000, 'invalid pos base power', Option::None(())
+            ops::pow(a, b), 31950697969885030000, 'invalid pos base power', Option::None(()),
         ); // 1.7320508075688772
 
         let a = FixedTrait::from_felt(2277250555899444146995); // 123.45
         let b = FixedTrait::from_felt(-27670116110564327424); // -1.5
         assert_precise(
-            ops::pow(a, b), 13448785939318150, 'invalid pos base power', Option::None(())
+            ops::pow(a, b), 13448785939318150, 'invalid pos base power', Option::None(()),
         ); // 0.0007290601466350622
     }
 
@@ -728,7 +729,7 @@ mod tests {
     fn test_exp() {
         let a = FixedTrait::new_unscaled(2_u128, false);
         assert_precise(
-            ops::exp(a), 136304026803256380000, 'invalid exp of 2', Option::None(())
+            ops::exp(a), 136304026803256380000, 'invalid exp of 2', Option::None(()),
         ); // 7.3890560989306495
 
         let a = FixedTrait::new_unscaled(0_u128, false);
@@ -736,7 +737,7 @@ mod tests {
 
         let a = FixedTrait::new_unscaled(2_u128, true);
         assert_precise(
-            ops::exp(a), 2496495334008789000, 'invalid exp of -2', Option::None(())
+            ops::exp(a), 2496495334008789000, 'invalid exp of -2', Option::None(()),
         ); // 0.1353352832366127
     }
 
@@ -745,7 +746,7 @@ mod tests {
     fn test_exp2() {
         let a = FixedTrait::new(27670116110564327424_u128, false); // 1.5
         assert_precise(
-            ops::exp2(a), 52175271301331124000, 'invalid exp2 of 1.5', Option::None(())
+            ops::exp2(a), 52175271301331124000, 'invalid exp2 of 1.5', Option::None(()),
         ); // 2.82842712474619
 
         let a = FixedTrait::new_unscaled(2_u128, false);
@@ -756,12 +757,12 @@ mod tests {
 
         let a = FixedTrait::new_unscaled(2_u128, true);
         assert_precise(
-            ops::exp2(a), 4611686018427387904, 'invalid exp2 of -2', Option::None(())
+            ops::exp2(a), 4611686018427387904, 'invalid exp2 of -2', Option::None(()),
         ); // 0.25
 
         let a = FixedTrait::new(27670116110564327424_u128, true); // -1.5
         assert_precise(
-            ops::exp2(a), 6521908912666391000, 'invalid exp2 of -1.5', Option::None(())
+            ops::exp2(a), 6521908912666391000, 'invalid exp2 of -1.5', Option::None(()),
         ); // 0.35355339059327373
     }
 
@@ -776,7 +777,7 @@ mod tests {
 
         let a = FixedTrait::from_felt(9223372036854775808); // 0.5
         assert_precise(
-            ops::ln(a), -12786308645202655000, 'invalid ln of 0.5', Option::None(())
+            ops::ln(a), -12786308645202655000, 'invalid ln of 0.5', Option::None(()),
         ); // -0.6931471805599453
     }
 
@@ -788,12 +789,12 @@ mod tests {
 
         let a = FixedTrait::from_unscaled_felt(1234);
         assert_precise(
-            ops::log2(a), 189431951710772170000, 'invalid log2 1234', Option::None(())
+            ops::log2(a), 189431951710772170000, 'invalid log2 1234', Option::None(()),
         ); // 10.269126679149418
 
         let a = FixedTrait::from_felt(1035286617648801165344); // 56.123
         assert_precise(
-            ops::log2(a), 107185179502756360000, 'invalid log2 56.123', Option::None(())
+            ops::log2(a), 107185179502756360000, 'invalid log2 56.123', Option::None(()),
         ); // 5.8105202237568605
     }
 
@@ -905,7 +906,7 @@ mod tests {
         let b = FixedTrait::from_felt(53495557813757699680); // 2.9
         let c = ops::div(a, b);
         assert_precise(
-            c, 63609462323136390000, 'invalid pos decimal', Option::None(())
+            c, 63609462323136390000, 'invalid pos decimal', Option::None(()),
         ); // 3.4482758620689657
 
         let a = FixedTrait::from_unscaled_felt(10);
@@ -927,14 +928,14 @@ mod tests {
         let b = FixedTrait::from_unscaled_felt(123456789);
         let c = ops::div(a, b);
         assert_precise(
-            c, -1494186283568, 'invalid neg decimal', Option::None(())
+            c, -1494186283568, 'invalid neg decimal', Option::None(()),
         ); // 8.100000073706917e-8
 
         let a = FixedTrait::from_unscaled_felt(123456789);
         let b = FixedTrait::from_unscaled_felt(-10);
         let c = ops::div(a, b);
         assert_precise(
-            c, -227737579084496056114112102, 'invalid neg decimal', Option::None(())
+            c, -227737579084496056114112102, 'invalid neg decimal', Option::None(()),
         ); // -12345678.9
     }
 

@@ -5,7 +5,7 @@ use cubit::f128::types::fixed::{Fixed, FixedTrait, FixedPrint};
 #[derive(Copy, Drop, Serde, starknet::Store)]
 struct Vec2 {
     x: Fixed,
-    y: Fixed
+    y: Fixed,
 }
 
 trait Vec2Trait {
@@ -135,7 +135,8 @@ fn sub(a: Vec2, b: Vec2) -> Vec2 {
     return Vec2 { x: a.x - b.x, y: a.y - b.y };
 }
 
-// Tests --------------------------------------------------------------------------------------------------------------
+// Tests
+// --------------------------------------------------------------------------------------------------------------
 
 #[cfg(test)]
 mod tests {
@@ -177,10 +178,10 @@ mod tests {
     #[test]
     fn test_dot() {
         let a = Vec2Trait::new(
-            FixedTrait::new_unscaled(4_u128, false), FixedTrait::new_unscaled(10_u128, false)
+            FixedTrait::new_unscaled(4_u128, false), FixedTrait::new_unscaled(10_u128, false),
         );
         let b = Vec2Trait::new(
-            FixedTrait::new_unscaled(1_u128, false), FixedTrait::new_unscaled(5_u128, false)
+            FixedTrait::new_unscaled(1_u128, false), FixedTrait::new_unscaled(5_u128, false),
         );
         let c = a.dot(b);
         assert(c == FixedTrait::new_unscaled(54_u128, false), 'invalid dot');
@@ -198,10 +199,10 @@ mod tests {
     #[test]
     fn test_cross() {
         let a = Vec2Trait::new(
-            FixedTrait::new_unscaled(1_u128, false), FixedTrait::new_unscaled(2_u128, false)
+            FixedTrait::new_unscaled(1_u128, false), FixedTrait::new_unscaled(2_u128, false),
         );
         let b = Vec2Trait::new(
-            FixedTrait::new_unscaled(4_u128, false), FixedTrait::new_unscaled(5_u128, false)
+            FixedTrait::new_unscaled(4_u128, false), FixedTrait::new_unscaled(5_u128, false),
         );
         let c = a.cross(b);
         assert(c == FixedTrait::new_unscaled(3_u128, true), 'invalid cross');
@@ -210,7 +211,7 @@ mod tests {
     #[test]
     fn test_norm() {
         let a = Vec2Trait::new(
-            FixedTrait::new_unscaled(1_u128, false), FixedTrait::new_unscaled(2_u128, false)
+            FixedTrait::new_unscaled(1_u128, false), FixedTrait::new_unscaled(2_u128, false),
         );
         let b = a.norm();
         assert_precise(b, 41248173708084772864, 'invalid norm', Option::None(())); // sqrt(5)
@@ -219,7 +220,7 @@ mod tests {
     #[test]
     fn test_abs() {
         let a = Vec2Trait::new(
-            FixedTrait::new_unscaled(1_u128, false), FixedTrait::new_unscaled(2_u128, true)
+            FixedTrait::new_unscaled(1_u128, false), FixedTrait::new_unscaled(2_u128, true),
         );
         let b = a.abs();
         assert(b.x == FixedTrait::new_unscaled(1_u128, false), 'invalid abs');

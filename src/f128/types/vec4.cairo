@@ -7,7 +7,7 @@ struct Vec4 {
     x: Fixed,
     y: Fixed,
     z: Fixed,
-    w: Fixed
+    w: Fixed,
 }
 
 trait Vec4Trait {
@@ -61,31 +61,31 @@ impl Vec4Impl of Vec4Trait {
 
     fn add(self: Vec4, scalar: Fixed) -> Vec4 {
         return Vec4 {
-            x: self.x + scalar, y: self.y + scalar, z: self.z + scalar, w: self.w + scalar
+            x: self.x + scalar, y: self.y + scalar, z: self.z + scalar, w: self.w + scalar,
         };
     }
 
     fn sub(self: Vec4, scalar: Fixed) -> Vec4 {
         return Vec4 {
-            x: self.x - scalar, y: self.y - scalar, z: self.z - scalar, w: self.w - scalar
+            x: self.x - scalar, y: self.y - scalar, z: self.z - scalar, w: self.w - scalar,
         };
     }
 
     fn mul(self: Vec4, scalar: Fixed) -> Vec4 {
         return Vec4 {
-            x: self.x * scalar, y: self.y * scalar, z: self.z * scalar, w: self.w * scalar
+            x: self.x * scalar, y: self.y * scalar, z: self.z * scalar, w: self.w * scalar,
         };
     }
 
     fn div(self: Vec4, scalar: Fixed) -> Vec4 {
         return Vec4 {
-            x: self.x / scalar, y: self.y / scalar, z: self.z / scalar, w: self.w / scalar
+            x: self.x / scalar, y: self.y / scalar, z: self.z / scalar, w: self.w / scalar,
         };
     }
 
     fn rem(self: Vec4, scalar: Fixed) -> Vec4 {
         return Vec4 {
-            x: self.x % scalar, y: self.y % scalar, z: self.z % scalar, w: self.w % scalar
+            x: self.x % scalar, y: self.y % scalar, z: self.z % scalar, w: self.w % scalar,
         };
     }
 }
@@ -167,7 +167,8 @@ fn sub(a: Vec4, b: Vec4) -> Vec4 {
     return Vec4 { x: a.x - b.x, y: a.y - b.y, z: a.z - b.z, w: a.w - b.w };
 }
 
-// Tests --------------------------------------------------------------------------------------------------------------
+// Tests
+// --------------------------------------------------------------------------------------------------------------
 
 #[cfg(test)]
 mod tests {
@@ -181,13 +182,13 @@ mod tests {
             FixedTrait::new(1_u128, false),
             FixedTrait::new(2_u128, false),
             FixedTrait::new(3_u128, false),
-            FixedTrait::new(4_u128, false)
+            FixedTrait::new(4_u128, false),
         );
         let b = Vec4Trait::new(
             FixedTrait::new(5_u128, false),
             FixedTrait::new(6_u128, false),
             FixedTrait::new(7_u128, false),
-            FixedTrait::new(8_u128, false)
+            FixedTrait::new(8_u128, false),
         );
         let c = a + b;
         assert(c.x == FixedTrait::new(6_u128, false), 'invalid add');
@@ -202,13 +203,13 @@ mod tests {
             FixedTrait::new(1_u128, false),
             FixedTrait::new(2_u128, false),
             FixedTrait::new(3_u128, false),
-            FixedTrait::new(4_u128, false)
+            FixedTrait::new(4_u128, false),
         );
         let b = Vec4Trait::new(
             FixedTrait::new(5_u128, false),
             FixedTrait::new(6_u128, false),
             FixedTrait::new(7_u128, false),
-            FixedTrait::new(8_u128, false)
+            FixedTrait::new(8_u128, false),
         );
         let c = a - b;
         assert(c.x == FixedTrait::new(4_u128, true), 'invalid sub');
@@ -223,13 +224,13 @@ mod tests {
             FixedTrait::new_unscaled(1_u128, false),
             FixedTrait::new_unscaled(2_u128, false),
             FixedTrait::new_unscaled(3_u128, false),
-            FixedTrait::new_unscaled(4_u128, false)
+            FixedTrait::new_unscaled(4_u128, false),
         );
         let b = Vec4Trait::new(
             FixedTrait::new_unscaled(5_u128, false),
             FixedTrait::new_unscaled(6_u128, false),
             FixedTrait::new_unscaled(7_u128, false),
-            FixedTrait::new_unscaled(8_u128, false)
+            FixedTrait::new_unscaled(8_u128, false),
         );
         let c = a * b;
         assert(c.x == FixedTrait::new_unscaled(5_u128, false), 'invalid mul');
@@ -244,13 +245,13 @@ mod tests {
             FixedTrait::new(15_u128, false),
             FixedTrait::new(20_u128, false),
             FixedTrait::new(1_u128, false),
-            FixedTrait::new(8_u128, false)
+            FixedTrait::new(8_u128, false),
         );
         let b = Vec4Trait::new(
             FixedTrait::new(5_u128, false),
             FixedTrait::new(4_u128, false),
             FixedTrait::new(1_u128, false),
-            FixedTrait::new(4_u128, false)
+            FixedTrait::new(4_u128, false),
         );
         let c = a / b;
         assert(c.x == FixedTrait::new_unscaled(3_u128, false), 'invalid div');
@@ -265,13 +266,13 @@ mod tests {
             FixedTrait::new_unscaled(1_u128, false),
             FixedTrait::new_unscaled(2_u128, false),
             FixedTrait::new_unscaled(3_u128, false),
-            FixedTrait::new_unscaled(4_u128, false)
+            FixedTrait::new_unscaled(4_u128, false),
         );
         let b = Vec4Trait::new(
             FixedTrait::new_unscaled(5_u128, false),
             FixedTrait::new_unscaled(6_u128, false),
             FixedTrait::new_unscaled(7_u128, false),
-            FixedTrait::new_unscaled(8_u128, false)
+            FixedTrait::new_unscaled(8_u128, false),
         );
         let c = a.dot(b);
         assert(c == FixedTrait::new_unscaled(70_u128, false), 'invalid dot');
@@ -283,7 +284,7 @@ mod tests {
             FixedTrait::new_unscaled(1_u128, false),
             FixedTrait::new_unscaled(2_u128, false),
             FixedTrait::new_unscaled(3_u128, false),
-            FixedTrait::new_unscaled(4_u128, false)
+            FixedTrait::new_unscaled(4_u128, false),
         );
         let b = a.norm();
         assert_precise(b, 101036978416954620000, 'invalid norm', Option::None(())); // sqrt(30)
@@ -295,7 +296,7 @@ mod tests {
             FixedTrait::new_unscaled(1_u128, false),
             FixedTrait::new_unscaled(2_u128, true),
             FixedTrait::new_unscaled(3_u128, true),
-            FixedTrait::new_unscaled(4_u128, false)
+            FixedTrait::new_unscaled(4_u128, false),
         );
         let b = a.abs();
         assert(b.x == FixedTrait::new_unscaled(1_u128, false), 'invalid abs');
@@ -310,7 +311,7 @@ mod tests {
             FixedTrait::new(27670116110564327000_u128, false), // 1.5
             FixedTrait::new(59029581035870570000_u128, true), // -3.2
             FixedTrait::new(0_u128, false),
-            FixedTrait::new(0_u128, false)
+            FixedTrait::new(0_u128, false),
         );
 
         let b = a.floor();

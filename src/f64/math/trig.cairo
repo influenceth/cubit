@@ -199,7 +199,8 @@ fn _sin_loop(a: Fixed, i: u64, acc: Fixed) -> Fixed {
     return _sin_loop(a, i - 1, new_acc);
 }
 
-// Tests --------------------------------------------------------------------------------------------------------------
+// Tests
+// --------------------------------------------------------------------------------------------------------------
 
 #[cfg(test)]
 mod tests {
@@ -210,7 +211,7 @@ mod tests {
 
     use super::{
         FixedTrait, acos, ONE, HALF_PI, PI, acos_fast, atan_fast, atan, asin, cos, cos_fast, sin,
-        sin_fast, tan
+        sin_fast, tan,
     };
 
     #[test]
@@ -352,7 +353,7 @@ mod tests {
 
         let a = FixedTrait::new(HALF_PI / 2, false);
         assert_relative(
-            cos(a), 3037000500, 'invalid quarter pi', Option::None(())
+            cos(a), 3037000500, 'invalid quarter pi', Option::None(()),
         ); // 0.7071067811865475
 
         let a = FixedTrait::new(PI, false);
@@ -366,7 +367,7 @@ mod tests {
 
         let a = FixedTrait::new_unscaled(17, true);
         assert_relative(
-            cos(a), -1181817538, 'invalid -17', Option::None(())
+            cos(a), -1181817538, 'invalid -17', Option::None(()),
         ); // -0.2751631780463348
     }
 
@@ -402,7 +403,7 @@ mod tests {
 
         let a = FixedTrait::new(HALF_PI / 2, false);
         assert_precise(
-            sin(a), 3037000500, 'invalid quarter pi', Option::None(())
+            sin(a), 3037000500, 'invalid quarter pi', Option::None(()),
         ); // 0.7071067811865475
 
         let a = FixedTrait::new(PI, false);
@@ -410,7 +411,7 @@ mod tests {
 
         let a = FixedTrait::new(HALF_PI, true);
         assert_precise(
-            sin(a), -ONE.into(), 'invalid neg half pi', Option::None(())
+            sin(a), -ONE.into(), 'invalid neg half pi', Option::None(()),
         ); // 0.9999999999939766
 
         let a = FixedTrait::new_unscaled(17, false);
@@ -436,7 +437,7 @@ mod tests {
 
         let a = FixedTrait::new(HALF_PI, true);
         assert_precise(
-            sin_fast(a), -ONE.into(), 'invalid neg half pi', error
+            sin_fast(a), -ONE.into(), 'invalid neg half pi', error,
         ); // 0.9999999999939766
 
         let a = FixedTrait::new_unscaled(17, false);

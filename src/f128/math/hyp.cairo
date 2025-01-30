@@ -1,5 +1,5 @@
 use cubit::f128::types::fixed::{
-    Fixed, FixedTrait, FixedAdd, FixedSub, FixedMul, FixedDiv, ONE_u128
+    Fixed, FixedTrait, FixedAdd, FixedSub, FixedMul, FixedDiv, ONE_u128,
 };
 
 // Calculates hyperbolic cosine of a (fixed point)
@@ -44,7 +44,8 @@ fn atanh(a: Fixed) -> Fixed {
     return ln_arg.ln() / FixedTrait::new_unscaled(2_u128, false);
 }
 
-// Tests --------------------------------------------------------------------------------------------------------------
+// Tests
+// --------------------------------------------------------------------------------------------------------------
 
 #[cfg(test)]
 mod tests {
@@ -61,12 +62,12 @@ mod tests {
     fn test_cosh() {
         let a = FixedTrait::new_unscaled(2_u128, false);
         assert_precise(
-            cosh(a), 69400261068632590000, 'invalid two', Option::None(())
+            cosh(a), 69400261068632590000, 'invalid two', Option::None(()),
         ); // 3.762195691016423
 
         let a = FixedTrait::ONE();
         assert_precise(
-            cosh(a), 28464813555534070000, 'invalid one', Option::None(())
+            cosh(a), 28464813555534070000, 'invalid one', Option::None(()),
         ); // 1.5430806347841253
 
         let a = FixedTrait::new(0_u128, false);
@@ -74,12 +75,12 @@ mod tests {
 
         let a = FixedTrait::new(ONE_u128, true);
         assert_precise(
-            cosh(a), 28464813555534070000, 'invalid neg one', Option::None(())
+            cosh(a), 28464813555534070000, 'invalid neg one', Option::None(()),
         ); // 1.5430806347841253
 
         let a = FixedTrait::new_unscaled(2_u128, true);
         assert_precise(
-            cosh(a), 69400261068632590000, 'invalid neg two', Option::None(())
+            cosh(a), 69400261068632590000, 'invalid neg two', Option::None(()),
         ); // 3.762195691016423
     }
 
@@ -88,12 +89,12 @@ mod tests {
     fn test_sinh() {
         let a = FixedTrait::new_unscaled(2_u128, false);
         assert_precise(
-            sinh(a), 66903765734623805000, 'invalid two', Option::None(())
+            sinh(a), 66903765734623805000, 'invalid two', Option::None(()),
         ); // 3.6268604077773023
 
         let a = FixedTrait::ONE();
         assert_precise(
-            sinh(a), 21678635654265184000, 'invalid one', Option::None(())
+            sinh(a), 21678635654265184000, 'invalid one', Option::None(()),
         ); // 1.1752011936029418
 
         let a = FixedTrait::new(0_u128, false);
@@ -101,12 +102,12 @@ mod tests {
 
         let a = FixedTrait::new(ONE_u128, true);
         assert_precise(
-            sinh(a), -21678635654265184000, 'invalid neg one', Option::None(())
+            sinh(a), -21678635654265184000, 'invalid neg one', Option::None(()),
         ); // -1.1752011936029418
 
         let a = FixedTrait::new_unscaled(2_u128, true);
         assert_precise(
-            sinh(a), -66903765734623805000, 'invalid neg two', Option::None(())
+            sinh(a), -66903765734623805000, 'invalid neg two', Option::None(()),
         ); // -3.6268604077773023
     }
 
@@ -115,12 +116,12 @@ mod tests {
     fn test_tanh() {
         let a = FixedTrait::new_unscaled(2_u128, false);
         assert_precise(
-            tanh(a), 17783170049656136000, 'invalid two', Option::None(())
+            tanh(a), 17783170049656136000, 'invalid two', Option::None(()),
         ); // 0.9640275800745076
 
         let a = FixedTrait::ONE();
         assert_precise(
-            tanh(a), 14048932482948833000, 'invalid one', Option::None(())
+            tanh(a), 14048932482948833000, 'invalid one', Option::None(()),
         ); // 0.7615941559446443
 
         let a = FixedTrait::new(0_u128, false);
@@ -128,12 +129,12 @@ mod tests {
 
         let a = FixedTrait::new(ONE_u128, true);
         assert_precise(
-            tanh(a), -14048932482948833000, 'invalid neg one', Option::None(())
+            tanh(a), -14048932482948833000, 'invalid neg one', Option::None(()),
         ); // -0.7615941559446443
 
         let a = FixedTrait::new_unscaled(2_u128, true);
         assert_precise(
-            tanh(a), -17783170049656136000, 'invalid neg two', Option::None(())
+            tanh(a), -17783170049656136000, 'invalid neg two', Option::None(()),
         ); // 0.9640275800745076
     }
 
@@ -174,12 +175,12 @@ mod tests {
     fn test_atanh() {
         let a = FixedTrait::new(16602069666338597000, false); // 0.9
         assert_precise(
-            atanh(a), 27157656144668970000, 'invalid 0.9', Option::None(())
+            atanh(a), 27157656144668970000, 'invalid 0.9', Option::None(()),
         ); // 1.4722194895832204
 
         let a = FixedTrait::new(9223372036854776000, false); // 0.5
         assert_precise(
-            atanh(a), 10132909862646469000, 'invalid half', Option::None(())
+            atanh(a), 10132909862646469000, 'invalid half', Option::None(()),
         ); // 0.5493061443340548
 
         let a = FixedTrait::new(0_u128, false);
@@ -187,12 +188,12 @@ mod tests {
 
         let a = FixedTrait::new(9223372036854776000, true); // 0.5
         assert_precise(
-            atanh(a), -10132909862646469000, 'invalid neg half', Option::None(())
+            atanh(a), -10132909862646469000, 'invalid neg half', Option::None(()),
         ); // 0.5493061443340548
 
         let a = FixedTrait::new(16602069666338597000, true); // 0.9
         assert_precise(
-            atanh(a), -27157656144668970000, 'invalid -0.9', Option::None(())
+            atanh(a), -27157656144668970000, 'invalid -0.9', Option::None(()),
         ); // 1.4722194895832204
     }
 }

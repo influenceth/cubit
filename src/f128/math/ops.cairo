@@ -9,7 +9,7 @@ use core::num::traits::{WideMul, Sqrt};
 use cubit::f128::math::lut;
 use cubit::f128::types::fixed::{
     HALF_u128, MAX_u128, ONE_u128, Fixed, FixedInto, FixedTrait, FixedAdd, FixedDiv, FixedMul,
-    FixedNeg
+    FixedNeg,
 };
 
 // PUBLIC
@@ -49,7 +49,7 @@ fn ceil(a: Fixed) -> Fixed {
 }
 
 fn div(a: Fixed, b: Fixed) -> Fixed {
-    let a_u256 = WideMul::<u128,u128>::wide_mul(a.mag, ONE_u128);
+    let a_u256 = WideMul::<u128, u128>::wide_mul(a.mag, ONE_u128);
     let b_u256 = u256 { low: b.mag, high: 0 };
     let res_u256 = a_u256 / b_u256;
 
@@ -186,7 +186,7 @@ fn lt(a: Fixed, b: Fixed) -> bool {
 }
 
 fn mul(a: Fixed, b: Fixed) -> Fixed {
-    let res_u256 = WideMul::<u128,u128>::wide_mul(a.mag, b.mag);
+    let res_u256 = WideMul::<u128, u128>::wide_mul(a.mag, b.mag);
     let ONE_u256 = u256 { low: ONE_u128, high: 0 };
     let (scaled_u256, _) = u256_safe_div_rem(res_u256, u256_as_non_zero(ONE_u256));
 
@@ -199,11 +199,11 @@ fn mul(a: Fixed, b: Fixed) -> Fixed {
 #[derive(Copy, Drop, Serde)]
 struct f64 {
     mag: u64,
-    sign: bool
+    sign: bool,
 }
 
 fn mul_64(a: f64, b: f64) -> f64 {
-    let prod_u128 = WideMul::<u64,u64>::wide_mul(a.mag, b.mag);
+    let prod_u128 = WideMul::<u64, u64>::wide_mul(a.mag, b.mag);
     return f64 { mag: (prod_u128 / 4294967296).try_into().unwrap(), sign: a.sign ^ b.sign };
 }
 
@@ -303,13 +303,15 @@ fn _split_unsigned(a: Fixed) -> (u128, u128) {
     return integer::u128_safe_divmod(a.mag, integer::u128_as_non_zero(ONE_u128));
 }
 
-// Tests --------------------------------------------------------------------------------------------------------------
+// Tests
+// --------------------------------------------------------------------------------------------------------------
 
 #[cfg(test)]
 mod tests {
     use cubit::f128::test::helpers::assert_precise;
     use cubit::f128::types::fixed::{
-        ONE, HALF, FixedPartialEq, FixedPartialOrd, FixedAddAssign, FixedSub, FixedSubAssign, FixedMulAssign
+        ONE, HALF, FixedPartialEq, FixedPartialOrd, FixedAddAssign, FixedSub, FixedSubAssign,
+        FixedMulAssign,
     };
 
     use cubit::f128::math::trig::HALF_PI_u128;
@@ -386,7 +388,7 @@ mod tests {
 
         // use `custom_precision`
         assert_precise(
-            a.atan(), 20423289048683266000, 'invalid two', Option::Some(184467440737)
+            a.atan(), 20423289048683266000, 'invalid two', Option::Some(184467440737),
         ); // 1e-8
     }
 
@@ -444,7 +446,7 @@ mod tests {
         let a = FixedTrait::new_unscaled(3, false);
         let b = FixedTrait::new(9223372036854775808, false); // 0.5
         assert_precise(
-            a.pow(b), 31950697969885030000, 'invalid pos base power', Option::None(())
+            a.pow(b), 31950697969885030000, 'invalid pos base power', Option::None(()),
         ); // 1.7320508075688772
     }
 
@@ -576,12 +578,12 @@ mod tests {
         let c = FixedTrait::from_unscaled_felt(-1);
 
         assert(a <= a, 'a <= a');
-        assert(a <= b == false, 'a <= b');
-        assert(a <= c == false, 'a <= c');
+        assert((a <= b) == false, 'a <= b');
+        assert((a <= c) == false, 'a <= c');
 
         assert(b <= a, 'b <= a');
         assert(b <= b, 'b <= b');
-        assert(b <= c == false, 'b <= c');
+        assert((b <= c) == false, 'b <= c');
 
         assert(c <= a, 'c <= a');
         assert(c <= b, 'c <= b');
@@ -594,17 +596,17 @@ mod tests {
         let b = FixedTrait::from_unscaled_felt(0);
         let c = FixedTrait::from_unscaled_felt(-1);
 
-        assert(a < a == false, 'a < a');
-        assert(a < b == false, 'a < b');
-        assert(a < c == false, 'a < c');
+        assert((a < a) == false, 'a < a');
+        assert((a < b) == false, 'a < b');
+        assert((a < c) == false, 'a < c');
 
         assert(b < a, 'b < a');
-        assert(b < b == false, 'b < b');
-        assert(b < c == false, 'b < c');
+        assert((b < b) == false, 'b < b');
+        assert((b < c) == false, 'b < c');
 
         assert(c < a, 'c < a');
         assert(c < b, 'c < b');
-        assert(c < c == false, 'c < c');
+        assert((c < c) == false, 'c < c');
     }
 
     #[test]
@@ -617,12 +619,12 @@ mod tests {
         assert(a >= b, 'a >= b');
         assert(a >= c, 'a >= c');
 
-        assert(b >= a == false, 'b >= a');
+        assert((b >= a) == false, 'b >= a');
         assert(b >= b, 'b >= b');
         assert(b >= c, 'b >= c');
 
-        assert(c >= a == false, 'c >= a');
-        assert(c >= b == false, 'c >= b');
+        assert((c >= a) == false, 'c >= a');
+        assert((c >= b) == false, 'c >= b');
         assert(c >= c, 'c >= c');
     }
 
@@ -632,17 +634,17 @@ mod tests {
         let b = FixedTrait::from_unscaled_felt(0);
         let c = FixedTrait::from_unscaled_felt(-1);
 
-        assert(a > a == false, 'a > a');
+        assert((a > a) == false, 'a > a');
         assert(a > b, 'a > b');
         assert(a > c, 'a > c');
 
-        assert(b > a == false, 'b > a');
-        assert(b > b == false, 'b > b');
+        assert((b > a) == false, 'b > a');
+        assert((b > b) == false, 'b > b');
         assert(b > c, 'b > c');
 
-        assert(c > a == false, 'c > a');
-        assert(c > b == false, 'c > b');
-        assert(c > c == false, 'c > c');
+        assert((c > a) == false, 'c > a');
+        assert((c > b) == false, 'c > b');
+        assert((c > c) == false, 'c > c');
     }
 
     #[test]
@@ -671,7 +673,7 @@ mod tests {
     fn test_cosh() {
         let a = FixedTrait::new_unscaled(2, false);
         assert_precise(
-            a.cosh(), 69400261068632590000, 'invalid two', Option::None(())
+            a.cosh(), 69400261068632590000, 'invalid two', Option::None(()),
         ); // 3.762195691016423
     }
 
@@ -680,7 +682,7 @@ mod tests {
     fn test_sinh() {
         let a = FixedTrait::new_unscaled(2, false);
         assert_precise(
-            a.sinh(), 66903765734623805000, 'invalid two', Option::None(())
+            a.sinh(), 66903765734623805000, 'invalid two', Option::None(()),
         ); // 3.6268604077773023
     }
 
@@ -689,7 +691,7 @@ mod tests {
     fn test_tanh() {
         let a = FixedTrait::new_unscaled(2, false);
         assert_precise(
-            a.tanh(), 17783170049656136000, 'invalid two', Option::None(())
+            a.tanh(), 17783170049656136000, 'invalid two', Option::None(()),
         ); // 0.9640275800745076
     }
 
@@ -712,7 +714,7 @@ mod tests {
     fn test_atanh() {
         let a = FixedTrait::new(16602069666338597000, false); // 0.9
         assert_precise(
-            a.atanh(), 27157656144668970000, 'invalid 0.9', Option::None(())
+            a.atanh(), 27157656144668970000, 'invalid 0.9', Option::None(()),
         ); // 1.4722194895832204
     }
 }

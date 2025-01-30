@@ -24,7 +24,7 @@ const MAX_u64: u128 = 18_446_744_073_709_551_615; //2**64 - 1
 #[derive(Copy, Drop, Serde)]
 struct Fixed {
     mag: u64,
-    sign: bool
+    sign: bool,
 }
 
 // TRAITS
@@ -430,7 +430,7 @@ impl FixedAdd of Add<Fixed> {
     }
 }
 
-impl FixedAddAssign of AddAssign<Fixed,Fixed> {
+impl FixedAddAssign of AddAssign<Fixed, Fixed> {
     #[inline(always)]
     fn add_assign(ref self: Fixed, rhs: Fixed) {
         self = Add::add(self, rhs);
@@ -443,7 +443,7 @@ impl FixedSub of Sub<Fixed> {
     }
 }
 
-impl FixedSubAssign of SubAssign<Fixed,Fixed> {
+impl FixedSubAssign of SubAssign<Fixed, Fixed> {
     #[inline(always)]
     fn sub_assign(ref self: Fixed, rhs: Fixed) {
         self = Sub::sub(self, rhs);

@@ -56,13 +56,13 @@ fn noise(v: Vec3) -> Fixed {
     let _p1 = permute(Vec4Trait::new(i.z + zero, i.z + i1.z, i.z + i2.z, i.z + one));
     let _p2 = permute(
         Vec4Trait::new(
-            _p1.x + i.y + zero, _p1.y + i.y + i1.y, _p1.z + i.y + i2.y, _p1.w + i.y + one
-        )
+            _p1.x + i.y + zero, _p1.y + i.y + i1.y, _p1.z + i.y + i2.y, _p1.w + i.y + one,
+        ),
     );
     let p = permute(
         Vec4Trait::new(
-            _p2.x + i.x + zero, _p2.y + i.x + i1.x, _p2.z + i.x + i2.x, _p2.w + i.x + one
-        )
+            _p2.x + i.x + zero, _p2.y + i.x + i1.x, _p2.z + i.x + i2.x, _p2.w + i.x + one,
+        ),
     );
 
     // Gradients: 7x7 points over a square, mapped onto an octahedron.
@@ -92,10 +92,10 @@ fn noise(v: Vec3) -> Fixed {
     let sh = Vec4Trait::new(-step(h.x, zero), -step(h.y, zero), -step(h.z, zero), -step(h.w, zero));
 
     let a0 = Vec4Trait::new(
-        b0.x + s0.x * sh.x, b0.z + s0.z * sh.x, b0.y + s0.y * sh.y, b0.w + s0.w * sh.y
+        b0.x + s0.x * sh.x, b0.z + s0.z * sh.x, b0.y + s0.y * sh.y, b0.w + s0.w * sh.y,
     );
     let a1 = Vec4Trait::new(
-        b1.x + s1.x * sh.z, b1.z + s1.z * sh.z, b1.y + s1.y * sh.w, b1.w + s1.w * sh.w
+        b1.x + s1.x * sh.z, b1.z + s1.z * sh.z, b1.y + s1.y * sh.w, b1.w + s1.w * sh.w,
     );
 
     let mut p0 = Vec3Trait::new(a0.x, a0.y, h.x);
@@ -115,7 +115,7 @@ fn noise(v: Vec3) -> Fixed {
         max(half - x0.dot(x0), zero),
         max(half - x1.dot(x1), zero),
         max(half - x2.dot(x2), zero),
-        max(half - x3.dot(x3), zero)
+        max(half - x3.dot(x3), zero),
     );
 
     m = (m * m) * (m * m);
@@ -145,7 +145,8 @@ fn noise_octaves(v: Vec3, mut octaves: u64, persistence: Fixed) -> Fixed {
 
 // TODO: get noise at percentile
 
-// Tests --------------------------------------------------------------------------------------------------------------
+// Tests
+// --------------------------------------------------------------------------------------------------------------
 
 #[cfg(test)]
 mod tests {
@@ -172,8 +173,8 @@ mod tests {
             Vec3Trait::new(
                 FixedTrait::new(2147483648, false),
                 FixedTrait::new(5282809774, true),
-                FixedTrait::new(7000796692, false)
-            )
+                FixedTrait::new(7000796692, false),
+            ),
         );
 
         assert_precise(r, 3114145395, '0.5... out of bounds', error); // 0.72507
@@ -189,8 +190,8 @@ mod tests {
             Vec3Trait::new(
                 FixedTrait::new(8332236554, true),
                 FixedTrait::new(5368709120, true),
-                FixedTrait::new(7000796692, true)
-            )
+                FixedTrait::new(7000796692, true),
+            ),
         );
 
         assert_precise(r, 661764302, '-1.94... out of bounds', error); // 0.15408
@@ -206,8 +207,8 @@ mod tests {
             Vec3Trait::new(
                 FixedTrait::new(42906723287, true),
                 FixedTrait::new(35433480192, false),
-                FixedTrait::new(29978871726, false)
-            )
+                FixedTrait::new(29978871726, false),
+            ),
         );
 
         assert_precise(r, -3401772481, '-9.99... out of bounds', error); // -0.79204
@@ -223,8 +224,8 @@ mod tests {
             Vec3Trait::new(
                 FixedTrait::new(21474836, true),
                 FixedTrait::new(54022098649, false),
-                FixedTrait::new(12326556140, true)
-            )
+                FixedTrait::new(12326556140, true),
+            ),
         );
 
         assert_precise(r, -1718502314, '-0.005... out of bounds', error); // -0.40012
@@ -237,7 +238,7 @@ mod tests {
 
         // [0.0, 0.0, 0.0]
         let r = simplex3::noise_octaves(
-            Vec3Trait::splat(FixedTrait::ZERO()), 2, FixedTrait::new(HALF, false)
+            Vec3Trait::splat(FixedTrait::ZERO()), 2, FixedTrait::new(HALF, false),
         );
 
         assert_precise(r, -1872176244, '... out of bounds', error); // -0.4359
@@ -253,10 +254,10 @@ mod tests {
             Vec3Trait::new(
                 FixedTrait::new(2147483648, false),
                 FixedTrait::new(5282809774, true),
-                FixedTrait::new(7000796692, false)
+                FixedTrait::new(7000796692, false),
             ),
             3,
-            FixedTrait::new(HALF, false)
+            FixedTrait::new(HALF, false),
         );
 
         assert_precise(r, 1409608267, '... out of bounds', error); // 0.3282
@@ -272,10 +273,10 @@ mod tests {
             Vec3Trait::new(
                 FixedTrait::new(8332236554, true),
                 FixedTrait::new(5368709120, true),
-                FixedTrait::new(7000796692, true)
+                FixedTrait::new(7000796692, true),
             ),
             4,
-            FixedTrait::new(HALF, false)
+            FixedTrait::new(HALF, false),
         );
 
         assert_precise(r, 581538572, '... out of bounds', error); // 0.1354
@@ -291,10 +292,10 @@ mod tests {
             Vec3Trait::new(
                 FixedTrait::new(42906723287, true),
                 FixedTrait::new(35433480192, false),
-                FixedTrait::new(29978871726, false)
+                FixedTrait::new(29978871726, false),
             ),
             5,
-            FixedTrait::new(HALF, false)
+            FixedTrait::new(HALF, false),
         );
 
         assert_precise(r, -1579688971, '... out of bounds', error); // -0.3678
@@ -310,10 +311,10 @@ mod tests {
             Vec3Trait::new(
                 FixedTrait::new(21474836, true),
                 FixedTrait::new(54022098649, false),
-                FixedTrait::new(12326556140, true)
+                FixedTrait::new(12326556140, true),
             ),
             6,
-            FixedTrait::new(HALF, false)
+            FixedTrait::new(HALF, false),
         );
 
         assert_precise(r, -782543041, '... out of bounds', error); // -0.1822

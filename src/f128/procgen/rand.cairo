@@ -18,7 +18,7 @@ fn fixed_between(seed: felt252, low: Fixed, high: Fixed) -> Fixed {
 
 fn u128_between(seed: felt252, low: u128, high: u128) -> u128 {
     let fixed = fixed_between(
-        seed, FixedTrait::new_unscaled(low, false), FixedTrait::new_unscaled(high, false)
+        seed, FixedTrait::new_unscaled(low, false), FixedTrait::new_unscaled(high, false),
     );
     return fixed.mag / ONE_u128;
 }
@@ -36,7 +36,7 @@ fn u128_normal_between(seed: felt252, low: u128, high: u128) -> u128 {
 }
 
 fn _fixed_normal_between_loop(
-    seed: felt252, low: Fixed, high: Fixed, acc: Fixed, iter: felt252
+    seed: felt252, low: Fixed, high: Fixed, acc: Fixed, iter: felt252,
 ) -> Fixed {
     if (iter == 0) {
         return acc;
@@ -46,7 +46,8 @@ fn _fixed_normal_between_loop(
     return _fixed_normal_between_loop(seed, low, high, acc + sample, iter - 1);
 }
 
-// Tests --------------------------------------------------------------------------------------------------------------
+// Tests
+// --------------------------------------------------------------------------------------------------------------
 
 #[cfg(test)]
 mod tests {
@@ -100,10 +101,10 @@ mod tests {
             }
             seed = rand::derive(seed, iter);
             let r = rand::fixed_between(
-                seed, FixedTrait::ZERO(), FixedTrait::new_unscaled(10, false)
+                seed, FixedTrait::ZERO(), FixedTrait::new_unscaled(10, false),
             );
             assert(
-                r >= FixedTrait::ZERO() && r < FixedTrait::new_unscaled(10, false), 'invalid range'
+                r >= FixedTrait::ZERO() && r < FixedTrait::new_unscaled(10, false), 'invalid range',
             );
 
             if r < min {
@@ -164,10 +165,10 @@ mod tests {
             }
             seed = rand::derive(seed, iter);
             let r = rand::fixed_normal_between(
-                seed, FixedTrait::ZERO(), FixedTrait::new_unscaled(10, false)
+                seed, FixedTrait::ZERO(), FixedTrait::new_unscaled(10, false),
             );
             assert(
-                r >= FixedTrait::ZERO() && r < FixedTrait::new_unscaled(10, false), 'invalid range'
+                r >= FixedTrait::ZERO() && r < FixedTrait::new_unscaled(10, false), 'invalid range',
             );
 
             if r < min {
