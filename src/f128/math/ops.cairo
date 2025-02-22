@@ -576,17 +576,17 @@ mod tests {
         let b = FixedTrait::from_unscaled_felt(0);
         let c = FixedTrait::from_unscaled_felt(-1);
 
-        assert(a <= a, 'a <= a');
-        assert(a <= b == false, 'a <= b');
-        assert(a <= c == false, 'a <= c');
+        assert((a <= a) == true, 'a <= a');
+        assert((a <= b) == false, 'a <= b');
+        assert((a <= c) == false, 'a <= c');
 
-        assert(b <= a, 'b <= a');
-        assert(b <= b, 'b <= b');
-        assert(b <= c == false, 'b <= c');
+        assert((b <= a) == false, 'b <= a');
+        assert((b <= b) == true, 'b <= b');
+        assert((b <= c) == false, 'b <= c');
 
-        assert(c <= a, 'c <= a');
-        assert(c <= b, 'c <= b');
-        assert(c <= c, 'c <= c');
+        assert((c <= a) == false, 'c <= a');
+        assert((c <= b) == false, 'c <= b');
+        assert((c <= c) == true, 'c <= c');
     }
 
     #[test]
@@ -595,17 +595,16 @@ mod tests {
         let b = FixedTrait::from_unscaled_felt(0);
         let c = FixedTrait::from_unscaled_felt(-1);
 
-        assert(a < a == false, 'a < a');
-        assert(a < b == false, 'a < b');
-        assert(a < c == false, 'a < c');
+        assert((a < a) == false, 'a < a');
+        assert((a < c) == false, 'a < c');
 
-        assert(b < a, 'b < a');
-        assert(b < b == false, 'b < b');
-        assert(b < c == false, 'b < c');
+        assert((b < a) == false, 'b < a');
+        assert((b < b) == false, 'b < b');
+        assert((b < c) == false, 'b < c');
 
-        assert(c < a, 'c < a');
-        assert(c < b, 'c < b');
-        assert(c < c == false, 'c < c');
+        assert((c < a) == false, 'c < a');
+        assert((c < b) == false, 'c < b');
+        assert((c < c) == false, 'c < c');
     }
 
     #[test]
@@ -614,17 +613,17 @@ mod tests {
         let b = FixedTrait::from_unscaled_felt(0);
         let c = FixedTrait::from_unscaled_felt(-1);
 
-        assert(a >= a, 'a >= a');
-        assert(a >= b, 'a >= b');
-        assert(a >= c, 'a >= c');
+        assert((a >= a) == true, 'a >= a');
+        assert((a >= b) == true, 'a >= b');
+        assert((a >= c) == true, 'a >= c');
 
-        assert(b >= a == false, 'b >= a');
-        assert(b >= b, 'b >= b');
-        assert(b >= c, 'b >= c');
+        assert((b >= a) == false, 'b >= a');
+        assert((b >= b) == true, 'b >= b');
+        assert((b >= c) == true, 'b >= c');
 
-        assert(c >= a == false, 'c >= a');
-        assert(c >= b == false, 'c >= b');
-        assert(c >= c, 'c >= c');
+        assert((c >= a) == false, 'c >= a');
+        assert((c >= b) == false, 'c >= b');
+        assert((c >= c) == true, 'c >= c');
     }
 
     #[test]
@@ -633,17 +632,17 @@ mod tests {
         let b = FixedTrait::from_unscaled_felt(0);
         let c = FixedTrait::from_unscaled_felt(-1);
 
-        assert(a > a == false, 'a > a');
-        assert(a > b, 'a > b');
-        assert(a > c, 'a > c');
+        assert((a > a) == false, 'a > a');
+        assert((a > b) == false, 'a > b');
+        assert((a > c) == false, 'a > c');
 
-        assert(b > a == false, 'b > a');
-        assert(b > b == false, 'b > b');
-        assert(b > c, 'b > c');
+        assert((b > a) == false, 'b > a');
+        assert((b > b) == false, 'b > b');
+        assert((b > c) == false, 'b > c');
 
-        assert(c > a == false, 'c > a');
-        assert(c > b == false, 'c > b');
-        assert(c > c == false, 'c > c');
+        assert((c > a) == false, 'c > a');
+        assert((c > b) == false, 'c > b');
+        assert((c > c) == false, 'c > c');
     }
 
     #[test]
