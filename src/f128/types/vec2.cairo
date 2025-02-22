@@ -1,8 +1,8 @@
 use core::debug::PrintTrait;
-
+use starknet::Store;
 use cubit::f128::types::fixed::{Fixed, FixedTrait, FixedPrint};
 
-#[derive(Copy, Drop, Serde, Store)]
+#[derive(Copy, Drop, Serde, starknet::Store)]
 struct Vec2 {
     x: Fixed,
     y: Fixed

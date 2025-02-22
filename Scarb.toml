@@ -11,3 +11,4 @@ sierra = false # Enable Sierra codegen.
 casm = false   # Enable CASM codegen.
 
 [dependencies]
+starknet = ">=2.8.2"
